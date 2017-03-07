@@ -8,8 +8,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.util.ArrayList;
+
 public class AddData extends AppCompatActivity {
     DatePickerDialog datePickerDialog;
+    private ArrayList<Alcohol> alcohols = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,8 +26,12 @@ public class AddData extends AppCompatActivity {
         final EditText selectedDate =  (EditText) findViewById(R.id.setDate);
         String date = selectedDate.getText().toString();
         final EditText unitsDrank = (EditText) findViewById(R.id.unitsInput);
-        int Units = Integer.parseInt(unitsDrank.getText().toString());
-        System.out.println(date);
-        System.out.println(Units);
+        double Units = Integer.parseInt(unitsDrank.getText().toString());
+
+        Alcohol alcohol = new Alcohol(Units, date);
+        alcohols.add(alcohol);
+
+        /*System.out.println(date);
+        System.out.println(Units);*/
     }
 }
