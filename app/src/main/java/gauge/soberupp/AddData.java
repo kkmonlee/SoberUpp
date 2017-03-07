@@ -2,6 +2,7 @@ package gauge.soberupp;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -24,14 +25,22 @@ public class AddData extends AppCompatActivity {
     public void getData(View view){
         Button submit = (Button) findViewById(R.id.submit);
         final EditText selectedDate =  (EditText) findViewById(R.id.setDate);
-        String date = selectedDate.getText().toString();
+        final String date = selectedDate.getText().toString();
         final EditText unitsDrank = (EditText) findViewById(R.id.unitsInput);
-        double Units = Integer.parseInt(unitsDrank.getText().toString());
+        final double units = Integer.parseInt(unitsDrank.getText().toString());
 
-        Alcohol alcohol = new Alcohol(Units, date);
-        alcohols.add(alcohol);
+        // doesn't work but you get the idea
+        submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Alcohol alcohol = new Alcohol(units, date);
+                alcohols.add(alcohol);
+                Snackbar snackbar = Snackbar.make(v, alcohol.getDate(), 9000);
+                snackbar.show();
+            }
+        });
 
         /*System.out.println(date);
-        System.out.println(Units);*/
+        System.out.println(units);*/
     }
 }
