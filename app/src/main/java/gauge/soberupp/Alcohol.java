@@ -6,7 +6,7 @@ package gauge.soberupp;
  */
 
 public class Alcohol {
-    private String[] split = this.date.split("-");
+    private String[] split;
     private double units;        // in pints
     private String date;        // in the format dd-mm-yyyy
     /*
@@ -16,6 +16,7 @@ public class Alcohol {
     public Alcohol(double units, String date) {
         this.units = units;
         this.date = date;
+        split = this.date.split("-");
     }
 
     public double getUnits() {
