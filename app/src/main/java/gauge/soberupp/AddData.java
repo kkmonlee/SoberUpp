@@ -34,7 +34,7 @@ public class AddData extends AppCompatActivity {
 
         Alcohol alcohol = new Alcohol(units, date);
         alcohols.add(alcohol);
-        Snackbar.make(view, "Alcohol", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        Snackbar.make(view, Integer.toString(alcohols.size()), Snackbar.LENGTH_LONG).setAction("Action", null).show();
 
 
         /*System.out.println(date);
