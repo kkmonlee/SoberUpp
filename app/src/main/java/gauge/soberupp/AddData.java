@@ -56,7 +56,7 @@ public class AddData extends AppCompatActivity {
             String string = a.getDate() + "," + a.getUnits() + "\n";
             FileOutputStream outputStream;
 
-            outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
+            outputStream = openFileOutput(filename, Context.MODE_PRIVATE); // TODO: Make sure this can be read
             outputStream.write(string.getBytes());
             System.out.println("File path => " + AddData.this.getFilesDir().getAbsolutePath());
             outputStream.close();
