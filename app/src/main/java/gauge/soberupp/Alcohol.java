@@ -7,7 +7,7 @@ package gauge.soberupp;
 
 public class Alcohol {
     private String[] split;
-    private double units;        // in pints
+    private double units;        // 10ml
     private String date;        // in the format dd-mm-yyyy
     /*
       Name and type of alcohol will be added later
@@ -33,10 +33,6 @@ public class Alcohol {
 
     public void setDate(String date) {
         this.date = date;
-    }
-
-    public double getLitres() {
-        return this.units * 0.568261;
     }
 
     public String getDD() {
