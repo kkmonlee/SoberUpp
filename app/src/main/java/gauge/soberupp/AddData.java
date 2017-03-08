@@ -3,19 +3,17 @@ package gauge.soberupp;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Environment;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 
 public class AddData extends AppCompatActivity {
@@ -30,7 +28,7 @@ public class AddData extends AppCompatActivity {
     }
 
     public void getData(View view){
-        final EditText selectedDate =  (EditText) findViewById(R.id.setDate);
+        final TextView selectedDate =  (TextView) findViewById(R.id.setDate);
         final String date = selectedDate.getText().toString();
         final EditText unitsDrank = (EditText) findViewById(R.id.unitsInput);
         final double units = Double.parseDouble(unitsDrank.getText().toString());
@@ -66,4 +64,10 @@ public class AddData extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+    public void showDatePickerDialog(View v) {
+        DialogFragment newFragment = new DatePickerFragment();
+        newFragment.show(getSupportFragmentManager(), "datePicker");
+    }
+
 }

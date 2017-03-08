@@ -19,7 +19,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AddData"></activity>
+        <activity android:name=".AddData" />
+        <activity android:name=".DatePickerFragment"></activity>
     </application>
 
 </manifest>
