@@ -7,6 +7,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -19,8 +20,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class AddData extends AppCompatActivity {
-    DatePickerDialog datePickerDialog;
     private ArrayList<Alcohol> alcohols = new ArrayList<>();
+    private ArrayList<String> dataList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,13 +76,17 @@ public class AddData extends AppCompatActivity {
             outputStream.close();
             System.out.println("HELLO");
             readFile();
+            System.out.println("dataList =>");
+            for (String s : dataList) {
+                Log.v("strings => ", s);
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void readFile(){
+    private void readFile() {
         FileInputStream fis;
         try {
             fis = openFileInput("data.txt");
@@ -93,8 +98,16 @@ public class AddData extends AppCompatActivity {
                 fileContent.append(new String(buffer, 0, n));
             }
             System.out.println("fileContent => " + fileContent.toString());
+            parseData(fileContent.toString());
         } catch(IOException e){
             e.printStackTrace();
+        }
+    }
+
+    private void parseData(String data) {
+        String[] newlines = data.split("\\r?\\n");
+        for (int i = 0; i < newlines.length; i++) {
+            dataList.add(newlines[i]);
         }
     }
 
