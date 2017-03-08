@@ -1,13 +1,19 @@
 package gauge.soberupp;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Environment;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -37,7 +43,7 @@ public class AddData extends AppCompatActivity {
         alcohols.add(alcohol);
 
         objectToString(alcohol);
-        Snackbar.make(view, Integer.toString(alcohols.size()), Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        //Snackbar.make(view, Integer.toString(alcohols.size()), Snackbar.LENGTH_LONG).setAction("Action", null).show();
 
 
         /*System.out.println(date);
@@ -46,8 +52,16 @@ public class AddData extends AppCompatActivity {
 
     private void objectToString(Alcohol a) {
         try {
-            PrintWriter writer = new PrintWriter("data.txt", "UTF-8");
-            writer.printf("%s, %f\n", a.getDate(), a.getUnits());
+            String filename = "data.txt";
+            String string = a.getDate() + "," + a.getUnits() + "\n";
+            FileOutputStream outputStream;
+
+            outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
+            outputStream.write(string.getBytes());
+            System.out.println("File path => " + AddData.this.getFilesDir().getAbsolutePath());
+            outputStream.close();
+            System.out.println("HELLO");
+
         } catch (IOException e) {
             e.printStackTrace();
         }
