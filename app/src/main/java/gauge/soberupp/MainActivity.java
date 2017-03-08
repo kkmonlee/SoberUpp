@@ -14,7 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends Navigation
         implements NavigationView.OnNavigationItemSelectedListener {
 
     @Override
@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        navigationView.getMenu().getItem(0).setChecked(true);
     }
     
     @Override
@@ -75,29 +76,9 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    public void goToAddData() {
-        Intent intent = new Intent(this, AddData.class);
-        startActivity(intent);
-    }
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_inputData) {
-            goToAddData();
-        } else if (id == R.id.nav_soberDiary) {
-
-        } else if (id == R.id.nav_graphs) {
-
-        } else if (id == R.id.nav_settings) {
-
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
+        return super.onNavigationItemSelected(item);
     }
 }
