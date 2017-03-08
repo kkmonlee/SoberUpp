@@ -13,9 +13,22 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
+
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Graph extends Navigation
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private ArrayList<Alcohol> dataList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +56,17 @@ public class Graph extends Navigation
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        GraphView graph = (GraphView) findViewById(R.id.graph);
+        LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[] {
+                new DataPoint(2, 1),
+                new DataPoint(1, 5),
+                new DataPoint(2, 3),
+                new DataPoint(3, 2),
+                new DataPoint(4, 6)
+        });
+        graph.addSeries(series);
+
     }
 
     @Override
@@ -82,4 +106,34 @@ public class Graph extends Navigation
     public boolean onNavigationItemSelected(MenuItem item) {
         return super.onNavigationItemSelected(item);
     }
+
+    public void readFile(View view) {
+        FileInputStream fis;
+        try {
+            fis = openFileInput("data.txt");
+            StringBuffer fileContent = new StringBuffer("");
+
+            byte[] buffer = new byte[1024];
+            int n;
+            while ((n = fis.read(buffer)) != -1) {
+                fileContent.append(new String(buffer, 0, n));
+            }
+            parseData(fileContent.toString());
+            fis.close();
+            //TextView tv1= (TextView) findViewById(R.id.textView3);
+            //tv1.setText(dataList.size());
+        } catch(IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    private void parseData(String data) {
+        String[] newlines = data.split("\\r?\\n");
+        for (int i = 0; i < newlines.length; i++) {
+            String[] parse = newlines[i].split(",");
+            System.out.println(Arrays.toString(parse));
+            dataList.add(new Alcohol(Double.parseDouble(parse[1]), parse[0]));
+        }
+    }
+
 }
