@@ -39,6 +39,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="gauge.soberupp.MainActivity" />
         </activity>
+        <activity
+            android:name=".SoberDiary"
+            android:label="@string/title_activity_sober_diary"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="gauge.soberupp.MainActivity" />
+        </activity>
     </application>
 
 </manifest>
