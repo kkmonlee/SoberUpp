@@ -33,6 +33,7 @@ public class AddData extends Navigation
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_data);
         Intent intent = getIntent();
+        setTitle("Input Data");
 
         // Sets the text box to todays date
         final Calendar c = Calendar.getInstance();
@@ -62,7 +63,6 @@ public class AddData extends Navigation
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        navigationView.getMenu().getItem(1).setChecked(true);
     }
 
     @Override

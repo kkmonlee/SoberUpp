@@ -26,9 +26,8 @@ public class Navigation extends AppCompatActivity implements NavigationView.OnNa
             } else if (id == R.id.nav_inputData) {
                 startActivity(new Intent(this, AddData.class));
             } else if (id == R.id.nav_soberDiary) {
-
             } else if (id == R.id.nav_graphs) {
-
+                startActivity(new Intent(this, Graph.class));
             } else if (id == R.id.nav_settings) {
 
             }
