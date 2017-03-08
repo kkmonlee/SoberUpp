@@ -69,7 +69,7 @@ public class AddData extends AppCompatActivity {
             String string = a.getDate() + "," + a.getUnits() + "\n";
             FileOutputStream outputStream;
 
-            outputStream = openFileOutput(filename, Context.MODE_PRIVATE); // TODO: Make sure this can be read
+            outputStream = openFileOutput(filename, Context.MODE_APPEND); // TODO: Make sure this can be read
             outputStream.write(string.getBytes());
             System.out.println("File path => " + AddData.this.getFilesDir().getAbsolutePath());
             outputStream.close();
@@ -92,11 +92,12 @@ public class AddData extends AppCompatActivity {
             while ((n = fis.read(buffer)) != -1) {
                 fileContent.append(new String(buffer, 0, n));
             }
-            System.out.println(fileContent.toString());
-        }catch(IOException e){
+            System.out.println("fileContent => " + fileContent.toString());
+        } catch(IOException e){
             e.printStackTrace();
         }
     }
+
     public void showDatePickerDialog(View v) {
         DialogFragment newFragment = new DatePickerFragment();
         newFragment.show(getSupportFragmentManager(), "datePicker");
