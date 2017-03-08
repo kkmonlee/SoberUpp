@@ -6,9 +6,10 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 public class AddData extends AppCompatActivity {
@@ -34,10 +35,21 @@ public class AddData extends AppCompatActivity {
 
         Alcohol alcohol = new Alcohol(units, date);
         alcohols.add(alcohol);
+
+        objectToString(alcohol);
         Snackbar.make(view, Integer.toString(alcohols.size()), Snackbar.LENGTH_LONG).setAction("Action", null).show();
 
 
         /*System.out.println(date);
         System.out.println(units);*/
+    }
+
+    private void objectToString(Alcohol a) {
+        try {
+            PrintWriter writer = new PrintWriter("data.txt", "UTF-8");
+            writer.printf("%s, %f\n", a.getDate(), a.getUnits());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
