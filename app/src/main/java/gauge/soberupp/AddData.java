@@ -167,12 +167,12 @@ public class AddData extends Navigation
         }
     }
 
-    private void printData() {
+    private void printData(ArrayList<Alcohol> alcohols) {
         double totalUnits = 0;
-        int numDays;
+        int numDays = alcohols.size();
+
         // Print it to the user
         for (Alcohol a : alcohols) {
-            numDays = alcohols.size();
             totalUnits += a.getUnits();
 
             if (numDays == 1)
