@@ -171,15 +171,17 @@ public class AddData extends Navigation
         double totalUnits = 0;
         int numDays = alcohols.size();
 
-        // Print it to the user
         for (Alcohol a : alcohols) {
             totalUnits += a.getUnits();
+        }
 
-            if (numDays == 1)
-                System.out.println("You have drank " + totalUnits + " units over the span of one day.");
-            else
-                System.out.println("You have drank " + totalUnits + " units over the span of " + numDays + " days.");
+        if (numDays == 1)
+            System.out.println("You have drank " + totalUnits + " units over the span of one day.");
+        else
+            System.out.println("You have drank " + totalUnits + " units over the span of " + numDays + " days.");
 
+        // Print it to the user
+        for (Alcohol a : alcohols) {
             // Click here to view details...
             System.out.println("You've had " + a.getUnits() + " units on the " + a.getDD() + " of " + a.getMM() + ", " + a.getYYYY());
         }
