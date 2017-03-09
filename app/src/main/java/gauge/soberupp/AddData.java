@@ -24,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 
 public class AddData extends Navigation
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -104,8 +105,6 @@ public class AddData extends Navigation
     }
 
     private ArrayList<Alcohol> alcohols = new ArrayList<>();
-    private ArrayList<String> dataList = new ArrayList<>();
-
 
     public void getData(View view){
         final TextView selectedDate =  (TextView) findViewById(R.id.setDate);
@@ -145,9 +144,6 @@ public class AddData extends Navigation
             System.out.println("HELLO");
             readFile();
             System.out.println("dataList =>");
-            for (String s : dataList) {
-                Log.v("strings => ", s);
-            }
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -158,7 +154,7 @@ public class AddData extends Navigation
         FileInputStream fis;
         try {
             fis = openFileInput("data.txt");
-            StringBuffer fileContent = new StringBuffer("");
+            StringBuilder fileContent = new StringBuilder("");
 
             byte[] buffer = new byte[1024];
             int n;
@@ -166,16 +162,26 @@ public class AddData extends Navigation
                 fileContent.append(new String(buffer, 0, n));
             }
             System.out.println("fileContent => " + fileContent.toString());
-            parseData(fileContent.toString());
         } catch(IOException e){
             e.printStackTrace();
         }
     }
 
-    private void parseData(String data) {
-        String[] newlines = data.split("\\r?\\n");
-        for (int i = 0; i < newlines.length; i++) {
-            dataList.add(newlines[i]);
+    private void printData() {
+        double totalUnits = 0;
+        int numDays;
+        // Print it to the user
+        for (Alcohol a : alcohols) {
+            numDays = alcohols.size();
+            totalUnits += a.getUnits();
+
+            if (numDays == 1)
+                System.out.println("You have drank " + totalUnits + " units over the span of one day.");
+            else
+                System.out.println("You have drank " + totalUnits + " units over the span of " + numDays + " days.");
+
+            // Click here to view details...
+            System.out.println("You've had " + a.getUnits() + " units on the " + a.getDD() + " of " + a.getMM() + ", " + a.getYYYY());
         }
     }
 
