@@ -1,6 +1,7 @@
 package gauge.soberupp;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -15,6 +16,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.CalendarView;
 
+import com.prolificinteractive.materialcalendarview.CalendarDay;
+import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
+
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
 
@@ -47,6 +52,13 @@ public class SoberDiary extends Navigation
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        ArrayList<CalendarDay> cd= new ArrayList<CalendarDay>();
+        Calendar cds = null;
+        cd.add(CalendarDay.from(2017, 3, 8));
+        cd.add(CalendarDay.from(2017,3,4));
+        EventDecorator ed = new EventDecorator(Color.RED, cd);
+        MaterialCalendarView calender = (MaterialCalendarView) findViewById(R.id.calendarView);
+        calender.addDecorators(ed);
     }
 
     @Override

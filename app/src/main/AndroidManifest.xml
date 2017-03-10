@@ -48,6 +48,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="gauge.soberupp.MainActivity" />
         </activity>
+        <activity android:name=".EventDecorator"></activity>
     </application>
 
 </manifest>

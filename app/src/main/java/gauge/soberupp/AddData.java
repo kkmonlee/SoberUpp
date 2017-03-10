@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -106,12 +107,32 @@ public class AddData extends Navigation
 
     private ArrayList<Alcohol> alcohols = new ArrayList<>();
 
-    public void getData(View view){
-        final TextView selectedDate =  (TextView) findViewById(R.id.setDate);
+    public void getData(View view) {
+
+        // Check if no view has focus:
+        //http://stackoverflow.com/questions/1109022/close-hide-the-android-soft-keyboard
+        View view1 = this.getCurrentFocus();
+        if (view1 != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view1.getWindowToken(), 0);
+        }
+
+        final TextView selectedDate = (TextView) findViewById(R.id.setDate);
         final String date = selectedDate.getText().toString();
         final EditText unitsDrank = (EditText) findViewById(R.id.unitsInput);
-        final double units = Double.parseDouble(unitsDrank.getText().toString());
-
+        final String units = unitsDrank.getText().toString();
+        double unitsDrankInput = 0;
+        if (!units.isEmpty()){
+            unitsDrankInput = Double.parseDouble(units);
+            if(unitsDrankInput <= 100) {
+                Alcohol alcohol = new Alcohol(unitsDrankInput, date);
+                alcohols.add(alcohol);
+                objectToString(alcohol);
+                Snackbar.make(view, Integer.toString(alcohols.size()), Snackbar.LENGTH_LONG).setAction("Action", null).show();
+            } else {
+                Snackbar.make(view, "Too many units inputted", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+            }
+        }
         // Clears the input data from the text boxes
         unitsDrank.setText("");
         final Calendar c = Calendar.getInstance();
@@ -120,11 +141,6 @@ public class AddData extends Navigation
         int day = c.get(Calendar.DAY_OF_MONTH);
         selectedDate.setText(day + "-" + month + "-" + year);
 
-        Alcohol alcohol = new Alcohol(units, date);
-        alcohols.add(alcohol);
-
-        objectToString(alcohol);
-        Snackbar.make(view, Integer.toString(alcohols.size()), Snackbar.LENGTH_LONG).setAction("Action", null).show();
 
 
         /*System.out.println(date);

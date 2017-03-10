@@ -8,10 +8,13 @@
     tools:context="gauge.soberupp.SoberDiary"
     tools:showIn="@layout/app_bar_sober_diary">
 
-    <CalendarView
+    <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/calendarView"
-        android:layout_width="wrap_content"
+        android:layout_width="368dp"
         android:layout_height="wrap_content"
-        tools:layout_editor_absoluteX="18dp"
-        tools:layout_editor_absoluteY="16dp" />
+        app:mcv_showOtherDates="all"
+        app:mcv_selectionColor="#00F"
+        tools:layout_editor_absoluteY="0dp"
+        tools:layout_editor_absoluteX="8dp" />
 </android.support.constraint.ConstraintLayout>
