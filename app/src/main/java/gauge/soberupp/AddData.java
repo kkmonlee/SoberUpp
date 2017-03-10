@@ -122,7 +122,7 @@ public class AddData extends Navigation
         final EditText unitsDrank = (EditText) findViewById(R.id.unitsInput);
         final String units = unitsDrank.getText().toString();
         double unitsDrankInput = 0;
-        if (!units.isEmpty()){
+        if (!units.isEmpty() && !date.contentEquals("Date in future")){
             unitsDrankInput = Double.parseDouble(units);
             if(unitsDrankInput <= 100) {
                 Alcohol alcohol = new Alcohol(unitsDrankInput, date);
@@ -132,6 +132,8 @@ public class AddData extends Navigation
             } else {
                 Snackbar.make(view, "Too many units inputted", Snackbar.LENGTH_LONG).setAction("Action", null).show();
             }
+        } else {
+            Snackbar.make(view, "Select a date", Snackbar.LENGTH_LONG).setAction("Action", null).show();
         }
         // Clears the input data from the text boxes
         unitsDrank.setText("");
