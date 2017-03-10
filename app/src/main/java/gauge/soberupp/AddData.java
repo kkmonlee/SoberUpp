@@ -221,31 +221,6 @@ public class AddData extends Navigation
 
     }
 
-    // This is to remove the comma after the data string has been split
-    String removeLastChar(String str) {
-        return str.substring(0, str.length() - 1);
-    };
-
-    private void printData(ArrayList<Alcohol> alcohols) {
-        double totalUnits = 0;
-        int numDays = alcohols.size();
-
-        for (Alcohol a : alcohols) {
-            totalUnits += a.getUnits();
-        }
-
-        if (numDays == 1)
-            System.out.println("You have drank " + totalUnits + " units over the span of one day.");
-        else
-            System.out.println("You have drank " + totalUnits + " units over the span of " + numDays + " days.");
-
-        // Print it to the user
-        for (Alcohol a : alcohols) {
-            // Click here to view details...
-            System.out.println("You've had " + a.getUnits() + " units on the " + a.getDD() + " of " + a.getMM() + ", " + a.getYYYY());
-        }
-    }
-
     public void showDatePickerDialog(View v) {
         DialogFragment newFragment = new DatePickerFragment();
         newFragment.show(getSupportFragmentManager(), "datePicker");
