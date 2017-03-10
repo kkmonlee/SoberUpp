@@ -24,6 +24,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 
@@ -161,8 +162,6 @@ public class AddData extends Navigation
             outputStream.close();
             System.out.println("HELLO");
             readFile();
-            System.out.println("dataList =>");
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -179,11 +178,53 @@ public class AddData extends Navigation
             while ((n = fis.read(buffer)) != -1) {
                 fileContent.append(new String(buffer, 0, n));
             }
-            System.out.println("fileContent => " + fileContent.toString());
-        } catch(IOException e){
+            /*System.out.println("fileContent => " + fileContent.toString());*/
+            printData(fileContent.toString());
+        } catch(IOException e) {
             e.printStackTrace();
         }
     }
+
+    private void printData(String data) {
+        String[] newlines = data.split("\\r?\\n");
+        ArrayList<String> singleData = new ArrayList<>();
+
+        for (int i = 0; i < newlines.length; i++) {
+            singleData.add(i, newlines[i]);
+        }
+
+        int numDays = singleData.size();
+        double totalUnits = 0;
+        ArrayList<String> dates = new ArrayList<>();
+        ArrayList<Double> units = new ArrayList<>();
+
+        for (String s : singleData) {
+            String[] temp = s.split(",");
+            dates.add(temp[0]);
+            units.add(Double.valueOf(temp[1]));
+        }
+
+        for (Double d : units) {
+            totalUnits += d;
+        }
+
+        if (numDays == 1) {
+            System.out.println("You have drank " + totalUnits + " units over the span of one day.");
+        } else {
+            System.out.println("You have drank " + totalUnits + " units over the span of " + numDays + " days.");
+        }
+
+        // More details for the user
+        for (int i = 0; i < numDays; i++) {
+            System.out.println("You've had " + units.get(i) + " units on the " + dates.get(i) + ".");
+        }
+
+    }
+
+    // This is to remove the comma after the data string has been split
+    String removeLastChar(String str) {
+        return str.substring(0, str.length() - 1);
+    };
 
     private void printData(ArrayList<Alcohol> alcohols) {
         double totalUnits = 0;
