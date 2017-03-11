@@ -211,9 +211,10 @@ public class AddData extends Navigation
         }
         final TextView readData = (TextView) findViewById(R.id.printData);
         String dataToPrint = "";
+        readData.setText(dataToPrint);
         if (numDays == 1) {
             dataToPrint += ("You have drank " + totalUnits + " units over the span of one day.");
-            dataToPrint+= "\n";
+            dataToPrint += "\n";
         } else {
             dataToPrint += ("You have drank " + totalUnits + " units over the span of " + numDays + " entries.");
             dataToPrint += "\n";
