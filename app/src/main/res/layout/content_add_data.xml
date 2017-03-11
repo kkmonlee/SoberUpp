@@ -98,7 +98,7 @@
                 android:id="@+id/printData"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TextView"
+                android:text=""
                 android:layout_span="3"
                 android:scrollbars="vertical"
                 tools:layout_editor_absoluteX="76dp"
