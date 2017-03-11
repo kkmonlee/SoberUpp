@@ -81,11 +81,29 @@
                 android:layout_height="wrap_content"
                 android:onClick="getData"
                 android:text="Submit" />
+
+            <Button
+                android:id="@+id/readData"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="readFile"
+                android:text="Read Data" />
         </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent" >
+
+            <TextView
+                android:id="@+id/printData"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TextView"
+                android:layout_span="3"
+                android:scrollbars="vertical"
+                tools:layout_editor_absoluteX="76dp"
+                tools:layout_editor_absoluteY="210dp" />
+        </TableRow>
     </TableLayout>
 
 

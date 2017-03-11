@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -161,13 +162,12 @@ public class AddData extends Navigation
             System.out.println("File path => " + AddData.this.getFilesDir().getAbsolutePath());
             outputStream.close();
             System.out.println("HELLO");
-            readFile();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void readFile() {
+    public void readFile(View view) {
         FileInputStream fis;
         try {
             fis = openFileInput("data.txt");
@@ -179,6 +179,7 @@ public class AddData extends Navigation
                 fileContent.append(new String(buffer, 0, n));
             }
             /*System.out.println("fileContent => " + fileContent.toString());*/
+
             printData(fileContent.toString());
         } catch(IOException e) {
             e.printStackTrace();
@@ -186,6 +187,7 @@ public class AddData extends Navigation
     }
 
     private void printData(String data) {
+
         String[] newlines = data.split("\\r?\\n");
         ArrayList<String> singleData = new ArrayList<>();
 
@@ -207,18 +209,24 @@ public class AddData extends Navigation
         for (Double d : units) {
             totalUnits += d;
         }
-
+        final TextView readData = (TextView) findViewById(R.id.printData);
+        String dataToPrint = "";
         if (numDays == 1) {
-            System.out.println("You have drank " + totalUnits + " units over the span of one day.");
+            dataToPrint += ("You have drank " + totalUnits + " units over the span of one day.");
+            dataToPrint+= "\n";
         } else {
-            System.out.println("You have drank " + totalUnits + " units over the span of " + numDays + " days.");
+            dataToPrint += ("You have drank " + totalUnits + " units over the span of " + numDays + " entries.");
+            dataToPrint += "\n";
         }
 
         // More details for the user
         for (int i = 0; i < numDays; i++) {
-            System.out.println("You've had " + units.get(i) + " units on the " + dates.get(i) + ".");
+            dataToPrint += ("You've had " + units.get(i) + " units on the " + dates.get(i) + ".");
+            dataToPrint += "\n";
         }
+        readData.setMovementMethod(new ScrollingMovementMethod());
 
+        readData.setText(dataToPrint);
     }
 
     public void showDatePickerDialog(View v) {
