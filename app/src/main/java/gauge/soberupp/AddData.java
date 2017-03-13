@@ -179,8 +179,10 @@ public class AddData extends Navigation
                 fileContent.append(new String(buffer, 0, n));
             }
             /*System.out.println("fileContent => " + fileContent.toString());*/
+            if (!fileContent.toString().isEmpty()) {
+                printData(fileContent.toString());
+            }
 
-            printData(fileContent.toString());
         } catch(IOException e) {
             e.printStackTrace();
         }
