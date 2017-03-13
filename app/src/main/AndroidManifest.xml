@@ -19,7 +19,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DatePickerFragment" />
         <activity
             android:name=".AddData"
             android:label="@string/title_activity_add_data"
@@ -48,7 +47,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="gauge.soberupp.MainActivity" />
         </activity>
-        <activity android:name=".EventDecorator"></activity>
+        <activity
+            android:name=".Settings"
+            android:label="@string/title_activity_settings"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
