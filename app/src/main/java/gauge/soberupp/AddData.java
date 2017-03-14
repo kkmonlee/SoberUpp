@@ -7,13 +7,11 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,9 +23,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 
 public class AddData extends Navigation
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -155,7 +151,7 @@ public class AddData extends Navigation
             if(unitsDrankInput <= 100) {
                 Alcohol alcohol = new Alcohol(unitsDrankInput, date);
                 alcohols.add(alcohol);
-                objectToString(alcohol);
+                writeFile(alcohol);
                 Snackbar.make(view, Integer.toString(alcohols.size()), Snackbar.LENGTH_LONG).setAction("Action", null).show();
             } else {
                 Snackbar.make(view, "Too many units inputted", Snackbar.LENGTH_LONG).setAction("Action", null).show();
@@ -180,22 +176,40 @@ public class AddData extends Navigation
         System.out.println(units);*/
     }
 
-    private void objectToString(Alcohol a) {
+    /**
+     * Creates a file called data.txt in /data/user/0/gauge.soberupp/
+     * Writes an Alcohol object's date and units in a line with format "date, units" every line
+     * To find file path, AddData.this.getFilesDir().getAbsolutePath();
+     *
+     * NOTE: Writes object data in bytes
+     * @param a the Alcohol object holding date of consumption and units
+     */
+    private void writeFile(Alcohol a) {
         try {
             String filename = "data.txt";
             String string = a.getDate() + "," + a.getUnits() + "\n";
             FileOutputStream outputStream;
 
-            outputStream = openFileOutput(filename, Context.MODE_APPEND); // TODO: Make sure this can be read
+            // MODE_APPEND makes sure data.txt is not overwritten every time writeFile() is called
+            // To overwrite, use MODE_PRIVATE
+            outputStream = openFileOutput(filename, Context.MODE_APPEND);
             outputStream.write(string.getBytes());
-            System.out.println("File path => " + AddData.this.getFilesDir().getAbsolutePath());
             outputStream.close();
-            System.out.println("HELLO");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    /**
+     * This is executed when the "Read" button is pressed
+     *
+     * Creates a FileInputStream and opens data.txt.
+     * Since FileInputStream reads by byte, we create a byte[] buffer of size 1024
+     * The content of the file is then appended into a new string
+     *
+     * To access the file data, use fileContent.toString().
+     * @param view View object required for button
+     */
     public void readFile(View view) {
         FileInputStream fis;
         try {
@@ -217,29 +231,46 @@ public class AddData extends Navigation
         }
     }
 
+    /**
+     * Parses the data from readFile()'s fileContent.toString()
+     * @param data the string containing the data
+     */
     private void printData(String data) {
-
+        // Splits the string into newlines "\\r?\\n" is used so it's compatible with UNIX and Windows
         String[] newlines = data.split("\\r?\\n");
+        // This ArrayList is for each new line of data
         ArrayList<String> singleData = new ArrayList<>();
-
+        // The splitted data is then added onto this ArrayList
         for (int i = 0; i < newlines.length; i++) {
             singleData.add(i, newlines[i]);
         }
-
+        // Number of days the person has entered data for
         int numDays = singleData.size();
+        // Number of units the person has consumed alcohol
         double totalUnits = 0;
+
+        // This will hold the dates and units from the parsed string from data.txt
         ArrayList<String> dates = new ArrayList<>();
         ArrayList<Double> units = new ArrayList<>();
 
+        // Each string in singleData is then splitted by a comma.
+        // Example: 15-09-2001, 12
+        // The first bit is the date and the second one is units
         for (String s : singleData) {
             String[] temp = s.split(",");
+            // The date is then added to the ArrayList
             dates.add(temp[0]);
+            // Units are also added
+            // Using Double.valueOf to make sure no numbers with leading zeroes are entered
             units.add(Double.valueOf(temp[1]));
         }
 
+        // Count total units
         for (Double d : units) {
             totalUnits += d;
         }
+
+        // And print...
         final TextView readData = (TextView) findViewById(R.id.printData);
         String dataToPrint = "";
         readData.setText(dataToPrint);
