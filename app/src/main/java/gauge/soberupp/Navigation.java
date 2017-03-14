@@ -15,6 +15,11 @@ public class Navigation extends AppCompatActivity implements NavigationView.OnNa
         super.onCreate(savedInstanceState);
     }
 
+    /**
+     * Gets the menu item, and moves the page to the appropiate page
+     * @param item : The item of the menu to by selected
+     * @return : the success of the menu change
+     */
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {

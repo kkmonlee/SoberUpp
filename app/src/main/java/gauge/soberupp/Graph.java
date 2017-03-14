@@ -33,11 +33,15 @@ public class Graph extends Navigation
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Sets the XML file for the layout
         setContentView(R.layout.activity_graph);
         Intent intent = getIntent();
+        // Sets the title of the page
+        setTitle("Graphs");
+
+        // START Code for the Navigation Bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        setTitle("Graphs");
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -56,19 +60,12 @@ public class Graph extends Navigation
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        GraphView graph = (GraphView) findViewById(R.id.graph);
-        LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[] {
-                new DataPoint(2, 1),
-                new DataPoint(1, 5),
-                new DataPoint(2, 3),
-                new DataPoint(3, 2),
-                new DataPoint(4, 6)
-        });
-        graph.addSeries(series);
-
+        // END Code for the Navigation Bar
     }
 
+    /**
+     * Runs when the Navigation Bar is closed
+     */
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -79,6 +76,11 @@ public class Graph extends Navigation
         }
     }
 
+    /**
+     * Sets up the menu
+     * @param menu : the menu to add
+     * @return : if it is successful
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -86,6 +88,11 @@ public class Graph extends Navigation
         return true;
     }
 
+    /**
+     * Performs an event if the titleBar event is selected
+     * @param item : the item to be chosen
+     * @return : a super call to the method about closing the titleBar menu
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -101,12 +108,16 @@ public class Graph extends Navigation
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Gets the menu item and sends it to the superior method to move page
+     * @param item : The item of the menu to by selected
+     * @return
+     */
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         return super.onNavigationItemSelected(item);
     }
-
     public void readFile(View view) {
         FileInputStream fis;
         try {

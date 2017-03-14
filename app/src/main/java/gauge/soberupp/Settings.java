@@ -24,7 +24,11 @@ public class Settings extends Navigation
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //Gets the XML file for the layout
         setContentView(R.layout.activity_settings);
+        // Sets the title of the page
+        setTitle("Settings");
+        // START Code for the Navigation Bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -45,8 +49,12 @@ public class Settings extends Navigation
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        // END Code for the Navigation Bar
     }
 
+    /**
+     * Runs when the Navigation Bar is closed
+     */
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -57,6 +65,11 @@ public class Settings extends Navigation
         }
     }
 
+    /**
+     * Sets up the menu
+     * @param menu : the menu to add
+     * @return : if it is successful
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -64,6 +77,11 @@ public class Settings extends Navigation
         return true;
     }
 
+    /**
+     * Performs an event if the titleBar event is selected
+     * @param item : the item to be chosen
+     * @return : a super call to the method about closing the titleBar menu
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -79,13 +97,21 @@ public class Settings extends Navigation
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Gets the menu item and sends it to the superior method to move page
+     * @param item : The item of the menu to by selected
+     * @return
+     */
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         return super.onNavigationItemSelected(item);
     }
 
-
+    /**
+     * Clears the text from the file
+     * @param view : the view of the button
+     */
     public void clearTextFile(View view){
         String filename = "data.txt";
         FileOutputStream outputStream;

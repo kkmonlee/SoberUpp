@@ -32,11 +32,17 @@ import java.util.Collections;
 public class AddData extends Navigation
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    /**
+     * Runs when the page is created
+     * @param savedInstanceState : last instance of the page
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Adds the xml file for layout
         setContentView(R.layout.activity_add_data);
         Intent intent = getIntent();
+        // Sets the title of the page
         setTitle("Input Data");
 
         // Sets the text box to todays date
@@ -47,6 +53,7 @@ public class AddData extends Navigation
         TextView tv1= (TextView) findViewById(R.id.setDate);
         tv1.setText(day + "-" + month + "-" + year);
 
+        // START Code for the Navigation Bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -67,8 +74,12 @@ public class AddData extends Navigation
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        // END Code for the Navigation Bar
     }
 
+    /**
+     * Runs when the Navigation Bar is closed
+     */
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -79,6 +90,11 @@ public class AddData extends Navigation
         }
     }
 
+    /**
+     * Sets up the menu
+     * @param menu : the menu to add
+     * @return : if it is successful
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -86,6 +102,11 @@ public class AddData extends Navigation
         return true;
     }
 
+    /**
+     * Performs an event if the titleBar event is selected
+     * @param item : the item to be chosen
+     * @return : a super call to the method about closing the titleBar menu
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -101,6 +122,11 @@ public class AddData extends Navigation
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Gets the menu item and sends it to the superior method to move page
+     * @param item : The item of the menu to by selected
+     * @return
+     */
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -135,7 +161,10 @@ public class AddData extends Navigation
                 Snackbar.make(view, "Too many units inputted", Snackbar.LENGTH_LONG).setAction("Action", null).show();
             }
         } else {
-            Snackbar.make(view, "Select a date", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+            if(units.isEmpty())
+                Snackbar.make(view, "Add how many Units Drunk", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+            else
+                Snackbar.make(view, "Select a date", Snackbar.LENGTH_LONG).setAction("Action", null).show();
         }
         // Clears the input data from the text boxes
         unitsDrank.setText("");
@@ -232,6 +261,10 @@ public class AddData extends Navigation
         readData.setText(dataToPrint);
     }
 
+    /**
+     * Shows the date picker when the button is pressed
+     * @param v : the view of the button
+     */
     public void showDatePickerDialog(View v) {
         DialogFragment newFragment = new DatePickerFragment();
         newFragment.show(getSupportFragmentManager(), "datePicker");
