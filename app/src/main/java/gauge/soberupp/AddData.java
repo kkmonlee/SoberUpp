@@ -2,6 +2,7 @@ package gauge.soberupp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -130,6 +131,8 @@ public class AddData extends Navigation
     }
 
     private ArrayList<Alcohol> alcohols = new ArrayList<>();
+    // This id correlates to Alcohol.id
+    private int id  = 1;
 
     public void getData(View view) {
 
@@ -149,8 +152,9 @@ public class AddData extends Navigation
         if (!units.isEmpty() && !date.contentEquals("Date in future")){
             unitsDrankInput = Double.parseDouble(units);
             if(unitsDrankInput <= 50) {
-                Alcohol alcohol = new Alcohol(unitsDrankInput, date);
+                Alcohol alcohol = new Alcohol(id, unitsDrankInput, date);
                 alcohols.add(alcohol);
+                id++;
                 writeFile(alcohol);
                 Snackbar.make(view, Integer.toString(alcohols.size()), Snackbar.LENGTH_LONG).setAction("Action", null).show();
             } else {
@@ -253,7 +257,7 @@ public class AddData extends Navigation
         ArrayList<String> dates = new ArrayList<>();
         ArrayList<Double> units = new ArrayList<>();
 
-        // Each string in singleData is then splitted by a comma.
+        // Each string in singleData is then split by a comma.
         // Example: 15-09-2001, 12
         // The first bit is the date and the second one is units
         for (String s : singleData) {
