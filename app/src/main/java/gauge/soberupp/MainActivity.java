@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,6 +14,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import java.util.List;
 
 public class MainActivity extends Navigation
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -48,6 +51,26 @@ public class MainActivity extends Navigation
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         // END Code for the Navigation Bar
+
+        // START code for Database
+        DBHandler db = new DBHandler(this);
+
+        // Inserting Alcohol/Rows
+        Log.d("Insert: ", "Inserting...");
+        db.addAlcohol(new Alcohol(1, 4.75, "13-03-2017"));
+        db.addAlcohol(new Alcohol(2, 1, "14-03-2017"));
+        db.addAlcohol(new Alcohol(3, 8.5, "15-03-2017"));
+        db.addAlcohol(new Alcohol(4, 0, "16-03-2017"));
+
+        // Reading all Alcohols
+        Log.d("Reading: ", "Reading all Alcohol...");
+        List<Alcohol> alcohols = db.getAllAlcohols();
+
+        for (Alcohol alcohol : alcohols) {
+            String log = "id: " + alcohol.getId() + ", Date: " + alcohol.getDate() + ", Units: " + alcohol.getUnits();
+            // Writing alcohol to log
+            Log.d("Alcohol: ", log);
+        }
     }
 
     /**
