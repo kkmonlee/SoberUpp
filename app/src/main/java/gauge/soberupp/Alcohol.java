@@ -7,13 +7,17 @@ package gauge.soberupp;
 
 public class Alcohol {
     private String[] split;
-    private double units;        // 10ml
+    private double units;       // 10ml
     private String date;        // in the format dd-mm-yyyy
+    private int id;             // starts at 1
     /*
       Name and type of alcohol will be added later
      */
 
-    public Alcohol(double units, String date) {
+    Alcohol() { }
+
+    public Alcohol(int id, double units, String date) {
+        this.id = id;
         this.units = units;
         this.date = date;
         split = this.date.split("-");
@@ -23,7 +27,7 @@ public class Alcohol {
         return units;
     }
 
-    public void setUnits(float units) {
+    public void setUnits(double units) {
         this.units = units;
     }
 
@@ -45,5 +49,13 @@ public class Alcohol {
 
     public String getYYYY() {
         return split[2];
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }
