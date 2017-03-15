@@ -44,7 +44,7 @@ public class AddData extends Navigation
         // Sets the text box to todays date
         final Calendar c = Calendar.getInstance();
         int year = c.get(Calendar.YEAR);
-        int month = c.get(Calendar.MONTH);
+        int month = c.get(Calendar.MONTH) + 1;
         int day = c.get(Calendar.DAY_OF_MONTH);
         TextView tv1= (TextView) findViewById(R.id.setDate);
         tv1.setText(day + "-" + month + "-" + year);
@@ -148,7 +148,7 @@ public class AddData extends Navigation
         double unitsDrankInput = 0;
         if (!units.isEmpty() && !date.contentEquals("Date in future")){
             unitsDrankInput = Double.parseDouble(units);
-            if(unitsDrankInput <= 100) {
+            if(unitsDrankInput <= 50) {
                 Alcohol alcohol = new Alcohol(unitsDrankInput, date);
                 alcohols.add(alcohol);
                 writeFile(alcohol);
@@ -166,7 +166,7 @@ public class AddData extends Navigation
         unitsDrank.setText("");
         final Calendar c = Calendar.getInstance();
         int year = c.get(Calendar.YEAR);
-        int month = c.get(Calendar.MONTH);
+        int month = c.get(Calendar.MONTH) + 1;
         int day = c.get(Calendar.DAY_OF_MONTH);
         selectedDate.setText(day + "-" + month + "-" + year);
 
