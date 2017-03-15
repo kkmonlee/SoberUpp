@@ -143,7 +143,7 @@ public class Graph extends Navigation
         for (int i = 0; i < newlines.length; i++) {
             String[] parse = newlines[i].split(",");
             System.out.println(Arrays.toString(parse));
-            dataList.add(new Alcohol(Double.parseDouble(parse[1]), parse[0]));
+            //dataList.add(new Alcohol(Double.parseDouble(parse[1]), parse[0]));
         }
     }
 

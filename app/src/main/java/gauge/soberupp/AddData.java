@@ -17,7 +17,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.io.FileInputStream;
@@ -72,6 +75,19 @@ public class AddData extends Navigation
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         // END Code for the Navigation Bar
+
+        final Spinner drinkType = (Spinner) findViewById(R.id.DrinkType);
+        setDrinkSpinner(drinkType);
+        drinkType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                setVolumeSpinner(drinkType.getSelectedItem().toString());
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {}
+
+        });
+
     }
 
     /**
@@ -134,6 +150,33 @@ public class AddData extends Navigation
     // This id correlates to Alcohol.id
     private int id  = 1;
 
+    private void setDrinkSpinner(Spinner spin){
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.Drinks, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spin.setAdapter(adapter);
+    }
+
+    private void setVolumeSpinner(String drinkType){
+        Spinner volume = (Spinner) findViewById(R.id.volume);
+        EditText abv = (EditText) findViewById(R.id.ABVInput);
+        ArrayAdapter<CharSequence> adapter;
+        if(drinkType.equals("Beer") || drinkType.equals("Cider")){
+            abv.setText("4.5");
+            adapter = ArrayAdapter.createFromResource(this, R.array.VolumeBeerCider, android.R.layout.simple_spinner_item);
+        } else if (drinkType.equals("Wine")){
+            abv.setText("12");
+            adapter = ArrayAdapter.createFromResource(this, R.array.VolumeWine, android.R.layout.simple_spinner_item);
+        } else if (drinkType.equals("Spirits")) {
+            abv.setText("37.5");
+            adapter = ArrayAdapter.createFromResource(this, R.array.VolumeSpirits, android.R.layout.simple_spinner_item);
+        } else {
+            abv.setText("4");
+            adapter = ArrayAdapter.createFromResource(this, R.array.VolumeAlcopops, android.R.layout.simple_spinner_item);
+        }
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        volume.setAdapter(adapter);
+    }
+
     public void getData(View view) {
 
         // Check if no view has focus:
@@ -143,10 +186,32 @@ public class AddData extends Navigation
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view1.getWindowToken(), 0);
         }
+        TextView selectedDate = (TextView) findViewById(R.id.setDate);
+        //Need to store
+        String date = selectedDate.getText().toString();
+        EditText abv = (EditText) findViewById(R.id.ABVInput);
+        //Need to store
+        String abvOfDrink = abv.getText().toString();
+        EditText quantity = (EditText) findViewById(R.id.numberDrunk);
+        // Need to store
+        String quantityDrunk = quantity.getText().toString();
+        Spinner drinkTypeSpinner = (Spinner) findViewById(R.id.DrinkType);
+        // Need to store
+        String drinkType = drinkTypeSpinner.getSelectedItem().toString();
+        Spinner drinkVolumeSpinner = (Spinner) findViewById(R.id.volume);
+        // Need to store
+        String drinkVolume = drinkVolumeSpinner.getSelectedItem().toString();
+        String[] volumeSplit = drinkVolume.split(" ");
 
+        // Need to store
+        float unitsDrankInput = Integer.parseInt(volumeSplit[volumeSplit.length-1].substring(0, volumeSplit[1].length()-1)) * Float.parseFloat(abvOfDrink) * Integer.parseInt(quantityDrunk)/ 1000;
+        System.out.println(unitsDrankInput);
+
+
+        /*
         final TextView selectedDate = (TextView) findViewById(R.id.setDate);
         final String date = selectedDate.getText().toString();
-        final EditText unitsDrank = (EditText) findViewById(R.id.unitsInput);
+        final EditText unitsDrank = (EditText) findViewById(R.id.ABVInput);
         final String units = unitsDrank.getText().toString();
         double unitsDrankInput = 0;
         if (!units.isEmpty() && !date.contentEquals("Date in future")){
@@ -174,11 +239,13 @@ public class AddData extends Navigation
         int day = c.get(Calendar.DAY_OF_MONTH);
         selectedDate.setText(day + "-" + month + "-" + year);
 
-
+        */
 
         /*System.out.println(date);
         System.out.println(units);*/
     }
+
+
 
     /**
      * Creates a file called data.txt in /data/user/0/gauge.soberupp/

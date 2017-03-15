@@ -10,4 +10,35 @@
     <string name="title_activity_graph">Graph</string>
     <string name="title_activity_sober_diary">SoberDiary</string>
     <string name="title_activity_settings">Settings</string>
+
+    <string-array name="Drinks">
+        <item>Cider</item>
+        <item>Beer</item>
+        <item>Wine</item>
+        <item>Spirits</item>
+        <item>Alcopops</item>
+    </string-array>
+
+    <string-array name="VolumeBeerCider">
+        <item>Can 440ml</item>
+        <item>Half Pint 285ml</item>
+        <item>Pint 568ml</item>
+        <item>Bottle 2000ml</item>
+    </string-array>
+
+    <string-array name="VolumeWine">
+        <item>Glass 175ml</item>
+        <item>Bottle 750ml</item>
+    </string-array>
+
+    <string-array name="VolumeSpirits">
+        <item>Shot 25ml</item>
+        <item>Double Shot 50ml</item>
+    </string-array>
+
+    <string-array name="VolumeAlcopops">
+        <item>Bottle 275ml</item>
+    </string-array>
+
+
 </resources>
