@@ -234,7 +234,7 @@ public class AddData extends Navigation
         }
         assert alcoholType != null;
         alcoholType.setAbv(Double.valueOf(abvOfDrink));
-        // TODO: Fix volume. NumberFormatException raised.
+
         Alcohol alcohol = new Alcohol(id, date, alcoholType,
                 Double.valueOf(volumeSplit[volumeSplit.length - 1].substring(0, volumeSplit[1].length() - 2)),
                 Double.valueOf(quantityDrunk));

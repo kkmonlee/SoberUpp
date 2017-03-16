@@ -23,7 +23,9 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String TABLE_ALCOHOLS = "alcohols";
     // Alcohols table columns names
     private static final String KEY_ID          = "id";
-    private static final String KEY_DATE        = "date";
+    private static final String KEY_DAY         = "day";
+    private static final String KEY_MONTH       = "month";
+    private static final String KEY_YEAR        = "year";
     private static final String KEY_TYPE        = "type";
     private static final String KEY_VOLUME      = "volume";
     private static final String KEY_QUANTITY    = "quantity";
@@ -37,9 +39,10 @@ public class DBHandler extends SQLiteOpenHelper {
         // Date is cursor.getString(1)
         // Units is cursor.getDouble(2);
         String CREATE_ALCOHOL_TABLE = "CREATE TABLE " + TABLE_ALCOHOLS + " (" +
-                KEY_ID + " INTEGER PRIMARY KEY, " + KEY_DATE + " TEXT,"
-                + KEY_TYPE + " TEXT, " + KEY_VOLUME + " REAL, "
-                + KEY_QUANTITY + " REAL" + ")";
+                KEY_ID + " INTEGER PRIMARY KEY, " + KEY_DAY + " INTEGER," +
+                KEY_MONTH + " INTEGER," + KEY_YEAR + " INTEGER," +
+                KEY_TYPE + " TEXT, " + KEY_VOLUME + " REAL, " +
+                KEY_QUANTITY + " REAL" + ")";
 
         db.execSQL(CREATE_ALCOHOL_TABLE);
     }
@@ -57,7 +60,9 @@ public class DBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        values.put(KEY_DATE, alcohol.getDate());
+        values.put(KEY_DAY, Integer.parseInt(alcohol.getDD()));
+        values.put(KEY_MONTH, Integer.parseInt(alcohol.getMM()));
+        values.put(KEY_YEAR, Integer.parseInt(alcohol.getYYYY()));
         values.put(KEY_TYPE, alcohol.getAlcoholType().getName());
         values.put(KEY_VOLUME, alcohol.getVolume());
         values.put(KEY_QUANTITY, alcohol.getQuantity());
@@ -71,7 +76,8 @@ public class DBHandler extends SQLiteOpenHelper {
     public Alcohol getAlcohol(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.query(TABLE_ALCOHOLS, new String[] {
-                KEY_ID, KEY_DATE, KEY_TYPE, KEY_VOLUME, KEY_QUANTITY
+                KEY_ID, KEY_DAY, KEY_MONTH, KEY_YEAR, KEY_TYPE, KEY_VOLUME, KEY_QUANTITY
+               // 0         1       2           3         4         5           6
         }, KEY_ID + "=?",
                 new String[] {
                         String.valueOf(id)
@@ -87,17 +93,19 @@ public class DBHandler extends SQLiteOpenHelper {
                 cursor.getDouble(2), cursor.getString(1));
         */
         AlcoholType alcoholType = null;
-        if (cursor.getString(2).equals("Beer")) {
+        if (cursor.getString(4).equals("Beer")) {
             alcoholType = AlcoholType.BEER;
-        } else if (cursor.getString(2).equals("Cider")) {
+        } else if (cursor.getString(4).equals("Cider")) {
             alcoholType = AlcoholType.CIDER;
-        } else if (cursor.getString(2).equals("Wine")) {
+        } else if (cursor.getString(4).equals("Wine")) {
             alcoholType = AlcoholType.WINE;
-        } else if (cursor.getString(2).equals("Spirits")) {
+        } else if (cursor.getString(4).equals("Spirits")) {
             alcoholType = AlcoholType.SPIRITS;
         }
-        Alcohol alcohol = new Alcohol(Integer.parseInt(cursor.getString(0)), cursor.getString(1),
-                alcoholType, cursor.getDouble(3), cursor.getDouble(4));
+
+        String date = cursor.getInt(1) + "-" + cursor.getInt(2) + "-" + cursor.getInt(3);
+
+        Alcohol alcohol = new Alcohol(Integer.parseInt(cursor.getString(0)), date, alcoholType, cursor.getDouble(5), cursor.getDouble(6));
         cursor.close();
         return alcohol;
     }
@@ -106,7 +114,9 @@ public class DBHandler extends SQLiteOpenHelper {
     public List<Alcohol> getAllAlcohols() {
         List<Alcohol> alcoholList = new ArrayList<>();
         // Select all query
-        String selectQuery = "SELECT * FROM " + TABLE_ALCOHOLS + " ORDER BY date(" + KEY_DATE + ") DESC LIMIT 1";
+        String selectQuery = "SELECT " + KEY_DAY + "," + KEY_MONTH + "," + KEY_YEAR +
+                "FROM " + TABLE_ALCOHOLS + " ORDER BY " + KEY_DAY + "," + KEY_MONTH +
+                "," + KEY_YEAR + "DESC";
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -115,22 +125,24 @@ public class DBHandler extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 AlcoholType alcoholType = null;
-                if (cursor.getString(2).equals("Beer")) {
+                if (cursor.getString(4).equals("Beer")) {
                     alcoholType = AlcoholType.BEER;
-                } else if (cursor.getString(2).equals("Cider")) {
+                } else if (cursor.getString(4).equals("Cider")) {
                     alcoholType = AlcoholType.CIDER;
-                } else if (cursor.getString(2).equals("Wine")) {
+                } else if (cursor.getString(4).equals("Wine")) {
                     alcoholType = AlcoholType.WINE;
-                } else if (cursor.getString(2).equals("Spirits")) {
+                } else if (cursor.getString(4).equals("Spirits")) {
                     alcoholType = AlcoholType.SPIRITS;
                 }
                 Alcohol alcohol = new Alcohol();
 
+                String date = cursor.getInt(1) + "-" + cursor.getInt(2) + "-" + cursor.getInt(3);
+
                 alcohol.setId(Integer.parseInt(cursor.getString(0)));
-                alcohol.setDate(cursor.getString(1));
+                alcohol.setDate(date);
                 alcohol.setAlcoholType(alcoholType);
-                alcohol.setVolume(cursor.getDouble(3));
-                alcohol.setQuantity(cursor.getDouble(4));
+                alcohol.setVolume(cursor.getDouble(5));
+                alcohol.setQuantity(cursor.getDouble(6));
                 alcohol.calculateUnits();
 
                 // Adding Alcohol to list
@@ -159,7 +171,9 @@ public class DBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        values.put(KEY_DATE, alcohol.getDate());
+        values.put(KEY_DAY, Integer.parseInt(alcohol.getDD()));
+        values.put(KEY_MONTH, Integer.parseInt(alcohol.getMM()));
+        values.put(KEY_YEAR, Integer.parseInt(alcohol.getYYYY()));
         values.put(KEY_TYPE, alcohol.getAlcoholType().getName());
         values.put(KEY_VOLUME, alcohol.getVolume());
         values.put(KEY_QUANTITY, alcohol.getQuantity());
