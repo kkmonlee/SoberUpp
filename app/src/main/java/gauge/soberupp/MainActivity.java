@@ -57,17 +57,19 @@ public class MainActivity extends Navigation
 
         // Inserting Alcohol/Rows
         Log.d("Insert: ", "Inserting...");
-        db.addAlcohol(new Alcohol(1, 4.75, "13-03-2017"));
-        db.addAlcohol(new Alcohol(2, 1, "14-03-2017"));
-        db.addAlcohol(new Alcohol(3, 8.5, "15-03-2017"));
-        db.addAlcohol(new Alcohol(4, 0, "16-03-2017"));
+        db.addAlcohol(new Alcohol(1, "13-03-2017", AlcoholType.BEER, 568, 1));
+        db.addAlcohol(new Alcohol(2, "14-03-2017", AlcoholType.WINE, 175, 2));
+        db.addAlcohol(new Alcohol(3, "15-03-2017", AlcoholType.BEER, 568, 2));
+        db.addAlcohol(new Alcohol(4, "16-03-2017", AlcoholType.CIDER, 568, 1));
 
         // Reading all Alcohols
         Log.d("Reading: ", "Reading all Alcohol...");
         List<Alcohol> alcohols = db.getAllAlcohols();
 
         for (Alcohol alcohol : alcohols) {
-            String log = "id: " + alcohol.getId() + ", Date: " + alcohol.getDate() + ", Units: " + alcohol.getUnits();
+            String log = "id: " + alcohol.getId() + ", Date: " + alcohol.getDate() +
+                    ", Type: " + alcohol.getAlcoholType().getName() + ", Volume: " +
+                    alcohol.getVolume() + ", Quantity: " + alcohol.getQuantity();
             // Writing alcohol to log
             Log.d("Alcohol: ", log);
         }

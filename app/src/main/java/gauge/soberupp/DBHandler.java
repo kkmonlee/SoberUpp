@@ -36,10 +36,19 @@ public class DBHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         // Date is cursor.getString(1)
         // Units is cursor.getDouble(2);
-        String CREATE_ALCOHOL_TABLE = "CREATE TABLE " + TABLE_ALCOHOLS + "(" +
-                KEY_ID + " INTEGER PRIMARY KEY," + KEY_DATE + " TEXT,"
-                + KEY_TYPE + " TEXT," + KEY_VOLUME + " REAL,"
+        String CREATE_ALCOHOL_TABLE = "CREATE TABLE " + TABLE_ALCOHOLS + " (" +
+                KEY_ID + " INTEGER PRIMARY KEY, " + KEY_DATE + " TEXT,"
+                + KEY_TYPE + " TEXT, " + KEY_VOLUME + " REAL, "
                 + KEY_QUANTITY + " REAL" + ")";
+/*
+        String sql = "CREATE TABLE alcohols (" +
+                " id integer PRIMARY KEY," +
+                " date text NOT NULL," +
+                " type text NOT NULL," +
+                " volume real," +
+                " quantity real" +
+                ")";
+        db.execSQL(sql);*/
         db.execSQL(CREATE_ALCOHOL_TABLE);
     }
 
@@ -56,7 +65,7 @@ public class DBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        values.put(KEY_DATE, alcohol.getDate()); // Alcohol date
+        values.put(KEY_DATE, alcohol.getDate());
         values.put(KEY_TYPE, alcohol.getAlcoholType().getName());
         values.put(KEY_VOLUME, alcohol.getVolume());
         values.put(KEY_QUANTITY, alcohol.getQuantity());
