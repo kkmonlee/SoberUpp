@@ -8,6 +8,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -28,6 +29,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class AddData extends Navigation
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -146,6 +148,7 @@ public class AddData extends Navigation
         return super.onNavigationItemSelected(item);
     }
 
+    private DBHandler db = new DBHandler(this);
     private ArrayList<Alcohol> alcohols = new ArrayList<>();
     // This id correlates to Alcohol.id
     private int id  = 1;
@@ -214,72 +217,32 @@ public class AddData extends Navigation
 
         String[] volumeSplit = drinkVolume.split(" ");
 
-        // Need to store
-        float unitsDrankInput = Integer.parseInt(volumeSplit[volumeSplit.length-1].substring(0, volumeSplit[1].length()-1)) * Float.parseFloat(abvOfDrink) * Integer.parseInt(quantityDrunk)/ 1000;
-        System.out.println(unitsDrankInput);
-
-
-        /*
-        final TextView selectedDate = (TextView) findViewById(R.id.setDate);
-        final String date = selectedDate.getText().toString();
-        final EditText unitsDrank = (EditText) findViewById(R.id.ABVInput);
-        final String units = unitsDrank.getText().toString();
-        double unitsDrankInput = 0;
-        if (!units.isEmpty() && !date.contentEquals("Date in future")){
-            unitsDrankInput = Double.parseDouble(units);
-            if(unitsDrankInput <= 50) {
-                Alcohol alcohol = new Alcohol(id, unitsDrankInput, date);
-                alcohols.add(alcohol);
-                id++;
-                writeFile(alcohol);
-                Snackbar.make(view, Integer.toString(alcohols.size()), Snackbar.LENGTH_LONG).setAction("Action", null).show();
-            } else {
-                Snackbar.make(view, "Too many units inputted", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-            }
-        } else {
-            if(units.isEmpty())
-                Snackbar.make(view, "Add how many Units Drunk", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-            else
-                Snackbar.make(view, "Select a date", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        AlcoholType alcoholType = null;
+        switch (drinkType) {
+            case "Beer":
+                alcoholType = AlcoholType.BEER;
+                break;
+            case "Cider":
+                alcoholType = AlcoholType.CIDER;
+                break;
+            case "Wine":
+                alcoholType = AlcoholType.WINE;
+                break;
+            case "Spirits":
+                alcoholType = AlcoholType.SPIRITS;
+                break;
         }
-        // Clears the input data from the text boxes
-        unitsDrank.setText("");
-        final Calendar c = Calendar.getInstance();
-        int year = c.get(Calendar.YEAR);
-        int month = c.get(Calendar.MONTH) + 1;
-        int day = c.get(Calendar.DAY_OF_MONTH);
-        selectedDate.setText(day + "-" + month + "-" + year);
+        assert alcoholType != null;
+        alcoholType.setAbv(Double.valueOf(abvOfDrink));
 
-        */
+        // TODO: Fix volume. NumberFormatException raised.
+        Alcohol alcohol = new Alcohol(id, date, alcoholType,
+                Double.valueOf(volumeSplit[volumeSplit.length - 1].substring(0, volumeSplit[1].length() - 1)),
+                Double.valueOf(quantityDrunk));
 
-        /*System.out.println(date);
-        System.out.println(units);*/
-    }
-
-
-
-    /**
-     * Creates a file called data.txt in /data/user/0/gauge.soberupp/
-     * Writes an Alcohol object's date and units in a line with format "date, units" every line
-     * To find file path, AddData.this.getFilesDir().getAbsolutePath();
-     *
-     * NOTE: Writes object data in bytes
-     * @param a the Alcohol object holding date of consumption and units
-     */
-    private void writeFile(Alcohol a) {
-        try {
-            String filename = "data.txt";
-            String string = a.getDate() + "," + a.getUnits() + "\n";
-            FileOutputStream outputStream;
-
-            // MODE_APPEND makes sure data.txt is not overwritten every time writeFile() is called
-            // To overwrite, use MODE_PRIVATE
-            outputStream = openFileOutput(filename, Context.MODE_APPEND);
-            outputStream.write(string.getBytes());
-            outputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        db.addAlcohol(alcohol);
+        alcohols.add(alcohol);
+        id++;
     }
 
     /**
@@ -293,32 +256,24 @@ public class AddData extends Navigation
      * @param view View object required for button
      */
     public void readFile(View view) {
-        FileInputStream fis;
-        try {
-            fis = openFileInput("data.txt");
-            StringBuilder fileContent = new StringBuilder("");
-
-            byte[] buffer = new byte[1024];
-            int n;
-            while ((n = fis.read(buffer)) != -1) {
-                fileContent.append(new String(buffer, 0, n));
-            }
-            /*System.out.println("fileContent => " + fileContent.toString());*/
-            if (!fileContent.toString().isEmpty()) {
-                printData(fileContent.toString());
-            }
-
-        } catch(IOException e) {
-            e.printStackTrace();
-        }
+        printData(db.getAllAlcohols());
     }
 
     /**
      * Parses the data from readFile()'s fileContent.toString()
-     * @param data the string containing the data
      */
-    private void printData(String data) {
-        // Splits the string into newlines "\\r?\\n" is used so it's compatible with UNIX and Windows
+    private void printData(List<Alcohol> alcoholList) {
+        final TextView readData = (TextView) findViewById(R.id.printData);
+        String log = "";
+        for (Alcohol alcohol : alcoholList) {
+            log += "id: " + alcohol.getId() + ", Date: " + alcohol.getDate() +
+                    ", Type: " + alcohol.getAlcoholType().getName() + ", Volume: " +
+                    alcohol.getVolume() + ", Quantity: " + alcohol.getQuantity() + "\n";
+            Log.d("Alcohol: ", log);
+        }
+
+        readData.setText(log);
+        /*// Splits the string into newlines "\\r?\\n" is used so it's compatible with UNIX and Windows
         String[] newlines = data.split("\\r?\\n");
         // This ArrayList is for each new line of data
         ArrayList<String> singleData = new ArrayList<>();
@@ -371,7 +326,7 @@ public class AddData extends Navigation
         }
         readData.setMovementMethod(new ScrollingMovementMethod());
 
-        readData.setText(dataToPrint);
+        readData.setText(dataToPrint);*/
     }
 
     /**
