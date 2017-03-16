@@ -87,7 +87,7 @@ public class Graph extends Navigation
 
         // set manual Y bounds
         graph.getViewport().setYAxisBoundsManual(true);
-        graph.getViewport().setMinY(Collections.min(alcoholList.values()));
+        graph.getViewport().setMinY(0);
         graph.getViewport().setMaxY(Collections.max(alcoholList.values()));
 
         // set manual X bounds
@@ -259,7 +259,7 @@ public class Graph extends Navigation
 
         // set manual Y bounds
         graph.getViewport().setYAxisBoundsManual(true);
-        graph.getViewport().setMinY(Collections.min(alcoholList.values()));
+        graph.getViewport().setMinY(0);
         graph.getViewport().setMaxY(Collections.max(alcoholList.values()));
 
         // set manual X bounds
