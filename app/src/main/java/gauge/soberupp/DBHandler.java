@@ -114,9 +114,8 @@ public class DBHandler extends SQLiteOpenHelper {
     public List<Alcohol> getAllAlcohols() {
         List<Alcohol> alcoholList = new ArrayList<>();
         // Select all query
-        String selectQuery = "SELECT " + KEY_DAY + "," + KEY_MONTH + "," + KEY_YEAR +
-                "FROM " + TABLE_ALCOHOLS + " ORDER BY " + KEY_DAY + "," + KEY_MONTH +
-                "," + KEY_YEAR + "DESC";
+        String selectQuery = "SELECT * FROM " + TABLE_ALCOHOLS + " ORDER BY " + KEY_DAY +
+                "," + KEY_MONTH + "," + KEY_YEAR + " DESC";
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
