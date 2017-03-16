@@ -234,14 +234,15 @@ public class AddData extends Navigation
         }
         assert alcoholType != null;
         alcoholType.setAbv(Double.valueOf(abvOfDrink));
-
         // TODO: Fix volume. NumberFormatException raised.
         Alcohol alcohol = new Alcohol(id, date, alcoholType,
-                Double.valueOf(volumeSplit[volumeSplit.length - 1].substring(0, volumeSplit[1].length() - 1)),
+                Double.valueOf(volumeSplit[volumeSplit.length - 1].substring(0, volumeSplit[1].length() - 2)),
                 Double.valueOf(quantityDrunk));
 
         db.addAlcohol(alcohol);
         alcohols.add(alcohol);
+        Snackbar.make(view, "Alcohol Entry has been added", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+
         id++;
     }
 
@@ -269,9 +270,7 @@ public class AddData extends Navigation
             log += "id: " + alcohol.getId() + ", Date: " + alcohol.getDate() +
                     ", Type: " + alcohol.getAlcoholType().getName() + ", Volume: " +
                     alcohol.getVolume() + ", Quantity: " + alcohol.getQuantity() + "\n";
-            Log.d("Alcohol: ", log);
         }
-
         readData.setText(log);
         /*// Splits the string into newlines "\\r?\\n" is used so it's compatible with UNIX and Windows
         String[] newlines = data.split("\\r?\\n");
