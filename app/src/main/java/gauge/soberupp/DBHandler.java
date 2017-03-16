@@ -104,9 +104,10 @@ public class DBHandler extends SQLiteOpenHelper {
         } else if (cursor.getString(2).equals("Spirits")) {
             alcoholType = AlcoholType.SPIRITS;
         }
-        cursor.close();
-        return new Alcohol(Integer.parseInt(cursor.getString(0)), cursor.getString(1),
+        Alcohol alcohol = new Alcohol(Integer.parseInt(cursor.getString(0)), cursor.getString(1),
                 alcoholType, cursor.getDouble(3), cursor.getDouble(4));
+        cursor.close();
+        return alcohol;
     }
 
     // Getting all Alcohols
