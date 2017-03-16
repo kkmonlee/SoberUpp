@@ -43,6 +43,7 @@ public class Alcohol {
 
     public void setDate(String date) {
         this.date = date;
+        this.split = date.split("-");
     }
 
     public String getDD() {

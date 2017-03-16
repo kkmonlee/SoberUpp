@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -24,12 +25,16 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.TreeMap;
 
 public class Graph extends Navigation
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private ArrayList<Alcohol> dataList = new ArrayList<>();
-
+    private TreeMap<Date, Double> alcoholList = new TreeMap<Date, Double>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +44,39 @@ public class Graph extends Navigation
         // Sets the title of the page
         setTitle("Graphs");
 
-        // START Code for the Navigation Bar
+        GraphView graph = (GraphView) findViewById(R.id.graph);
+        LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[] {
+        });
+
+        DBHandler db = new DBHandler(this);
+        List<Alcohol> alcohols = db.getAllAlcohols();
+        // Adds each days entry to a hashmap
+        for (Alcohol alcohol : alcohols) {
+            Calendar date = Calendar.getInstance();
+            date.set(Integer.parseInt(alcohol.getYYYY()), Integer.parseInt(alcohol.getMM()), Integer.parseInt(alcohol.getDD()), 0,0,0);
+            Date d = date.getTime();
+            System.out.println("asdfghjkl" + d);
+            if(alcoholList.containsKey(d)){
+                alcoholList.put(d, alcoholList.get(d) + alcohol.getUnits());
+            } else {
+                alcoholList.put(d, alcohol.getUnits());
+            }
+        }
+
+        for(Date d : alcoholList.keySet()){
+            System.out.println("asdfghjkl" + d);
+            series.appendData(new DataPoint(d, alcoholList.get(d)), true, alcoholList.size());
+        }
+        // set date label formatter
+        graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this));
+        graph.getGridLabelRenderer().setNumHorizontalLabels(3); // only 4 because of the space
+
+
+        graph.addSeries(series);
+
+
+
+    // START Code for the Navigation Bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
