@@ -4,37 +4,38 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
+import android.support.v4.app.DialogFragment;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.DataPointInterface;
 import com.jjoe64.graphview.series.LineGraphSeries;
+import com.jjoe64.graphview.series.OnDataPointTapListener;
+import com.jjoe64.graphview.series.Series;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
 
 public class Graph extends Navigation
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private TreeMap<Date, Double> alcoholList = new TreeMap<Date, Double>();
+    private List<Alcohol> alcohols;
+    private GraphView graph;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,35 +45,73 @@ public class Graph extends Navigation
         // Sets the title of the page
         setTitle("Graphs");
 
-        GraphView graph = (GraphView) findViewById(R.id.graph);
-        LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[] {
-        });
+        // Sets up the graph
+        graph = (GraphView) findViewById(R.id.graph);
 
         DBHandler db = new DBHandler(this);
-        List<Alcohol> alcohols = db.getAllAlcohols();
-        // Adds each days entry to a hashmap
+        alcohols = db.getAllAlcohols();
+        // Adds each days entry to a treemap
+        TreeMap<Date, Double> alcoholList = new TreeMap<Date, Double>();
         for (Alcohol alcohol : alcohols) {
             Calendar date = Calendar.getInstance();
-            date.set(Integer.parseInt(alcohol.getYYYY()), Integer.parseInt(alcohol.getMM()), Integer.parseInt(alcohol.getDD()), 0,0,0);
+            date.set(Integer.parseInt(alcohol.getYYYY()), Integer.parseInt(alcohol.getMM())-1, Integer.parseInt(alcohol.getDD()), 0,0,0);
             Date d = date.getTime();
-            System.out.println("asdfghjkl" + d);
+            System.out.println(d);
             if(alcoholList.containsKey(d)){
                 alcoholList.put(d, alcoholList.get(d) + alcohol.getUnits());
             } else {
                 alcoholList.put(d, alcohol.getUnits());
             }
         }
-
-        for(Date d : alcoholList.keySet()){
-            System.out.println("asdfghjkl" + d);
-            series.appendData(new DataPoint(d, alcoholList.get(d)), true, alcoholList.size());
+        LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[] {});
+        // Adds the data to the graph
+        for(Date D : alcoholList.keySet()){
+            series.appendData(new DataPoint(D, alcoholList.get(D)), true, alcoholList.size());
         }
+
+        series.setOnDataPointTapListener(new OnDataPointTapListener() {
+            @Override
+            public void onTap(Series series, DataPointInterface dataPoint) {
+                Date day = new Date();
+                day.setTime((long)dataPoint.getX());
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                String date = sdf.format(day);
+                System.out.println(date); //15/10/2013
+                Toast.makeText(Graph.this,date + " Units : " + dataPoint.getY(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
         // set date label formatter
         graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this));
         graph.getGridLabelRenderer().setNumHorizontalLabels(3); // only 4 because of the space
 
+        // set manual Y bounds
+        graph.getViewport().setYAxisBoundsManual(true);
+        graph.getViewport().setMinY(Collections.min(alcoholList.values()));
+        graph.getViewport().setMaxY(Collections.max(alcoholList.values()));
 
+        // set manual X bounds
+        graph.getViewport().setXAxisBoundsManual(true);
+        graph.getViewport().setMinX(alcoholList.firstKey().getTime());
+        graph.getViewport().setMaxX(alcoholList.lastKey().getTime());
+
+        //graph.getViewport().setScrollable(true); // enables horizontal scrolling
+        //graph.getViewport().setScrollableY(true); // enables vertical scrolling
+        //graph.getViewport().setScalable(true); // enables horizontal zooming and scrolling
+        //graph.getViewport().setScalableY(true); // enables vertical zooming and scrolling
         graph.addSeries(series);
+
+
+        // Sets the text boxes to todays date
+        final Calendar c = Calendar.getInstance();
+        int year = c.get(Calendar.YEAR);
+        int month = c.get(Calendar.MONTH) + 1;
+        int day = c.get(Calendar.DAY_OF_MONTH);
+        TextView dateTo= (TextView) findViewById(R.id.dateToText);
+        TextView dateFrom= (TextView) findViewById(R.id.dateFromText);
+        dateTo.setText(day + "-" + month + "-" + year);
+        dateFrom.setText((day-1) + "-" + month + "-" + year);
+
 
 
 
@@ -154,6 +193,81 @@ public class Graph extends Navigation
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         return super.onNavigationItemSelected(item);
+    }
+
+    /**
+     * Shows the date picker when the button is pressed
+     * @param v : the view of the button
+     */
+    public void showDatePickerDialog(View v) {
+        DialogFragment newFragment = new DatePickerFragment();
+        Bundle page = new Bundle();
+        // Gives the right bundle depending on whether it was picked
+        if(v.getId() == R.id.dateFrom) {
+            page.putString("page", "GraphFrom");
+        } else if(v.getId() == R.id.dateTo){
+            page.putString("page", "GraphTo");
+        }
+        newFragment.setArguments(page);
+        newFragment.show(getSupportFragmentManager(), "datePicker");
+    }
+
+    public void filterData(View view){
+        TextView dateFrom = (TextView) findViewById(R.id.dateFromText);
+        TextView dateTo = (TextView) findViewById(R.id.dateToText);
+        TextView errorText = (TextView) findViewById(R.id.errorText);
+        if(dateFrom.getText().equals("Date in future")|| dateTo.getText().equals("Date in future")){
+            errorText.setText("One or more dates are in the future");
+        } else {
+            String[] dateFromSplit = dateFrom.getText().toString().split("-");
+            String[] dateToSplit = dateTo.getText().toString().split("-");
+            Calendar dateFromDay = Calendar.getInstance();
+            dateFromDay.set(Integer.valueOf(dateFromSplit[2]), Integer.valueOf(dateFromSplit[1])-1, Integer.valueOf(dateFromSplit[0]), 0,0,0);
+            Calendar dateToDay = Calendar.getInstance();
+            dateToDay.set(Integer.valueOf(dateToSplit[2]), Integer.valueOf(dateToSplit[1])-1, Integer.valueOf(dateToSplit[0]), 0,0,0);
+            if(dateToDay.compareTo(dateFromDay) > 0){
+                filterGraph(dateFromDay, dateToDay);
+                errorText.setText("Data Filtered");
+            } else {
+                errorText.setText("<html>Date From is greater or equal than the Date to</html>");
+            }
+        }
+    }
+
+    private void filterGraph(Calendar dateFrom, Calendar dateTo) {
+        graph.removeAllSeries();
+        TreeMap<Date, Double> alcoholList = new TreeMap<Date, Double>();
+        for (Alcohol alcohol : alcohols) {
+            Calendar date = Calendar.getInstance();
+            date.set(Integer.parseInt(alcohol.getYYYY()), Integer.parseInt(alcohol.getMM()) - 1, Integer.parseInt(alcohol.getDD()), 0, 0, 0);
+            Date d = date.getTime();
+            System.out.println(date.getTime() + ":" + dateTo.getTime() + ":" + dateFrom.getTime());
+            // dateFrom <= date < dateTo
+            if ((date.compareTo(dateFrom) >= 0) && (dateTo.compareTo(date) >= 0)) {
+                if (alcoholList.containsKey(d)) {
+                    alcoholList.put(d, alcoholList.get(d) + alcohol.getUnits());
+                } else {
+                    alcoholList.put(d, alcohol.getUnits());
+                }
+            }
+        }
+        LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[]{});
+        // Adds the data to the graph
+        for (Date D : alcoholList.keySet()) {
+            series.appendData(new DataPoint(D, alcoholList.get(D)), true, alcoholList.size());
+        }
+
+        // set manual Y bounds
+        graph.getViewport().setYAxisBoundsManual(true);
+        graph.getViewport().setMinY(Collections.min(alcoholList.values()));
+        graph.getViewport().setMaxY(Collections.max(alcoholList.values()));
+
+        // set manual X bounds
+        graph.getViewport().setXAxisBoundsManual(true);
+        graph.getViewport().setMinX(alcoholList.firstKey().getTime());
+        graph.getViewport().setMaxX(alcoholList.lastKey().getTime());
+
+        graph.addSeries(series);
     }
 
 }

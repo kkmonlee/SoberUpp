@@ -13,9 +13,14 @@ import java.util.Calendar;
 
 public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
+    private String page;
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the current date as the default date in the picker
+        page = getArguments().getString("page");
+        System.out.println("qweyurtpy" + page);
+
         final Calendar c = Calendar.getInstance();
         int year = c.get(Calendar.YEAR);
         int month = c.get(Calendar.MONTH);
@@ -27,18 +32,32 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
 
     public void onDateSet(DatePicker view, int year, int month, int day) {
         // Do something with the date chosen by the user
-        Calendar currentDay = Calendar.getInstance();
-        currentDay.set(currentDay.get(Calendar.YEAR), currentDay.get(Calendar.MONTH), currentDay.get(Calendar.DAY_OF_MONTH), 0,0,0);
-
         Calendar chosenDay = Calendar.getInstance();
         chosenDay.set(year, month, day, 0,0,0);
+        Calendar currentDay = Calendar.getInstance();
+        currentDay.set(currentDay.get(Calendar.YEAR), currentDay.get(Calendar.MONTH), currentDay.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
 
-        if(currentDay.compareTo(chosenDay) >= 0){
-            TextView tv1= (TextView) getActivity().findViewById(R.id.setDate);
-            tv1.setText(view.getDayOfMonth() + "-" + (view.getMonth()+1) + "-" + view.getYear());
-        } else {
-            TextView tv1= (TextView) getActivity().findViewById(R.id.setDate);
-            tv1.setText("Date in future");
+        if(page.equals("AddData")) {
+            TextView tv1 = (TextView) getActivity().findViewById(R.id.setDate);
+            if (currentDay.compareTo(chosenDay) >= 0) {
+                tv1.setText(view.getDayOfMonth() + "-" + (view.getMonth() + 1) + "-" + view.getYear());
+            } else {
+                tv1.setText("Date in future");
+            }
+        } else if (page.equals("GraphFrom")){
+            TextView tv1 = (TextView) getActivity().findViewById(R.id.dateFromText);
+            if (currentDay.compareTo(chosenDay) >= 0) {
+                tv1.setText(view.getDayOfMonth() + "-" + (view.getMonth() + 1) + "-" + view.getYear());
+            } else {
+                tv1.setText("Date in future");
+            }
+        } else if (page.equals("GraphTo")){
+            TextView tv1 = (TextView) getActivity().findViewById(R.id.dateToText);
+            if (currentDay.compareTo(chosenDay) >= 0) {
+                    tv1.setText(view.getDayOfMonth() + "-" + (view.getMonth() + 1) + "-" + view.getYear());
+                } else {
+                    tv1.setText("Date in future");
+                }
         }
     }
 }

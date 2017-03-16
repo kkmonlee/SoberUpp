@@ -279,6 +279,9 @@ public class AddData extends Navigation
      */
     public void showDatePickerDialog(View v) {
         DialogFragment newFragment = new DatePickerFragment();
+        Bundle page = new Bundle();
+        page.putString("page", "AddData");
+        newFragment.setArguments(page);
         newFragment.show(getSupportFragmentManager(), "datePicker");
     }
 
