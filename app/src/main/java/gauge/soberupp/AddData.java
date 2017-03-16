@@ -271,60 +271,6 @@ public class AddData extends Navigation
                     alcohol.getVolume() + ", Quantity: " + alcohol.getQuantity() + "Units: " + alcohol.getUnits() +  "\n";
         }
         readData.setText(log);
-        /*// Splits the string into newlines "\\r?\\n" is used so it's compatible with UNIX and Windows
-        String[] newlines = data.split("\\r?\\n");
-        // This ArrayList is for each new line of data
-        ArrayList<String> singleData = new ArrayList<>();
-        // The splitted data is then added onto this ArrayList
-        for (int i = 0; i < newlines.length; i++) {
-            singleData.add(i, newlines[i]);
-        }
-        // Number of days the person has entered data for
-        int numDays = singleData.size();
-        // Number of units the person has consumed alcohol
-        double totalUnits = 0;
-
-        // This will hold the dates and units from the parsed string from data.txt
-        ArrayList<String> dates = new ArrayList<>();
-        ArrayList<Double> units = new ArrayList<>();
-
-        // Each string in singleData is then split by a comma.
-        // Example: 15-09-2001, 12
-        // The first bit is the date and the second one is units
-        for (String s : singleData) {
-            String[] temp = s.split(",");
-            // The date is then added to the ArrayList
-            dates.add(temp[0]);
-            // Units are also added
-            // Using Double.valueOf to make sure no numbers with leading zeroes are entered
-            units.add(Double.valueOf(temp[1]));
-        }
-
-        // Count total units
-        for (Double d : units) {
-            totalUnits += d;
-        }
-
-        // And print...
-        final TextView readData = (TextView) findViewById(R.id.printData);
-        String dataToPrint = "";
-        readData.setText(dataToPrint);
-        if (numDays == 1) {
-            dataToPrint += ("You have drank " + totalUnits + " units over the span of one day.");
-            dataToPrint += "\n";
-        } else {
-            dataToPrint += ("You have drank " + totalUnits + " units over the span of " + numDays + " entries.");
-            dataToPrint += "\n";
-        }
-
-        // More details for the user
-        for (int i = 0; i < numDays; i++) {
-            dataToPrint += ("You've had " + units.get(i) + " units on the " + dates.get(i) + ".");
-            dataToPrint += "\n";
-        }
-        readData.setMovementMethod(new ScrollingMovementMethod());
-
-        readData.setText(dataToPrint);*/
     }
 
     /**

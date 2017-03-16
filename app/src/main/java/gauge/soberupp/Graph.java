@@ -155,33 +155,5 @@ public class Graph extends Navigation
     public boolean onNavigationItemSelected(MenuItem item) {
         return super.onNavigationItemSelected(item);
     }
-    public void readFile(View view) {
-        FileInputStream fis;
-        try {
-            fis = openFileInput("data.txt");
-            StringBuffer fileContent = new StringBuffer("");
-
-            byte[] buffer = new byte[1024];
-            int n;
-            while ((n = fis.read(buffer)) != -1) {
-                fileContent.append(new String(buffer, 0, n));
-            }
-            parseData(fileContent.toString());
-            fis.close();
-            //TextView tv1= (TextView) findViewById(R.id.textView3);
-            //tv1.setText(dataList.size());
-        } catch(IOException e){
-            e.printStackTrace();
-        }
-    }
-
-    private void parseData(String data) {
-        String[] newlines = data.split("\\r?\\n");
-        for (int i = 0; i < newlines.length; i++) {
-            String[] parse = newlines[i].split(",");
-            System.out.println(Arrays.toString(parse));
-            //dataList.add(new Alcohol(Double.parseDouble(parse[1]), parse[0]));
-        }
-    }
 
 }

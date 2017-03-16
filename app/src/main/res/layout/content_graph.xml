@@ -8,24 +8,12 @@
     tools:context="gauge.soberupp.Graph"
     tools:showIn="@layout/app_bar_graph">
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="170dp"
-        android:layout_height="290dp"
-        android:text="TextView"
-        tools:layout_editor_absoluteX="89dp"
-        tools:layout_editor_absoluteY="56dp" />
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="readFile"
-        android:text="Button" />
 
     <com.jjoe64.graphview.GraphView
-        android:layout_width="match_parent"
-        android:layout_height="200dip"
-        android:id="@+id/graph" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/graph"
+        tools:layout_editor_absoluteY="0dp"
+        tools:layout_editor_absoluteX="8dp" />
 
 </android.support.constraint.ConstraintLayout>
