@@ -40,15 +40,7 @@ public class DBHandler extends SQLiteOpenHelper {
                 KEY_ID + " INTEGER PRIMARY KEY, " + KEY_DATE + " TEXT,"
                 + KEY_TYPE + " TEXT, " + KEY_VOLUME + " REAL, "
                 + KEY_QUANTITY + " REAL" + ")";
-/*
-        String sql = "CREATE TABLE alcohols (" +
-                " id integer PRIMARY KEY," +
-                " date text NOT NULL," +
-                " type text NOT NULL," +
-                " volume real," +
-                " quantity real" +
-                ")";
-        db.execSQL(sql);*/
+
         db.execSQL(CREATE_ALCOHOL_TABLE);
     }
 
@@ -114,7 +106,7 @@ public class DBHandler extends SQLiteOpenHelper {
     public List<Alcohol> getAllAlcohols() {
         List<Alcohol> alcoholList = new ArrayList<>();
         // Select all query
-        String selectQuery = "SELECT * FROM " + TABLE_ALCOHOLS;
+        String selectQuery = "SELECT * FROM " + TABLE_ALCOHOLS + " ORDER BY date(" + KEY_DATE + ") DESC LIMIT 1";
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
