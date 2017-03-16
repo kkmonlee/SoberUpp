@@ -13,16 +13,17 @@ public class Alcohol {
     private double quantity;            // number of cans/shots/glasses
     private double volume;              // volume of alcohol
     private AlcoholType alcoholType;    // type of alcohol
+    private double abv;                 // abv of alcohol
 
     Alcohol() { }
 
-    public Alcohol(int id, String date, AlcoholType alcoholType, double volume, double quantity) {
+    public Alcohol(int id, String date, AlcoholType alcoholType, double volume, double quantity, double abv) {
         this.id = id;
         this.date = date;
         this.alcoholType = alcoholType;
         this.volume = volume;
         this.quantity = quantity;
-        this.units = (this.volume * this.alcoholType.getAbv() * this.quantity) / 1000;
+        this.abv = abv;
         split = this.date.split("-");
     }
 
@@ -34,7 +35,7 @@ public class Alcohol {
         this.units = units;
     }
 
-    public void calculateUnits(){this.units = (this.volume * this.alcoholType.getAbv() * this.quantity) / 1000;}
+    public void calculateUnits(){this.units = (this.volume * this.abv * this.quantity) / 1000;}
 
     public String getDate() {
         return date;
@@ -87,5 +88,13 @@ public class Alcohol {
 
     public AlcoholType getAlcoholType() {
         return alcoholType;
+    }
+
+    public double getAbv() {
+        return abv;
+    }
+
+    public void setAbv(double abv) {
+        this.abv = abv;
     }
 }
