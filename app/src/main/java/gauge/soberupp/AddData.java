@@ -160,18 +160,24 @@ public class AddData extends Navigation
         Spinner volume = (Spinner) findViewById(R.id.volume);
         EditText abv = (EditText) findViewById(R.id.ABVInput);
         ArrayAdapter<CharSequence> adapter;
-        if(drinkType.equals("Beer") || drinkType.equals("Cider")){
-            abv.setText("4.5");
-            adapter = ArrayAdapter.createFromResource(this, R.array.VolumeBeerCider, android.R.layout.simple_spinner_item);
-        } else if (drinkType.equals("Wine")){
-            abv.setText("12");
-            adapter = ArrayAdapter.createFromResource(this, R.array.VolumeWine, android.R.layout.simple_spinner_item);
-        } else if (drinkType.equals("Spirits")) {
-            abv.setText("37.5");
-            adapter = ArrayAdapter.createFromResource(this, R.array.VolumeSpirits, android.R.layout.simple_spinner_item);
-        } else {
-            abv.setText("4");
-            adapter = ArrayAdapter.createFromResource(this, R.array.VolumeAlcopops, android.R.layout.simple_spinner_item);
+        switch (drinkType) {
+            case "Beer":
+            case "Cider":
+                abv.setText("4.5");
+                adapter = ArrayAdapter.createFromResource(this, R.array.VolumeBeerCider, android.R.layout.simple_spinner_item);
+                break;
+            case "Wine":
+                abv.setText("12");
+                adapter = ArrayAdapter.createFromResource(this, R.array.VolumeWine, android.R.layout.simple_spinner_item);
+                break;
+            case "Spirits":
+                abv.setText("37.5");
+                adapter = ArrayAdapter.createFromResource(this, R.array.VolumeSpirits, android.R.layout.simple_spinner_item);
+                break;
+            default:
+                abv.setText("4");
+                adapter = ArrayAdapter.createFromResource(this, R.array.VolumeAlcopops, android.R.layout.simple_spinner_item);
+                break;
         }
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         volume.setAdapter(adapter);
