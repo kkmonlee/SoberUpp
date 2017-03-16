@@ -233,11 +233,10 @@ public class AddData extends Navigation
                 break;
         }
         assert alcoholType != null;
-        alcoholType.setAbv(Double.valueOf(abvOfDrink));
 
         Alcohol alcohol = new Alcohol(id, date, alcoholType,
                 Double.valueOf(volumeSplit[volumeSplit.length - 1].substring(0, volumeSplit[1].length() - 2)),
-                Double.valueOf(quantityDrunk));
+                Double.valueOf(quantityDrunk), Double.valueOf(abvOfDrink));
 
         db.addAlcohol(alcohol);
         alcohols.add(alcohol);

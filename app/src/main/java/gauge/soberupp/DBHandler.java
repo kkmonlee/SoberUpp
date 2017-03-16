@@ -29,6 +29,7 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String KEY_TYPE        = "type";
     private static final String KEY_VOLUME      = "volume";
     private static final String KEY_QUANTITY    = "quantity";
+    private static final String KEY_ABV         = "abv";
 
     public DBHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -42,7 +43,7 @@ public class DBHandler extends SQLiteOpenHelper {
                 KEY_ID + " INTEGER PRIMARY KEY, " + KEY_DAY + " INTEGER," +
                 KEY_MONTH + " INTEGER," + KEY_YEAR + " INTEGER," +
                 KEY_TYPE + " TEXT, " + KEY_VOLUME + " REAL, " +
-                KEY_QUANTITY + " REAL" + ")";
+                KEY_QUANTITY + " REAL," + KEY_ABV + "REAL" + ")";
 
         db.execSQL(CREATE_ALCOHOL_TABLE);
     }
@@ -66,6 +67,7 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(KEY_TYPE, alcohol.getAlcoholType().getName());
         values.put(KEY_VOLUME, alcohol.getVolume());
         values.put(KEY_QUANTITY, alcohol.getQuantity());
+        values.put(KEY_ABV, alcohol.getAbv());
 
         // Insert row
         db.insert(TABLE_ALCOHOLS, null, values);
@@ -76,8 +78,8 @@ public class DBHandler extends SQLiteOpenHelper {
     public Alcohol getAlcohol(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.query(TABLE_ALCOHOLS, new String[] {
-                KEY_ID, KEY_DAY, KEY_MONTH, KEY_YEAR, KEY_TYPE, KEY_VOLUME, KEY_QUANTITY
-               // 0         1       2           3         4         5           6
+                KEY_ID, KEY_DAY, KEY_MONTH, KEY_YEAR, KEY_TYPE, KEY_VOLUME, KEY_QUANTITY, KEY_ABV
+               // 0         1       2           3         4         5           6           7
         }, KEY_ID + "=?",
                 new String[] {
                         String.valueOf(id)
@@ -105,7 +107,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
         String date = cursor.getInt(1) + "-" + cursor.getInt(2) + "-" + cursor.getInt(3);
 
-        Alcohol alcohol = new Alcohol(Integer.parseInt(cursor.getString(0)), date, alcoholType, cursor.getDouble(5), cursor.getDouble(6));
+        Alcohol alcohol = new Alcohol(Integer.parseInt(cursor.getString(0)), date, alcoholType, cursor.getDouble(5), cursor.getDouble(6), cursor.getDouble(7));
         cursor.close();
         return alcohol;
     }
@@ -142,6 +144,7 @@ public class DBHandler extends SQLiteOpenHelper {
                 alcohol.setAlcoholType(alcoholType);
                 alcohol.setVolume(cursor.getDouble(5));
                 alcohol.setQuantity(cursor.getDouble(6));
+                alcohol.setAbv(cursor.getDouble(7));
                 alcohol.calculateUnits();
 
                 // Adding Alcohol to list
@@ -176,6 +179,7 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(KEY_TYPE, alcohol.getAlcoholType().getName());
         values.put(KEY_VOLUME, alcohol.getVolume());
         values.put(KEY_QUANTITY, alcohol.getQuantity());
+        values.put(KEY_ABV, alcohol.getAbv());
 
         // Updating row
         return db.update(TABLE_ALCOHOLS, values, KEY_ID + " = ?",
