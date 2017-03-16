@@ -95,10 +95,10 @@ public class Graph extends Navigation
         graph.getViewport().setMinX(alcoholList.firstKey().getTime());
         graph.getViewport().setMaxX(alcoholList.lastKey().getTime());
 
-        //graph.getViewport().setScrollable(true); // enables horizontal scrolling
-        //graph.getViewport().setScrollableY(true); // enables vertical scrolling
-        //graph.getViewport().setScalable(true); // enables horizontal zooming and scrolling
-        //graph.getViewport().setScalableY(true); // enables vertical zooming and scrolling
+        graph.getViewport().setScrollable(true); // enables horizontal scrolling
+        graph.getViewport().setScrollableY(true); // enables vertical scrolling
+        graph.getViewport().setScalable(true); // enables horizontal zooming and scrolling
+        graph.getViewport().setScalableY(true); // enables vertical zooming and scrolling
         graph.addSeries(series);
 
 
