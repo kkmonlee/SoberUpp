@@ -34,6 +34,8 @@ public class Alcohol {
         this.units = units;
     }
 
+    public void calculateUnits(){this.units = (this.volume * this.alcoholType.getAbv() * this.quantity) / 1000;}
+
     public String getDate() {
         return date;
     }

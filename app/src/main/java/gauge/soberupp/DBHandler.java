@@ -139,6 +139,7 @@ public class DBHandler extends SQLiteOpenHelper {
                 alcohol.setAlcoholType(alcoholType);
                 alcohol.setVolume(cursor.getDouble(3));
                 alcohol.setQuantity(cursor.getDouble(4));
+                alcohol.calculateUnits();
 
                 // Adding Alcohol to list
                 alcoholList.add(alcohol);

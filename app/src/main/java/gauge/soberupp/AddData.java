@@ -269,7 +269,7 @@ public class AddData extends Navigation
         for (Alcohol alcohol : alcoholList) {
             log += "id: " + alcohol.getId() + ", Date: " + alcohol.getDate() +
                     ", Type: " + alcohol.getAlcoholType().getName() + ", Volume: " +
-                    alcohol.getVolume() + ", Quantity: " + alcohol.getQuantity() + "\n";
+                    alcohol.getVolume() + ", Quantity: " + alcohol.getQuantity() + "Units: " + alcohol.getUnits() +  "\n";
         }
         readData.setText(log);
         /*// Splits the string into newlines "\\r?\\n" is used so it's compatible with UNIX and Windows
