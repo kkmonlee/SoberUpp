@@ -43,7 +43,7 @@ public class DBHandler extends SQLiteOpenHelper {
                 KEY_ID + " INTEGER PRIMARY KEY, " + KEY_DAY + " INTEGER," +
                 KEY_MONTH + " INTEGER," + KEY_YEAR + " INTEGER," +
                 KEY_TYPE + " TEXT, " + KEY_VOLUME + " REAL, " +
-                KEY_QUANTITY + " REAL," + KEY_ABV + "REAL" + ")";
+                KEY_QUANTITY + " REAL," + KEY_ABV + " REAL" + ")";
 
         db.execSQL(CREATE_ALCOHOL_TABLE);
     }
