@@ -195,18 +195,23 @@ public class AddData extends Navigation
         TextView selectedDate = (TextView) findViewById(R.id.setDate);
         //Need to store
         String date = selectedDate.getText().toString();
+
         EditText abv = (EditText) findViewById(R.id.ABVInput);
         //Need to store
         String abvOfDrink = abv.getText().toString();
+
         EditText quantity = (EditText) findViewById(R.id.numberDrunk);
         // Need to store
         String quantityDrunk = quantity.getText().toString();
+
         Spinner drinkTypeSpinner = (Spinner) findViewById(R.id.DrinkType);
         // Need to store
         String drinkType = drinkTypeSpinner.getSelectedItem().toString();
+
         Spinner drinkVolumeSpinner = (Spinner) findViewById(R.id.volume);
         // Need to store
         String drinkVolume = drinkVolumeSpinner.getSelectedItem().toString();
+
         String[] volumeSplit = drinkVolume.split(" ");
 
         // Need to store
