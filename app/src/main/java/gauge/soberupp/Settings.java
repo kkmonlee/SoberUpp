@@ -112,7 +112,7 @@ public class Settings extends Navigation
      * Clears the text from the file
      * @param view : the view of the button
      */
-    public void clearTextFile(View view){
+    public void clearDB(View view){
         DBHandler db = new DBHandler(this);
         db.deleteAll();
     }

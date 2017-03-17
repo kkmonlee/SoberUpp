@@ -12,6 +12,6 @@
         android:id="@+id/ClearTextFile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="clearTextFile"
+        android:onClick="clearDB"
         android:text="Clear Database" />
 </android.support.constraint.ConstraintLayout>

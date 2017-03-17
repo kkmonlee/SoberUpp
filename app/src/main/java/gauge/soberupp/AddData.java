@@ -177,9 +177,12 @@ public class AddData extends Navigation
                 abv.setText("37.5");
                 adapter = ArrayAdapter.createFromResource(this, R.array.VolumeSpirits, android.R.layout.simple_spinner_item);
                 break;
+            case "Other":
+                abv.setText("5");
+                adapter = ArrayAdapter.createFromResource(this, R.array.VolumeOthers, android.R.layout.simple_spinner_item);
             default:
                 abv.setText("4");
-                adapter = ArrayAdapter.createFromResource(this, R.array.VolumeAlcopops, android.R.layout.simple_spinner_item);
+                adapter = ArrayAdapter.createFromResource(this, R.array.VolumeOthers, android.R.layout.simple_spinner_item);
                 break;
         }
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -215,34 +218,55 @@ public class AddData extends Navigation
         // Need to store
         String drinkVolume = drinkVolumeSpinner.getSelectedItem().toString();
 
+        EditText comments = (EditText) findViewById(R.id.commentsInput);
+        //TODO store this to alcohol object and db
+        // Need to store
+        String commentsInput = comments.getText().toString();
+
         String[] volumeSplit = drinkVolume.split(" ");
 
-        AlcoholType alcoholType = null;
-        switch (drinkType) {
-            case "Beer":
-                alcoholType = AlcoholType.BEER;
-                break;
-            case "Cider":
-                alcoholType = AlcoholType.CIDER;
-                break;
-            case "Wine":
-                alcoholType = AlcoholType.WINE;
-                break;
-            case "Spirits":
-                alcoholType = AlcoholType.SPIRITS;
-                break;
+        TextView message = (TextView) findViewById(R.id.message);
+
+        //Error checking for the entry
+        if(date.equals("Date in future")){
+            message.setText("Enter valid date");
+        } else if(abvOfDrink.trim().isEmpty()){
+            message.setText("ABV of drink is empty");
+        } else if(quantityDrunk.trim().isEmpty()){
+            message.setText("Enter how many drinks you have drunk");
+        } else if(Double.parseDouble(abvOfDrink) >= 90.0){
+            message.setText("ABV too high");
+        } else if(Double.parseDouble(quantityDrunk) >= 15.0){
+            message.setText("You have drunk too many");
+        } else {
+            AlcoholType alcoholType = null;
+            switch (drinkType) {
+                case "Beer":
+                    alcoholType = AlcoholType.BEER;
+                    break;
+                case "Cider":
+                    alcoholType = AlcoholType.CIDER;
+                    break;
+                case "Wine":
+                    alcoholType = AlcoholType.WINE;
+                    break;
+                case "Spirits":
+                    alcoholType = AlcoholType.SPIRITS;
+                    break;
+            }
+            assert alcoholType != null;
+
+            Alcohol alcohol = new Alcohol(id, date, alcoholType,
+                    Double.valueOf(volumeSplit[volumeSplit.length - 1].substring(0, volumeSplit[1].length() - 2)),
+                    Double.valueOf(quantityDrunk), Double.valueOf(abvOfDrink));
+
+            db.addAlcohol(alcohol);
+            alcohols.add(alcohol);
+            Snackbar.make(view, "Alcohol Entry has been added", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+            id++;
+            quantity.setText("");
+            comments.setText("");
         }
-        assert alcoholType != null;
-
-        Alcohol alcohol = new Alcohol(id, date, alcoholType,
-                Double.valueOf(volumeSplit[volumeSplit.length - 1].substring(0, volumeSplit[1].length() - 2)),
-                Double.valueOf(quantityDrunk), Double.valueOf(abvOfDrink));
-
-        db.addAlcohol(alcohol);
-        alcohols.add(alcohol);
-        Snackbar.make(view, "Alcohol Entry has been added", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-
-        id++;
     }
 
     /**

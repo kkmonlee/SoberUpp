@@ -76,7 +76,6 @@ public class Graph extends Navigation
                 day.setTime((long)dataPoint.getX());
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
                 String date = sdf.format(day);
-                System.out.println(date); //15/10/2013
                 Toast.makeText(Graph.this,date + " Units : " + dataPoint.getY(), Toast.LENGTH_SHORT).show();
             }
         });
@@ -85,16 +84,17 @@ public class Graph extends Navigation
         graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this));
         graph.getGridLabelRenderer().setNumHorizontalLabels(3); // only 4 because of the space
 
-        // set manual Y bounds
-        graph.getViewport().setYAxisBoundsManual(true);
-        graph.getViewport().setMinY(0);
-        graph.getViewport().setMaxY(Collections.max(alcoholList.values()));
+        if(!alcoholList.isEmpty()) {
+            // set manual Y bounds
+            graph.getViewport().setYAxisBoundsManual(true);
+            graph.getViewport().setMinY(0);
+            graph.getViewport().setMaxY(Collections.max(alcoholList.values()));
 
-        // set manual X bounds
-        graph.getViewport().setXAxisBoundsManual(true);
-        graph.getViewport().setMinX(alcoholList.firstKey().getTime());
-        graph.getViewport().setMaxX(alcoholList.lastKey().getTime());
-
+            // set manual X bounds
+            graph.getViewport().setXAxisBoundsManual(true);
+            graph.getViewport().setMinX(alcoholList.firstKey().getTime());
+            graph.getViewport().setMaxX(alcoholList.lastKey().getTime());
+        }
         graph.getViewport().setScrollable(true); // enables horizontal scrolling
         graph.getViewport().setScrollableY(true); // enables vertical scrolling
         graph.getViewport().setScalable(true); // enables horizontal zooming and scrolling
@@ -241,9 +241,9 @@ public class Graph extends Navigation
             Calendar date = Calendar.getInstance();
             date.set(Integer.parseInt(alcohol.getYYYY()), Integer.parseInt(alcohol.getMM()) - 1, Integer.parseInt(alcohol.getDD()), 0, 0, 0);
             Date d = date.getTime();
-            System.out.println(date.getTime() + ":" + dateTo.getTime() + ":" + dateFrom.getTime());
             // dateFrom <= date < dateTo
-            if ((date.compareTo(dateFrom) >= 0) && (dateTo.compareTo(date) >= 0)) {
+            if ((date.compareTo(dateFrom) >= 0) && ((dateTo.compareTo(date) >= 0)||(dateTo.equals(date)))) {
+                System.out.println(date);
                 if (alcoholList.containsKey(d)) {
                     alcoholList.put(d, alcoholList.get(d) + alcohol.getUnits());
                 } else {
@@ -256,17 +256,30 @@ public class Graph extends Navigation
         for (Date D : alcoholList.keySet()) {
             series.appendData(new DataPoint(D, alcoholList.get(D)), true, alcoholList.size());
         }
+        series.setOnDataPointTapListener(new OnDataPointTapListener() {
+            @Override
+            public void onTap(Series series, DataPointInterface dataPoint) {
+                Date day = new Date();
+                day.setTime((long)dataPoint.getX());
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                String date = sdf.format(day);
+                Toast.makeText(Graph.this,date + " Units : " + dataPoint.getY(), Toast.LENGTH_SHORT).show();
+            }
+        });
 
-        // set manual Y bounds
-        graph.getViewport().setYAxisBoundsManual(true);
-        graph.getViewport().setMinY(0);
-        graph.getViewport().setMaxY(Collections.max(alcoholList.values()));
 
-        // set manual X bounds
-        graph.getViewport().setXAxisBoundsManual(true);
-        graph.getViewport().setMinX(alcoholList.firstKey().getTime());
-        graph.getViewport().setMaxX(alcoholList.lastKey().getTime());
 
+        if(!alcoholList.isEmpty()) {
+            // set manual Y bounds
+            graph.getViewport().setYAxisBoundsManual(true);
+            graph.getViewport().setMinY(0);
+            graph.getViewport().setMaxY(Collections.max(alcoholList.values()));
+
+            // set manual X bounds
+            graph.getViewport().setXAxisBoundsManual(true);
+            graph.getViewport().setMinX(alcoholList.firstKey().getTime());
+            graph.getViewport().setMaxX(alcoholList.lastKey().getTime());
+        }
         graph.addSeries(series);
     }
 
