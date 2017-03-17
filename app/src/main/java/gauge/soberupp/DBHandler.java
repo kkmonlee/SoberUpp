@@ -18,9 +18,9 @@ public class DBHandler extends SQLiteOpenHelper {
     // Database version
     private static final int DATABASE_VERSION = 1;
     // Database name
-    private static final String DATABASE_NAME = "AlcoholInfo";
+    private static final String DATABASE_NAME   = "AlcoholInfo";
     // Alcohols table name
-    private static final String TABLE_ALCOHOLS = "alcohols";
+    private static final String TABLE_ALCOHOLS  = "alcohols";
     // Alcohols table columns names
     private static final String KEY_ID          = "id";
     private static final String KEY_DAY         = "day";
@@ -191,6 +191,14 @@ public class DBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_ALCOHOLS, KEY_ID + " = ?",
                 new String[] {String.valueOf(alcohol.getId())});
+        db.close();
+    }
+
+    public void deleteAll() {
+        String deleteQuery = "DELETE FROM " + TABLE_ALCOHOLS;
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL(deleteQuery);
+        db.execSQL("VACUUM");
         db.close();
     }
 

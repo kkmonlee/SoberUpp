@@ -113,14 +113,7 @@ public class Settings extends Navigation
      * @param view : the view of the button
      */
     public void clearTextFile(View view){
-        String filename = "data.txt";
-        FileOutputStream outputStream;
-        try {
-            outputStream = openFileOutput(filename, Context.MODE_PRIVATE); // TODO: Make sure this can be read
-            outputStream.write("".getBytes());
-            outputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        DBHandler db = new DBHandler(this);
+        db.deleteAll();
     }
 }

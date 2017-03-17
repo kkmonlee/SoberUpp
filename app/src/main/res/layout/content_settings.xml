@@ -13,5 +13,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="clearTextFile"
-        android:text="Clear Text File" />
+        android:text="Clear Database" />
 </android.support.constraint.ConstraintLayout>
