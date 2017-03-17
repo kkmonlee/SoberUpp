@@ -14,16 +14,19 @@ public class Alcohol {
     private double volume;              // volume of alcohol
     private AlcoholType alcoholType;    // type of alcohol
     private double abv;                 // abv of alcohol
+    private String comment;            // additional comments about the entry that the user might
+                                        // add
 
     Alcohol() { }
 
-    public Alcohol(int id, String date, AlcoholType alcoholType, double volume, double quantity, double abv) {
+    public Alcohol(int id, String date, AlcoholType alcoholType, double volume, double quantity, double abv, String comment) {
         this.id = id;
         this.date = date;
         this.alcoholType = alcoholType;
         this.volume = volume;
         this.quantity = quantity;
         this.abv = abv;
+        this.comment = comment;
         split = this.date.split("-");
     }
 
@@ -97,5 +100,13 @@ public class Alcohol {
 
     public void setAbv(double abv) {
         this.abv = abv;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comments) {
+        this.comment = comments;
     }
 }

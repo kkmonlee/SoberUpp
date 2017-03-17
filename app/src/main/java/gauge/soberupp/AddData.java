@@ -258,7 +258,7 @@ public class AddData extends Navigation
 
             Alcohol alcohol = new Alcohol(id, date, alcoholType,
                     Double.valueOf(volumeSplit[volumeSplit.length - 1].substring(0, volumeSplit[1].length() - 2)),
-                    Double.valueOf(quantityDrunk), Double.valueOf(abvOfDrink));
+                    Double.valueOf(quantityDrunk), Double.valueOf(abvOfDrink), commentsInput);
 
             db.addAlcohol(alcohol);
             alcohols.add(alcohol);
@@ -300,7 +300,9 @@ public class AddData extends Navigation
         for (Alcohol alcohol : alcoholList) {
             log += "id: " + alcohol.getId() + ", Date: " + alcohol.getDate() +
                     ", Type: " + alcohol.getAlcoholType().getName() + ", Volume: " +
-                    alcohol.getVolume() + ", Quantity: " + alcohol.getQuantity() + "Units: " + alcohol.getUnits() +  "\n";
+                    alcohol.getVolume() + ", Quantity: " + alcohol.getQuantity() +
+                    "Units: " + alcohol.getUnits() +  "\nComment: " + alcohol.getComment() +
+                    "\n";
         }
         readData.setMovementMethod(new ScrollingMovementMethod());
         readData.setText(log);
