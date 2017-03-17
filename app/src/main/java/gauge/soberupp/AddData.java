@@ -191,7 +191,7 @@ public class AddData extends Navigation
 
     public void getData(View view) {
 
-        // Check if no view has focus:
+        // Check if no view has focus / Hide Keyboard:
         //http://stackoverflow.com/questions/1109022/close-hide-the-android-soft-keyboard
         View view1 = this.getCurrentFocus();
         if (view1 != null) {
@@ -287,6 +287,14 @@ public class AddData extends Navigation
      * Parses the data from readFile()'s fileContent.toString()
      */
     private void printData(List<Alcohol> alcoholList) {
+        // Check if no view has focus / Hide Keyboard:
+        //http://stackoverflow.com/questions/1109022/close-hide-the-android-soft-keyboard
+        View view1 = this.getCurrentFocus();
+        if (view1 != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view1.getWindowToken(), 0);
+        }
+
         final TextView readData = (TextView) findViewById(R.id.printData);
         String log = "";
         for (Alcohol alcohol : alcoholList) {
@@ -294,6 +302,7 @@ public class AddData extends Navigation
                     ", Type: " + alcohol.getAlcoholType().getName() + ", Volume: " +
                     alcohol.getVolume() + ", Quantity: " + alcohol.getQuantity() + "Units: " + alcohol.getUnits() +  "\n";
         }
+        readData.setMovementMethod(new ScrollingMovementMethod());
         readData.setText(log);
     }
 
