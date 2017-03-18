@@ -1,5 +1,6 @@
 package gauge.soberupp;
 
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,11 +17,13 @@ import java.util.HashSet;
 public class EventDecorator implements DayViewDecorator {
 
     private final int color;
+    private Drawable highlightDrawable;
     private final HashSet<CalendarDay> dates;
 
     public EventDecorator(int color, Collection<CalendarDay> dates) {
         this.color = color;
         this.dates = new HashSet<>(dates);
+        highlightDrawable = new ColorDrawable(color);
         System.out.println("bgfbfgb " + dates.size());
     }
 
@@ -31,6 +34,6 @@ public class EventDecorator implements DayViewDecorator {
 
     @Override
     public void decorate(DayViewFacade view) {
-        view.addSpan(10);
+        view.setBackgroundDrawable(highlightDrawable);
     }
 }

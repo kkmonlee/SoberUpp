@@ -18,9 +18,9 @@ import android.widget.Toast;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
+import com.jjoe64.graphview.series.BarGraphSeries;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.DataPointInterface;
-import com.jjoe64.graphview.series.LineGraphSeries;
 import com.jjoe64.graphview.series.OnDataPointTapListener;
 import com.jjoe64.graphview.series.Series;
 
@@ -63,7 +63,7 @@ public class Graph extends Navigation
                 alcoholList.put(d, alcohol.getUnits());
             }
         }
-        LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[] {});
+        BarGraphSeries<DataPoint> series = new BarGraphSeries<>(new DataPoint[] {});
         // Adds the data to the graph
         for(Date D : alcoholList.keySet()){
             series.appendData(new DataPoint(D, alcoholList.get(D)), true, alcoholList.size());
@@ -88,7 +88,7 @@ public class Graph extends Navigation
             // set manual Y bounds
             graph.getViewport().setYAxisBoundsManual(true);
             graph.getViewport().setMinY(0);
-            graph.getViewport().setMaxY(Collections.max(alcoholList.values()));
+            graph.getViewport().setMaxY(Collections.max(alcoholList.values())+1);
 
             // set manual X bounds
             graph.getViewport().setXAxisBoundsManual(true);
@@ -251,7 +251,7 @@ public class Graph extends Navigation
                 }
             }
         }
-        LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[]{});
+        BarGraphSeries<DataPoint> series = new BarGraphSeries<>(new DataPoint[]{});
         // Adds the data to the graph
         for (Date D : alcoholList.keySet()) {
             series.appendData(new DataPoint(D, alcoholList.get(D)), true, alcoholList.size());
@@ -273,7 +273,7 @@ public class Graph extends Navigation
             // set manual Y bounds
             graph.getViewport().setYAxisBoundsManual(true);
             graph.getViewport().setMinY(0);
-            graph.getViewport().setMaxY(Collections.max(alcoholList.values()));
+            graph.getViewport().setMaxY(Collections.max(alcoholList.values())+5);
 
             // set manual X bounds
             graph.getViewport().setXAxisBoundsManual(true);

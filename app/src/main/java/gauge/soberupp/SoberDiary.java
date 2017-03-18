@@ -1,6 +1,7 @@
 package gauge.soberupp;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -21,25 +22,37 @@ import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.TreeMap;
 
 
 public class SoberDiary extends Navigation
-        implements NavigationView.OnNavigationItemSelectedListener, OnDateSelectedListener, OnMonthChangedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, OnDateSelectedListener {
 
     MaterialCalendarView widget;
     DBHandler db;
+    List<Alcohol> alcohols;
+    TreeMap<Date, Double> alcoholList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Sets the XML file for the layout
         setContentView(R.layout.activity_sober_diary);
         db = new DBHandler(this);
+        alcohols = db.getAllAlcohols();
+
         widget = (MaterialCalendarView) findViewById(R.id.calendarView);
         widget.setOnDateChangedListener(this);
-        widget.setOnMonthChangedListener(this);
+        addDatesToHashMap();
+        widget.addDecorator(new EventDecorator(Color.RED, getDays(10)));
+        widget.addDecorator(new EventDecorator(Color.parseColor("#ff9900"), getDays(5,10)));
+        widget.addDecorator(new EventDecorator(Color.YELLOW, getDays(3,5)));
+        widget.addDecorator(new EventDecorator(Color.GREEN, getDays(0,3)));
+
         //Sets the title of the page
         setTitle("Sober Diary");
         Intent intent = getIntent();
@@ -116,11 +129,6 @@ public class SoberDiary extends Navigation
         TextView day = (TextView) findViewById(R.id.DataForTheDay);
         day.setText(getSelectedDatesString());
     }
-    @Override
-    public void onMonthChanged(MaterialCalendarView widget, CalendarDay date) {
-        TextView day = (TextView) findViewById(R.id.DataForTheDay);
-        day.setText(date.getDate().toString());
-    }
 
 
     private String getSelectedDatesString() {
@@ -135,7 +143,6 @@ public class SoberDiary extends Navigation
         String log = "";
         Calendar chosenDay = Calendar.getInstance();
         chosenDay.set(selectedDate.getYear(), selectedDate.getMonth()+1, selectedDate.getDay(), 0,0,0);
-        List<Alcohol> alcohols = db.getAllAlcohols();
         for(Alcohol alcohol:alcohols){
             Calendar currentDay = Calendar.getInstance();
             currentDay.set(Integer.parseInt(alcohol.getYYYY()),
@@ -152,6 +159,41 @@ public class SoberDiary extends Navigation
             return "No entries for date";}
         return log;
     }
+
+    private void addDatesToHashMap(){
+        alcoholList = new TreeMap<Date, Double>();
+        for (Alcohol alcohol : alcohols) {
+            Calendar date = Calendar.getInstance();
+            date.set(Integer.parseInt(alcohol.getYYYY()), Integer.parseInt(alcohol.getMM()) - 1, Integer.parseInt(alcohol.getDD()), 0, 0, 0);
+            Date d = date.getTime();
+            if (alcoholList.containsKey(d)) {
+                alcoholList.put(d, alcoholList.get(d) + alcohol.getUnits());
+            } else {
+                alcoholList.put(d, alcohol.getUnits());
+            }
+
+        }
+    }
+
+    private List<CalendarDay> getDays(int min, int max){
+        ArrayList<CalendarDay> dates = new ArrayList<CalendarDay>();
+        for(Date d: alcoholList.keySet()){
+            if((alcoholList.get(d) > min) && (alcoholList.get(d) <= max)){
+                dates.add(CalendarDay.from(d));
+            }
+        }
+        return dates;
+    }
+    private List<CalendarDay> getDays(int min){
+        ArrayList<CalendarDay> dates = new ArrayList<CalendarDay>();
+        for(Date d: alcoholList.keySet()){
+            if((alcoholList.get(d) > min)){
+                dates.add(CalendarDay.from(d));
+            }
+        }
+        return dates;
+    }
+
 
     /**
      * Gets the menu item and sends it to the superior method to move page

@@ -236,7 +236,7 @@ public class AddData extends Navigation
             message.setText("Enter how many drinks you have drunk");
         } else if(Double.parseDouble(abvOfDrink) >= 90.0){
             message.setText("ABV too high");
-        } else if(Double.parseDouble(quantityDrunk) >= 15.0){
+        } else if(Double.parseDouble(quantityDrunk) >= 30.0){
             message.setText("You have drunk too many");
         } else {
             AlcoholType alcoholType = null;
