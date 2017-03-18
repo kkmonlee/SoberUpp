@@ -1,8 +1,9 @@
 package gauge.soberupp;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.View;
@@ -10,27 +11,35 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.CalendarView;
+import android.widget.TextView;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
+import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
+import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashSet;
+import java.util.Date;
+import java.util.List;
+
 
 public class SoberDiary extends Navigation
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, OnDateSelectedListener, OnMonthChangedListener {
 
+    MaterialCalendarView widget;
+    DBHandler db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Sets the XML file for the layout
         setContentView(R.layout.activity_sober_diary);
+        db = new DBHandler(this);
+        widget = (MaterialCalendarView) findViewById(R.id.calendarView);
+        widget.setOnDateChangedListener(this);
+        widget.setOnMonthChangedListener(this);
         //Sets the title of the page
         setTitle("Sober Diary");
         Intent intent = getIntent();
@@ -99,8 +108,49 @@ public class SoberDiary extends Navigation
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onDateSelected(@NonNull MaterialCalendarView widget, @Nullable CalendarDay date, boolean selected) {
+        TextView day = (TextView) findViewById(R.id.DataForTheDay);
+        day.setText(getSelectedDatesString());
+    }
+    @Override
+    public void onMonthChanged(MaterialCalendarView widget, CalendarDay date) {
+        TextView day = (TextView) findViewById(R.id.DataForTheDay);
+        day.setText(date.getDate().toString());
+    }
+
+
+    private String getSelectedDatesString() {
+        CalendarDay date = widget.getSelectedDate();
+        if (date == null) {
+            return "No Selection";
+        }
+        return setRecordsForDay(date);
+    }
+
+    private String setRecordsForDay(CalendarDay selectedDate){
+        String log = "";
+        Calendar chosenDay = Calendar.getInstance();
+        chosenDay.set(selectedDate.getYear(), selectedDate.getMonth()+1, selectedDate.getDay(), 0,0,0);
+        List<Alcohol> alcohols = db.getAllAlcohols();
+        for(Alcohol alcohol:alcohols){
+            Calendar currentDay = Calendar.getInstance();
+            currentDay.set(Integer.parseInt(alcohol.getYYYY()),
+                    Integer.parseInt(alcohol.getMM()), Integer.parseInt(alcohol.getDD()), 0, 0, 0);
+            if(chosenDay.equals(currentDay)){
+                log += "id: " + alcohol.getId() + ", Date: " + alcohol.getDate() +
+                        ", Type: " + alcohol.getAlcoholType().getName() + ", Volume: " +
+                        alcohol.getVolume() + ", Quantity: " + alcohol.getQuantity() +
+                        "Units: " + alcohol.getUnits() +  "\nComment: " + alcohol.getComment() +
+                        "\n";
+            }
+        }
+        if(log.isEmpty()){
+            return "No entries for date";}
+        return log;
     }
 
     /**
