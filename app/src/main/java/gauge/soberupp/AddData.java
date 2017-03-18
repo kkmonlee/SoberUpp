@@ -253,6 +253,9 @@ public class AddData extends Navigation
                 case "Spirits":
                     alcoholType = AlcoholType.SPIRITS;
                     break;
+                case "Other":
+                    alcoholType = AlcoholType.OTHER;
+                    break;
             }
             assert alcoholType != null;
 

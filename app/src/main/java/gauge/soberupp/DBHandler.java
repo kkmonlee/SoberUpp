@@ -93,20 +93,7 @@ public class DBHandler extends SQLiteOpenHelper {
         }
 
         assert cursor != null;
-
-        /*return new Alcohol(Integer.parseInt(cursor.getString(0)),
-                cursor.getDouble(2), cursor.getString(1));
-        */
-        AlcoholType alcoholType = null;
-        if (cursor.getString(4).equals("Beer")) {
-            alcoholType = AlcoholType.BEER;
-        } else if (cursor.getString(4).equals("Cider")) {
-            alcoholType = AlcoholType.CIDER;
-        } else if (cursor.getString(4).equals("Wine")) {
-            alcoholType = AlcoholType.WINE;
-        } else if (cursor.getString(4).equals("Spirits")) {
-            alcoholType = AlcoholType.SPIRITS;
-        }
+        AlcoholType alcoholType = getCorrectType(cursor);
 
         String date = cursor.getInt(1) + "-" + cursor.getInt(2) + "-" + cursor.getInt(3);
 
@@ -128,16 +115,8 @@ public class DBHandler extends SQLiteOpenHelper {
         // Looping through all rows and adding to list
         if (cursor.moveToFirst()) {
             do {
-                AlcoholType alcoholType = null;
-                if (cursor.getString(4).equals("Beer")) {
-                    alcoholType = AlcoholType.BEER;
-                } else if (cursor.getString(4).equals("Cider")) {
-                    alcoholType = AlcoholType.CIDER;
-                } else if (cursor.getString(4).equals("Wine")) {
-                    alcoholType = AlcoholType.WINE;
-                } else if (cursor.getString(4).equals("Spirits")) {
-                    alcoholType = AlcoholType.SPIRITS;
-                }
+                AlcoholType alcoholType = getCorrectType(cursor);
+
                 Alcohol alcohol = new Alcohol();
 
                 String date = cursor.getInt(1) + "-" + cursor.getInt(2) + "-" + cursor.getInt(3);
@@ -209,6 +188,23 @@ public class DBHandler extends SQLiteOpenHelper {
         db.execSQL(deleteQuery);
         db.execSQL("VACUUM");
         db.close();
+    }
+
+    private AlcoholType getCorrectType(Cursor cursor) {
+        AlcoholType alcoholType = null;
+        if (cursor.getString(4).equals("Beer")) {
+            alcoholType = AlcoholType.BEER;
+        } else if (cursor.getString(4).equals("Cider")) {
+            alcoholType = AlcoholType.CIDER;
+        } else if (cursor.getString(4).equals("Wine")) {
+            alcoholType = AlcoholType.WINE;
+        } else if (cursor.getString(4).equals("Spirits")) {
+            alcoholType = AlcoholType.SPIRITS;
+        } else if (cursor.getString(4).equals("Other")) {
+            alcoholType = AlcoholType.OTHER;
+        }
+
+        return alcoholType;
     }
 
 }
