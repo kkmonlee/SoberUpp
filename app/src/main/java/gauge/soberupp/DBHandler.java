@@ -32,10 +32,19 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String KEY_ABV         = "abv";
     private static final String KEY_COMMENT     = "comment";
 
+    /**
+     * Constructor needed to initialise the database
+     * @param context normally should be used as <code>DBHandler db = new DBHandler(this)</code>
+     *                in another class
+     */
     public DBHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+    /**
+     * Implements method in SQLiteOpenHelper, see there for details
+     * @param db SQLiteDatabase
+     */
     @Override
     public void onCreate(SQLiteDatabase db) {
         // Date is cursor.getString(1)
@@ -50,6 +59,14 @@ public class DBHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_ALCOHOL_TABLE);
     }
 
+    /**
+     * Implements method in SQLiteOpenHelper, see there for details
+     * Removes table definition from TABLE_ALCOHOLS if it already exists, then invokes onCreate()
+     * to create the table again.
+     * @param db SQLiteDatabase
+     * @param oldVersion int
+     * @param newVersion int
+     */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older table if existed
@@ -58,7 +75,10 @@ public class DBHandler extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    // Inserting a new Alcohol in SQLite Database
+    /**
+     * Adds fields of an Alcohol object into the table
+     * @param alcohol the Alcohol object whose fields are to be added
+     */
     public void addAlcohol(Alcohol alcohol) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -77,7 +97,11 @@ public class DBHandler extends SQLiteOpenHelper {
         db.close(); // Closing database connection
     }
 
-    // Getting one Alcohol
+    /**
+     * Get fields of an Alcohol object by ID
+     * @param id int, is the PRIMARY INTEGER KEY in SQL
+     * @return creates an Alcohol object from the retrieved fields and returns it
+     */
     public Alcohol getAlcohol(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.query(TABLE_ALCOHOLS, new String[] {
@@ -102,7 +126,11 @@ public class DBHandler extends SQLiteOpenHelper {
         return alcohol;
     }
 
-    // Getting all Alcohols
+    /**
+     * Sorts all Alcohol object fields from the table by date and creates an object with those
+     * fields.
+     * @return List<Alcohol>, an ArrayList of Alcohol objects
+     */
     public List<Alcohol> getAllAlcohols() {
         List<Alcohol> alcoholList = new ArrayList<>();
         // Select all query
@@ -140,7 +168,10 @@ public class DBHandler extends SQLiteOpenHelper {
         return alcoholList;
     }
 
-    // Get total number of Alcohols in database
+    /**
+     * Gets the total number of Alcohol object entries in the table
+     * @return int, number of Alcohol objects
+     */
     public int getAlcoholCount() {
         String countQuery = "SELECT * FROM " + TABLE_ALCOHOLS;
         SQLiteDatabase db = this.getReadableDatabase();
@@ -151,7 +182,12 @@ public class DBHandler extends SQLiteOpenHelper {
         return cursor.getCount();
     }
 
-    // To update an Alcohol record
+    /**
+     * Changes the fields of the Alcohol object.
+     * Alcohol object is found in the table by getId()
+     * @param alcohol the Alcohol object whose fields are to be updated in the table
+     * @return int, 1 if successful, 0 otherwise
+     */
     public int updateAlcohol(Alcohol alcohol) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -170,7 +206,11 @@ public class DBHandler extends SQLiteOpenHelper {
                 new String[] {String.valueOf(alcohol.getId())});
     }
 
-    // Delete an Alcohol record
+    /**
+     * Deletes an Alcohol object from the table
+     * Finds the Alcohol object by getId()
+     * @param alcohol the Alcohol object whose fields are to be deleted from the table
+     */
     public void deleteAlcohol(Alcohol alcohol) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_ALCOHOLS, KEY_ID + " = ?",
@@ -190,6 +230,12 @@ public class DBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+    /**
+     * Gets the correct AlcoholType enumeration from the Cursor
+     * At the moment, AlcoholType is stored in the 5th column, therefore getString(4)
+     * @param cursor SQLiteDatabase Cursor
+     * @return AlcoholType enumeration, the correct type
+     */
     private AlcoholType getCorrectType(Cursor cursor) {
         AlcoholType alcoholType = null;
         if (cursor.getString(4).equals("Beer")) {
@@ -206,5 +252,4 @@ public class DBHandler extends SQLiteOpenHelper {
 
         return alcoholType;
     }
-
 }
