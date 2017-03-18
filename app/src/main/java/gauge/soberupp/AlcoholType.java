@@ -5,7 +5,7 @@ package gauge.soberupp;
  */
 
 public enum AlcoholType {
-    BEER("Beer"), CIDER("Cider"), WINE("Wine"), SPIRITS("Spirits");
+    BEER("Beer"), CIDER("Cider"), WINE("Wine"), SPIRITS("Spirits"), OTHER("Other");
     private String name;
 
     AlcoholType(String name) {
