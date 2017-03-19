@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static gauge.soberupp.R.array.VolumeBeerCider;
-import static java.lang.System.out;
 
 public class EditData extends Navigation
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -36,6 +35,7 @@ public class EditData extends Navigation
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_data);
+        setTitle("Edit Data");
         db = new DBHandler(this);
         alcohols = db.getAllAlcohols();
         Intent i = getIntent();
@@ -155,14 +155,11 @@ public class EditData extends Navigation
     private void setEntrySpinner(Spinner spin) {
         List<String> entries = new ArrayList<String>();
         for (Alcohol alcohol : alcohols) {
-            entries.add("Date: " + alcohol.getDate() +
-                    ", Type: " + alcohol.getAlcoholType().getName() + ", Volume: " +
-                    alcohol.getVolume() + ", Quantity: " + alcohol.getQuantity() +
-                    "Units: " + alcohol.getUnits() + "\nComment: " + alcohol.getComment() +
-                    "\n");
+            entries.add(alcohol.getDate() + " - "+ alcohol.getQuantity() + "x " + alcohol.getVolume()
+                    + "ml of " + alcohol.getAbv() + "%" + alcohol.getAlcoholType().getName());
         }
         // Creating adapter for spinner
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, entries);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, entries);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spin.setAdapter(adapter);
     }
@@ -181,7 +178,6 @@ public class EditData extends Navigation
         drink.setSelection(((ArrayAdapter) drink.getAdapter()).getPosition(alcoholSelected.getAlcoholType().getName()));
         setVolumeSpinner(alcoholSelected.getAlcoholType().getName());
         abv.setText(String.valueOf(alcoholSelected.getAbv()));
-        out.println("BOB");
         numberDrunk.setText(String.valueOf(alcoholSelected.getQuantity()));
         comments.setText(alcoholSelected.getComment());
     }
@@ -196,7 +192,6 @@ public class EditData extends Navigation
         Spinner volume = (Spinner) findViewById(R.id.sizeSpinner);
         EditText abv = (EditText) findViewById(R.id.ABVText);
         ArrayAdapter<CharSequence> adapter;
-        out.println("JERRY");
         switch (drinkType) {
             case "Beer":
             case "Cider":
@@ -295,8 +290,7 @@ public class EditData extends Navigation
         } else if(Double.parseDouble(quantityDrunk) >= 30.0){
             message.setText("You have drunk too many");
         } else {
-            //TODO sort this out
-            /*
+
             AlcoholType alcoholType = null;
             switch (drinkType) {
                 case "Beer":
@@ -317,24 +311,30 @@ public class EditData extends Navigation
             }
             assert alcoholType != null;
 
-            Alcohol alcohol = new Alcohol(id, date, alcoholType,
+            Spinner entrySelect = (Spinner) findViewById(R.id.entrySelect);
+            Alcohol alcoholSelected = alcohols.get((int) entrySelect.getSelectedItemId());
+
+            Alcohol alcohol = new Alcohol(alcoholSelected.getId(), date, alcoholType,
                     Double.valueOf(volumeSplit[volumeSplit.length - 1].substring(0, volumeSplit[1].length() - 2)),
                     Double.valueOf(quantityDrunk), Double.valueOf(abvOfDrink), commentsInput);
 
-            db.addAlcohol(alcohol);
-            alcohols.add(alcohol);
-            Snackbar.make(view, "Alcohol Entry has been added", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-            id++;
-            */
+            db.updateAlcohol(alcohol);
+            Snackbar.make(view, "Alcohol Entry has been updated", Snackbar.LENGTH_LONG).setAction("Action", null).show();
             numberDrunk.setText("");
             comments.setText("");
+            alcohols = db.getAllAlcohols();
+            setEntrySpinner(entrySelect);
+
         }
     }
 
     public void removeEntry(View view){
         Spinner entrySelect = (Spinner) findViewById(R.id.entrySelect);
         Alcohol alcoholSelected = alcohols.get((int) entrySelect.getSelectedItemId());
-        //TODO remove alcoholSelected from DB
+        db.deleteAlcohol(alcoholSelected);
+        Snackbar.make(view, "Alcohol Entry has been deleted", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        alcohols = db.getAllAlcohols();
+        setEntrySpinner(entrySelect);
     }
 
 
