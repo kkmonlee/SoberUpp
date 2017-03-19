@@ -16,7 +16,7 @@
         <item>Beer</item>
         <item>Wine</item>
         <item>Spirits</item>
-        <item>Others</item>
+        <item>Other</item>
     </string-array>
 
     <string-array name="VolumeBeerCider">
@@ -47,6 +47,7 @@
         <item>Bottle 2000ml</item>
 
     </string-array>
+    <string name="title_activity_edit_data">EditData</string>
 
 
 </resources>

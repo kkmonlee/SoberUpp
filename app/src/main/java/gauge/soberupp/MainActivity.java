@@ -14,12 +14,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.TreeMap;
 
 public class MainActivity extends Navigation
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private DBHandler db;
+    private List<Alcohol> alcohols;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,27 +59,9 @@ public class MainActivity extends Navigation
         // END Code for the Navigation Bar
 
         // START code for Database
-        DBHandler db = new DBHandler(this);
-
-        // Inserting Alcohol/Rows
-        /*
-        Log.d("Insert: ", "Inserting...");
-        db.addAlcohol(new Alcohol(1, "13-03-2017", AlcoholType.BEER, 568, 1));
-        db.addAlcohol(new Alcohol(2, "14-03-2017", AlcoholType.WINE, 175, 2));
-        db.addAlcohol(new Alcohol(3, "15-03-2017", AlcoholType.BEER, 568, 2));
-        db.addAlcohol(new Alcohol(4, "16-03-2017", AlcoholType.CIDER, 568, 1));
-        */
-        // Reading all Alcohols
-        Log.d("Reading: ", "Reading all Alcohol...");
-        List<Alcohol> alcohols = db.getAllAlcohols();
-
-        for (Alcohol alcohol : alcohols) {
-            String log = "id: " + alcohol.getId() + ", Date: " + alcohol.getDate() +
-                    ", Type: " + alcohol.getAlcoholType().getName() + ", Volume: " +
-                    alcohol.getVolume() + ", Quantity: " + alcohol.getQuantity() + ", Units: " + alcohol.getUnits();
-            // Writing alcohol to log
-            Log.d("Alcohol: ", log);
-        }
+        db = new DBHandler(this);
+        alcohols = db.getAllAlcohols();
+        getUnitsDrunkThisWeek();
     }
 
     /**
@@ -130,4 +118,35 @@ public class MainActivity extends Navigation
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         return super.onNavigationItemSelected(item);
-    }}
+    }
+
+    private void getUnitsDrunkThisWeek() {
+        //Get the Monday for start of week
+        Calendar dateFrom = Calendar.getInstance();
+        dateFrom.set(dateFrom.get(Calendar.YEAR), dateFrom.get(Calendar.MONTH), dateFrom.get(Calendar.DAY_OF_MONTH)-1, 0, 0, 0);
+        while (dateFrom.get(Calendar.DAY_OF_WEEK) > dateFrom.getFirstDayOfWeek()) {
+            dateFrom.add(Calendar.DATE, -1); // Substract 1 day until first day of week.
+        }
+        dateFrom.set(dateFrom.get(Calendar.YEAR), dateFrom.get(Calendar.MONTH), dateFrom.get(Calendar.DAY_OF_MONTH) + 1, 0, 0, 0);
+
+        // Gets the sunday of the end of the week
+        Calendar dateTo = Calendar.getInstance();
+        dateTo.set(dateTo.get(Calendar.YEAR), dateTo.get(Calendar.MONTH), dateTo.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
+        while (dateTo.get(Calendar.DAY_OF_WEEK) > dateTo.getFirstDayOfWeek()) {
+            dateTo.add(Calendar.DATE, +1); // Adds 1 day until first day of week.
+        }
+        dateTo.set(dateTo.get(Calendar.YEAR), dateTo.get(Calendar.MONTH), dateTo.get(Calendar.DAY_OF_MONTH) + 1, 0, 0, 0);
+        double units = 0;
+        for (Alcohol alcohol : alcohols) {
+            Calendar date = Calendar.getInstance();
+            date.set(Integer.parseInt(alcohol.getYYYY()), Integer.parseInt(alcohol.getMM())-1, Integer.parseInt(alcohol.getDD()), 0, 0, 0);
+            // dateFrom <= date < dateTo
+            if ((date.compareTo(dateFrom) >= 0) && ((dateTo.compareTo(date) >= 0) || (dateTo.equals(date)))) {
+                units += alcohol.getUnits();
+            }
+
+        }
+        TextView setUnits = (TextView) findViewById(R.id.setUnits);
+        setUnits.setText(units + " units");
+    }
+}

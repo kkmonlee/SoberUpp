@@ -235,13 +235,15 @@ public class Graph extends Navigation
     }
 
     private void filterGraph(Calendar dateFrom, Calendar dateTo) {
+        // Makes inequality inclusive on both sides
+        dateTo.set(dateTo.get(Calendar.YEAR), dateTo.get(Calendar.MONTH), dateTo.get(Calendar.DAY_OF_MONTH) + 1, 0, 0, 0);
         graph.removeAllSeries();
         TreeMap<Date, Double> alcoholList = new TreeMap<Date, Double>();
         for (Alcohol alcohol : alcohols) {
             Calendar date = Calendar.getInstance();
             date.set(Integer.parseInt(alcohol.getYYYY()), Integer.parseInt(alcohol.getMM()) - 1, Integer.parseInt(alcohol.getDD()), 0, 0, 0);
             Date d = date.getTime();
-            // dateFrom <= date < dateTo
+            // dateFrom <= date <= dateTo
             if ((date.compareTo(dateFrom) >= 0) && ((dateTo.compareTo(date) >= 0)||(dateTo.equals(date)))) {
                 System.out.println(date);
                 if (alcoholList.containsKey(d)) {

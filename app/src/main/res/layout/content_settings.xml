@@ -8,10 +8,28 @@
     tools:context="gauge.soberupp.Settings"
     tools:showIn="@layout/app_bar_settings">
 
-    <Button
-        android:id="@+id/ClearTextFile"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="clearDB"
-        android:text="Clear Database" />
+        android:orientation="vertical"
+        tools:layout_editor_absoluteY="8dp"
+        tools:layout_editor_absoluteX="8dp">
+
+        <Button
+            android:id="@+id/ClearDB"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="clearDB"
+            android:text="Clear Database"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="0dp" />
+
+        <Button
+            android:id="@+id/EditData"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="goToEditData"
+            android:text="Edit Data" />
+    </LinearLayout>
+
 </android.support.constraint.ConstraintLayout>

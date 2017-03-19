@@ -50,7 +50,16 @@
         <activity
             android:name=".Settings"
             android:label="@string/title_activity_settings"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".EditData"
+            android:label="@string/title_activity_edit_data"
+            android:parentActivityName=".Settings"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="gauge.soberupp.Settings" />
+        </activity>
     </application>
 
 </manifest>
