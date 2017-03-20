@@ -73,7 +73,10 @@ public class MainActivity extends Navigation
         //https://github.com/zurche/plain-pie?utm_source=android-arsenal.com&utm_medium=referral&utm_campaign=3689
         PieView pieView = (PieView) findViewById(R.id.pieView);
         double percent = getUnitsDrunkThisWeek()*100 / 14;
-        pieView.setPercentage((float)percent);
+        if(percent == 0)
+            pieView.setPercentage((float)0.01);
+        else
+            pieView.setPercentage((float)percent);
         pieView.setInnerText("You have had " + Math.floor(percent) + "% of your weekly alowance");
         pieView.setPercentageTextSize(35);
         //Sets the colour of the bar
