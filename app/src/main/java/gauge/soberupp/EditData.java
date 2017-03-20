@@ -36,9 +36,12 @@ public class EditData extends Navigation
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_data);
         setTitle("Edit Data");
+        // Gets the list of alcohol objects from the DB
         db = new DBHandler(this);
         alcohols = db.getAllAlcohols();
         Intent i = getIntent();
+
+
         // START Code for the Navigation Bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -64,6 +67,7 @@ public class EditData extends Navigation
 
         //Set the drink spinner to have an onclick
         final Spinner drinkType = (Spinner) findViewById(R.id.drinkSpinner);
+        // Sets the dropdown list for the drink spinner
         setDrinkSpinner(drinkType);
         drinkType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -79,13 +83,14 @@ public class EditData extends Navigation
 
         //Set the entry selection spinner to the right record
         final Spinner entrySelect = (Spinner) findViewById(R.id.entrySelect);
+        // Sets the dropdown list for the entry spinner
         setEntrySpinner(entrySelect);
+        // Adds an onclick listener
         entrySelect.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 setData(entrySelect.getSelectedItemId());
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
             }
@@ -152,18 +157,28 @@ public class EditData extends Navigation
         return super.onNavigationItemSelected(item);
     }
 
+    /**
+     * Sets the entry spinner to the records of the DB
+     * @param spin
+     */
     private void setEntrySpinner(Spinner spin) {
         List<String> entries = new ArrayList<String>();
+        // Iterates through the alcohol objects and adds it to the dropdown list
         for (Alcohol alcohol : alcohols) {
             entries.add(alcohol.getDate() + " - "+ alcohol.getQuantity() + "x " + alcohol.getVolume()
                     + "ml of " + alcohol.getAbv() + "%" + alcohol.getAlcoholType().getName());
         }
-        // Creating adapter for spinner
+
+        // Creating adapter for spinner and adds list to the spinner
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, entries);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spin.setAdapter(adapter);
     }
 
+    /**
+     * When an entry is selected, it prepopulates the fields to the datas records
+     * @param entrySelected : the id of the alcohol object of the entry selected
+     */
     private void setData(long entrySelected) {
         Alcohol alcoholSelected = alcohols.get((int) entrySelected);
         //Gets the elements needed to be set
@@ -174,6 +189,7 @@ public class EditData extends Navigation
         EditText numberDrunk = (EditText) findViewById(R.id.numberDrunkText);
         EditText comments = (EditText) findViewById(R.id.CommentsText);
 
+        // Sets all the fields to the appropiate data
         dateSelected.setText(alcoholSelected.getDate());
         drink.setSelection(((ArrayAdapter) drink.getAdapter()).getPosition(alcoholSelected.getAlcoholType().getName()));
         setVolumeSpinner(alcoholSelected.getAlcoholType().getName());
@@ -182,16 +198,25 @@ public class EditData extends Navigation
         comments.setText(alcoholSelected.getComment());
     }
 
+    /**
+     * Sets the drink spinner to be the list of alcohols
+     * @param spin : the spinner needed
+     */
     private void setDrinkSpinner(Spinner spin) {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.Drinks, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spin.setAdapter(adapter);
     }
 
+    /**
+     * Sets the volume spinner to be the appropiate list
+     * @param drinkType : the drink type selected
+     */
     private void setVolumeSpinner(String drinkType) {
         Spinner volume = (Spinner) findViewById(R.id.sizeSpinner);
         EditText abv = (EditText) findViewById(R.id.ABVText);
         ArrayAdapter<CharSequence> adapter;
+        // Selects the list depending on the drink type
         switch (drinkType) {
             case "Beer":
             case "Cider":
@@ -217,7 +242,7 @@ public class EditData extends Navigation
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         volume.setAdapter(adapter);
 
-        //Sets the volume to be the selected volume
+        //Sets the volume to be the selected volume of the data record selected
         String[] volumes;
         Spinner dataEntry = (Spinner) findViewById(R.id.entrySelect);
         Alcohol alcoholSelected = alcohols.get((int) dataEntry.getSelectedItemId());
@@ -240,6 +265,7 @@ public class EditData extends Navigation
                     break;
             }
 
+            // Sets the volume spinner to the correct record
             String volumeSelected = null;
             for (String s : volumes) {
                 String[] volumeSplit = s.split(" ");
@@ -249,9 +275,12 @@ public class EditData extends Navigation
             }
             volume.setSelection(((ArrayAdapter) volume.getAdapter()).getPosition(volumeSelected));
         }
-
-
     }
+
+    /**
+     * Updates the record of the alcohol when the button is pressed
+     * @param view : the view of the button
+     */
     public void getData(View view) {
 
         // Check if no view has focus / Hide Keyboard:
@@ -261,6 +290,8 @@ public class EditData extends Navigation
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view1.getWindowToken(), 0);
         }
+
+        // Gets the objects of the entry items
         TextView dateSelected = (TextView) findViewById(R.id.dateSelected);
         Spinner drink = (Spinner) findViewById(R.id.drinkSpinner);
         Spinner volume = (Spinner) findViewById(R.id.sizeSpinner);
@@ -268,7 +299,7 @@ public class EditData extends Navigation
         EditText numberDrunk = (EditText) findViewById(R.id.numberDrunkText);
         EditText comments = (EditText) findViewById(R.id.CommentsText);
 
-        //Need to store
+        // The updated data of the alcohol object
         String date = dateSelected.getText().toString();
         String abvOfDrink = abv.getText().toString();
         String quantityDrunk = numberDrunk.getText().toString();
@@ -314,10 +345,12 @@ public class EditData extends Navigation
             Spinner entrySelect = (Spinner) findViewById(R.id.entrySelect);
             Alcohol alcoholSelected = alcohols.get((int) entrySelect.getSelectedItemId());
 
+            // Creates the alcohol object with the data provided
             Alcohol alcohol = new Alcohol(alcoholSelected.getId(), date, alcoholType,
                     Double.valueOf(volumeSplit[volumeSplit.length - 1].substring(0, volumeSplit[1].length() - 2)),
                     Double.valueOf(quantityDrunk), Double.valueOf(abvOfDrink), commentsInput);
 
+            // Updates the old alcohol entry with the new one
             db.updateAlcohol(alcohol);
             Snackbar.make(view, "Alcohol Entry has been updated", Snackbar.LENGTH_LONG).setAction("Action", null).show();
             numberDrunk.setText("");
@@ -329,8 +362,10 @@ public class EditData extends Navigation
     }
 
     public void removeEntry(View view){
+        //Gets the id of the alcohol entry to be removed
         Spinner entrySelect = (Spinner) findViewById(R.id.entrySelect);
         Alcohol alcoholSelected = alcohols.get((int) entrySelect.getSelectedItemId());
+        // Deletes it from the db
         db.deleteAlcohol(alcoholSelected);
         Snackbar.make(view, "Alcohol Entry has been deleted", Snackbar.LENGTH_LONG).setAction("Action", null).show();
         alcohols = db.getAllAlcohols();

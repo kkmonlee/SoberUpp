@@ -48,8 +48,10 @@ public class Graph extends Navigation
         // Sets up the graph
         graph = (GraphView) findViewById(R.id.graph);
 
+        //Gets the list of alcohols entries from the db
         DBHandler db = new DBHandler(this);
         alcohols = db.getAllAlcohols();
+
         // Adds each days entry to a treemap
         TreeMap<Date, Double> alcoholList = new TreeMap<Date, Double>();
         for (Alcohol alcohol : alcohols) {
@@ -63,12 +65,15 @@ public class Graph extends Navigation
                 alcoholList.put(d, alcohol.getUnits());
             }
         }
+
+        // Initialises the bar graph
         BarGraphSeries<DataPoint> series = new BarGraphSeries<>(new DataPoint[] {});
         // Adds the data to the graph
         for(Date D : alcoholList.keySet()){
             series.appendData(new DataPoint(D, alcoholList.get(D)), true, alcoholList.size());
         }
 
+        // Sets up an listener to show the date and units drunk on the selected day
         series.setOnDataPointTapListener(new OnDataPointTapListener() {
             @Override
             public void onTap(Series series, DataPointInterface dataPoint) {
@@ -95,6 +100,7 @@ public class Graph extends Navigation
             graph.getViewport().setMinX(alcoholList.firstKey().getTime());
             graph.getViewport().setMaxX(alcoholList.lastKey().getTime());
         }
+
         graph.getViewport().setScrollable(true); // enables horizontal scrolling
         graph.getViewport().setScrollableY(true); // enables vertical scrolling
         graph.getViewport().setScalable(true); // enables horizontal zooming and scrolling
@@ -212,13 +218,19 @@ public class Graph extends Navigation
         newFragment.show(getSupportFragmentManager(), "datePicker");
     }
 
+    /**
+     * Gets the dates from the screen, error checks them and sends then into the filer Graph method
+     * @param view : the view of the button
+     */
     public void filterData(View view){
+        // Gets the text from the screen
         TextView dateFrom = (TextView) findViewById(R.id.dateFromText);
         TextView dateTo = (TextView) findViewById(R.id.dateToText);
         TextView errorText = (TextView) findViewById(R.id.errorText);
         if(dateFrom.getText().equals("Date in future")|| dateTo.getText().equals("Date in future")){
             errorText.setText("One or more dates are in the future");
         } else {
+            // Checks to see if date from is less than date to
             String[] dateFromSplit = dateFrom.getText().toString().split("-");
             String[] dateToSplit = dateTo.getText().toString().split("-");
             Calendar dateFromDay = Calendar.getInstance();
@@ -234,11 +246,18 @@ public class Graph extends Navigation
         }
     }
 
+    /**
+     * Filters the data series with the selected range
+     * @param dateFrom : the date the filtered data starts
+     * @param dateTo : the last date of the filtering
+     */
     private void filterGraph(Calendar dateFrom, Calendar dateTo) {
         // Makes inequality inclusive on both sides
         dateTo.set(dateTo.get(Calendar.YEAR), dateTo.get(Calendar.MONTH), dateTo.get(Calendar.DAY_OF_MONTH) + 1, 0, 0, 0);
+        // Removes the previous series from the graph
         graph.removeAllSeries();
         TreeMap<Date, Double> alcoholList = new TreeMap<Date, Double>();
+        // Iterates through the alcohols to see if they are in the range
         for (Alcohol alcohol : alcohols) {
             Calendar date = Calendar.getInstance();
             date.set(Integer.parseInt(alcohol.getYYYY()), Integer.parseInt(alcohol.getMM()) - 1, Integer.parseInt(alcohol.getDD()), 0, 0, 0);
@@ -253,11 +272,14 @@ public class Graph extends Navigation
                 }
             }
         }
+        // Adds all the points to the graph
         BarGraphSeries<DataPoint> series = new BarGraphSeries<>(new DataPoint[]{});
         // Adds the data to the graph
         for (Date D : alcoholList.keySet()) {
             series.appendData(new DataPoint(D, alcoholList.get(D)), true, alcoholList.size());
         }
+
+        // Adds a listener to the graph to display the data entry when you tap the graph
         series.setOnDataPointTapListener(new OnDataPointTapListener() {
             @Override
             public void onTap(Series series, DataPointInterface dataPoint) {

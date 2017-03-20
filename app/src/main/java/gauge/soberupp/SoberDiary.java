@@ -42,9 +42,11 @@ public class SoberDiary extends Navigation
         super.onCreate(savedInstanceState);
         // Sets the XML file for the layout
         setContentView(R.layout.activity_sober_diary);
+        // Gets all the alcohol objects from the database
         db = new DBHandler(this);
         alcohols = db.getAllAlcohols();
 
+        // Sets the calendar to have background colours if you have drunk
         widget = (MaterialCalendarView) findViewById(R.id.calendarView);
         widget.setOnDateChangedListener(this);
         addDatesToHashMap();
@@ -139,6 +141,11 @@ public class SoberDiary extends Navigation
         return setRecordsForDay(date);
     }
 
+    /**
+     * Gets the record log for the day selected
+     * @param selectedDate : the date selected
+     * @return : a string of the data for the day
+     */
     private String setRecordsForDay(CalendarDay selectedDate){
         String log = "";
         Calendar chosenDay = Calendar.getInstance();
@@ -160,6 +167,9 @@ public class SoberDiary extends Navigation
         return log;
     }
 
+    /**
+     * Adds all the dates in the DB to a hashmap
+     */
     private void addDatesToHashMap(){
         alcoholList = new TreeMap<Date, Double>();
         for (Alcohol alcohol : alcohols) {
@@ -175,6 +185,12 @@ public class SoberDiary extends Navigation
         }
     }
 
+    /**
+     * Gets the days where the units drunk is within the min/max
+     * @param min : the min units drunk
+     * @param max : the max units drunk
+     * @return : a list of all the days within the range
+     */
     private List<CalendarDay> getDays(int min, int max){
         ArrayList<CalendarDay> dates = new ArrayList<CalendarDay>();
         for(Date d: alcoholList.keySet()){
@@ -184,6 +200,12 @@ public class SoberDiary extends Navigation
         }
         return dates;
     }
+
+    /**
+     * Gets the days where the units drunk were more than the the min value
+     * @param min : the min units drunk
+     * @return : the list of all the days within the range
+     */
     private List<CalendarDay> getDays(int min){
         ArrayList<CalendarDay> dates = new ArrayList<CalendarDay>();
         for(Date d: alcoholList.keySet()){

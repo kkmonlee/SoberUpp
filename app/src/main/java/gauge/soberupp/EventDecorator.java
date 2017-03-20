@@ -16,22 +16,28 @@ import java.util.HashSet;
 
 public class EventDecorator implements DayViewDecorator {
 
-    private final int color;
     private Drawable highlightDrawable;
     private final HashSet<CalendarDay> dates;
 
     public EventDecorator(int color, Collection<CalendarDay> dates) {
-        this.color = color;
         this.dates = new HashSet<>(dates);
         highlightDrawable = new ColorDrawable(color);
-        System.out.println("bgfbfgb " + dates.size());
     }
 
+    /**
+     * Checks if the day should be decorated
+     * @param day : day to be tested
+     * @return : if the day is included in the set
+     */
     @Override
     public boolean shouldDecorate(CalendarDay day) {
         return dates.contains(day);
     }
 
+    /**
+     * Colors the background of the sober diary page
+     * @param view : view of the DayViewFacade
+     */
     @Override
     public void decorate(DayViewFacade view) {
         view.setBackgroundDrawable(highlightDrawable);

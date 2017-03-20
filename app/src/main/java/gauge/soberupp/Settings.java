@@ -118,6 +118,10 @@ public class Settings extends Navigation
         db.deleteAll();
     }
 
+    /**
+     * Goes to the edit data page
+     * @param view : the view of the button
+     */
     public void goToEditData(View view){
         startActivity(new Intent(this, EditData.class));
     }

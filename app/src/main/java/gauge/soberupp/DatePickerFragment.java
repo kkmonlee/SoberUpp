@@ -19,7 +19,6 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the current date as the default date in the picker
         page = getArguments().getString("page");
-        System.out.println("qweyurtpy" + page);
 
         final Calendar c = Calendar.getInstance();
         int year = c.get(Calendar.YEAR);
@@ -37,6 +36,7 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         Calendar currentDay = Calendar.getInstance();
         currentDay.set(currentDay.get(Calendar.YEAR), currentDay.get(Calendar.MONTH), currentDay.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
 
+        // Checks to see if the date is in the future and sets the text boxes accordingly
         if(page.equals("AddData")) {
             TextView tv1 = (TextView) getActivity().findViewById(R.id.setDate);
             if (currentDay.compareTo(chosenDay) >= 0) {

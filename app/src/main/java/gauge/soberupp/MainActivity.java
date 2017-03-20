@@ -76,6 +76,7 @@ public class MainActivity extends Navigation
         pieView.setPercentage((float)percent);
         pieView.setInnerText("You have had " + Math.floor(percent) + "% of your weekly alowance");
         pieView.setPercentageTextSize(35);
+        //Sets the colour of the bar
         if(percent < 20){
             pieView.setPercentageBackgroundColor(Color.GREEN);
         } else if(percent < 40){
