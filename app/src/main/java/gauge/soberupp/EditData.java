@@ -4,15 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -91,6 +91,7 @@ public class EditData extends Navigation
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 setData(entrySelect.getSelectedItemId());
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
             }
@@ -159,13 +160,14 @@ public class EditData extends Navigation
 
     /**
      * Sets the entry spinner to the records of the DB
+     *
      * @param spin
      */
     private void setEntrySpinner(Spinner spin) {
         List<String> entries = new ArrayList<String>();
         // Iterates through the alcohol objects and adds it to the dropdown list
         for (Alcohol alcohol : alcohols) {
-            entries.add(alcohol.getDate() + " - "+ alcohol.getQuantity() + "x " + alcohol.getVolume()
+            entries.add(alcohol.getDate() + " - " + alcohol.getQuantity() + "x " + alcohol.getVolume()
                     + "ml of " + alcohol.getAbv() + "%" + alcohol.getAlcoholType().getName());
         }
 
@@ -177,6 +179,7 @@ public class EditData extends Navigation
 
     /**
      * When an entry is selected, it prepopulates the fields to the datas records
+     *
      * @param entrySelected : the id of the alcohol object of the entry selected
      */
     private void setData(long entrySelected) {
@@ -200,6 +203,7 @@ public class EditData extends Navigation
 
     /**
      * Sets the drink spinner to be the list of alcohols
+     *
      * @param spin : the spinner needed
      */
     private void setDrinkSpinner(Spinner spin) {
@@ -210,6 +214,7 @@ public class EditData extends Navigation
 
     /**
      * Sets the volume spinner to be the appropiate list
+     *
      * @param drinkType : the drink type selected
      */
     private void setVolumeSpinner(String drinkType) {
@@ -279,6 +284,7 @@ public class EditData extends Navigation
 
     /**
      * Updates the record of the alcohol when the button is pressed
+     *
      * @param view : the view of the button
      */
     public void getData(View view) {
@@ -312,13 +318,13 @@ public class EditData extends Navigation
         TextView message = (TextView) findViewById(R.id.errorMessage);
 
         //Error checking for the entry
-        if(abvOfDrink.trim().isEmpty()){
+        if (abvOfDrink.trim().isEmpty()) {
             message.setText("ABV of drink is empty");
-        } else if(quantityDrunk.trim().isEmpty()){
+        } else if (quantityDrunk.trim().isEmpty()) {
             message.setText("Enter how many drinks you have drunk");
-        } else if(Double.parseDouble(abvOfDrink) >= 90.0){
+        } else if (Double.parseDouble(abvOfDrink) >= 90.0) {
             message.setText("ABV too high");
-        } else if(Double.parseDouble(quantityDrunk) >= 30.0){
+        } else if (Double.parseDouble(quantityDrunk) >= 30.0) {
             message.setText("You have drunk too many");
         } else {
 
@@ -361,7 +367,7 @@ public class EditData extends Navigation
         }
     }
 
-    public void removeEntry(View view){
+    public void removeEntry(View view) {
         //Gets the id of the alcohol entry to be removed
         Spinner entrySelect = (Spinner) findViewById(R.id.entrySelect);
         Alcohol alcoholSelected = alcohols.get((int) entrySelect.getSelectedItemId());

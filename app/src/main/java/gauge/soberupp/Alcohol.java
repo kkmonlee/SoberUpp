@@ -15,9 +15,10 @@ public class Alcohol {
     private AlcoholType alcoholType;    // type of alcohol
     private double abv;                 // abv of alcohol
     private String comment;            // additional comments about the entry that the user might
-                                        // add
+    // add
 
-    Alcohol() { }
+    Alcohol() {
+    }
 
     public Alcohol(int id, String date, AlcoholType alcoholType, double volume, double quantity, double abv, String comment) {
         this.id = id;
@@ -38,7 +39,9 @@ public class Alcohol {
         this.units = units;
     }
 
-    public void calculateUnits(){this.units = (this.volume * this.abv * this.quantity) / 1000;}
+    public void calculateUnits() {
+        this.units = (this.volume * this.abv * this.quantity) / 1000;
+    }
 
     public String getDate() {
         return date;
@@ -86,12 +89,12 @@ public class Alcohol {
         this.volume = volume;
     }
 
-    public void setAlcoholType(AlcoholType alcoholType) {
-        this.alcoholType = alcoholType;
-    }
-
     public AlcoholType getAlcoholType() {
         return alcoholType;
+    }
+
+    public void setAlcoholType(AlcoholType alcoholType) {
+        this.alcoholType = alcoholType;
     }
 
     public double getAbv() {

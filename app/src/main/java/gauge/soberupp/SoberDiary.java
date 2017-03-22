@@ -6,21 +6,20 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
-import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -51,9 +50,9 @@ public class SoberDiary extends Navigation
         widget.setOnDateChangedListener(this);
         addDatesToHashMap();
         widget.addDecorator(new EventDecorator(Color.RED, getDays(10)));
-        widget.addDecorator(new EventDecorator(Color.parseColor("#ff9900"), getDays(5,10)));
-        widget.addDecorator(new EventDecorator(Color.YELLOW, getDays(3,5)));
-        widget.addDecorator(new EventDecorator(Color.GREEN, getDays(0,3)));
+        widget.addDecorator(new EventDecorator(Color.parseColor("#ff9900"), getDays(5, 10)));
+        widget.addDecorator(new EventDecorator(Color.YELLOW, getDays(3, 5)));
+        widget.addDecorator(new EventDecorator(Color.GREEN, getDays(0, 3)));
 
         //Sets the title of the page
         setTitle("Sober Diary");
@@ -97,6 +96,7 @@ public class SoberDiary extends Navigation
 
     /**
      * Sets up the menu
+     *
      * @param menu : the menu to add
      * @return : if it is successful
      */
@@ -109,6 +109,7 @@ public class SoberDiary extends Navigation
 
     /**
      * Performs an event if the titleBar event is selected
+     *
      * @param item : the item to be chosen
      * @return : a super call to the method about closing the titleBar menu
      */
@@ -129,6 +130,7 @@ public class SoberDiary extends Navigation
     @Override
     public void onDateSelected(@NonNull MaterialCalendarView widget, @Nullable CalendarDay date, boolean selected) {
         TextView day = (TextView) findViewById(R.id.DataForTheDay);
+        day.setText("");
         day.setText(getSelectedDatesString());
     }
 
@@ -143,34 +145,36 @@ public class SoberDiary extends Navigation
 
     /**
      * Gets the record log for the day selected
+     *
      * @param selectedDate : the date selected
      * @return : a string of the data for the day
      */
-    private String setRecordsForDay(CalendarDay selectedDate){
+    private String setRecordsForDay(CalendarDay selectedDate) {
         String log = "";
         Calendar chosenDay = Calendar.getInstance();
-        chosenDay.set(selectedDate.getYear(), selectedDate.getMonth()+1, selectedDate.getDay(), 0,0,0);
-        for(Alcohol alcohol:alcohols){
+        chosenDay.set(selectedDate.getYear(), selectedDate.getMonth() + 1, selectedDate.getDay(), 0, 0, 0);
+        for (Alcohol alcohol : alcohols) {
             Calendar currentDay = Calendar.getInstance();
             currentDay.set(Integer.parseInt(alcohol.getYYYY()),
                     Integer.parseInt(alcohol.getMM()), Integer.parseInt(alcohol.getDD()), 0, 0, 0);
-            if(chosenDay.equals(currentDay)){
+            if (chosenDay.equals(currentDay)) {
                 log += "id: " + alcohol.getId() + ", Date: " + alcohol.getDate() +
                         ", Type: " + alcohol.getAlcoholType().getName() + ", Volume: " +
                         alcohol.getVolume() + ", Quantity: " + alcohol.getQuantity() +
-                        "Units: " + alcohol.getUnits() +  "\nComment: " + alcohol.getComment() +
+                        ", Units: " + alcohol.getUnits() + "\nComment: " + alcohol.getComment() +
                         "\n";
             }
         }
-        if(log.isEmpty()){
-            return "No entries for date";}
+        if (log.isEmpty()) {
+            log = "No entries for date";
+        }
         return log;
     }
 
     /**
      * Adds all the dates in the DB to a hashmap
      */
-    private void addDatesToHashMap(){
+    private void addDatesToHashMap() {
         alcoholList = new TreeMap<Date, Double>();
         for (Alcohol alcohol : alcohols) {
             Calendar date = Calendar.getInstance();
@@ -187,14 +191,15 @@ public class SoberDiary extends Navigation
 
     /**
      * Gets the days where the units drunk is within the min/max
+     *
      * @param min : the min units drunk
      * @param max : the max units drunk
      * @return : a list of all the days within the range
      */
-    private List<CalendarDay> getDays(int min, int max){
+    private List<CalendarDay> getDays(int min, int max) {
         ArrayList<CalendarDay> dates = new ArrayList<CalendarDay>();
-        for(Date d: alcoholList.keySet()){
-            if((alcoholList.get(d) > min) && (alcoholList.get(d) <= max)){
+        for (Date d : alcoholList.keySet()) {
+            if ((alcoholList.get(d) > min) && (alcoholList.get(d) <= max)) {
                 dates.add(CalendarDay.from(d));
             }
         }
@@ -203,13 +208,14 @@ public class SoberDiary extends Navigation
 
     /**
      * Gets the days where the units drunk were more than the the min value
+     *
      * @param min : the min units drunk
      * @return : the list of all the days within the range
      */
-    private List<CalendarDay> getDays(int min){
+    private List<CalendarDay> getDays(int min) {
         ArrayList<CalendarDay> dates = new ArrayList<CalendarDay>();
-        for(Date d: alcoholList.keySet()){
-            if((alcoholList.get(d) > min)){
+        for (Date d : alcoholList.keySet()) {
+            if ((alcoholList.get(d) > min)) {
                 dates.add(CalendarDay.from(d));
             }
         }
@@ -219,6 +225,7 @@ public class SoberDiary extends Navigation
 
     /**
      * Gets the menu item and sends it to the superior method to move page
+     *
      * @param item : The item of the menu to by selected
      * @return
      */

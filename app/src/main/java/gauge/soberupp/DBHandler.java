@@ -18,22 +18,23 @@ public class DBHandler extends SQLiteOpenHelper {
     // Database version
     private static final int DATABASE_VERSION = 1;
     // Database name
-    private static final String DATABASE_NAME   = "AlcoholInfo";
+    private static final String DATABASE_NAME = "AlcoholInfo";
     // Alcohols table name
-    private static final String TABLE_ALCOHOLS  = "alcohols";
+    private static final String TABLE_ALCOHOLS = "alcohols";
     // Alcohols table columns names
-    private static final String KEY_ID          = "id";
-    private static final String KEY_DAY         = "day";
-    private static final String KEY_MONTH       = "month";
-    private static final String KEY_YEAR        = "year";
-    private static final String KEY_TYPE        = "type";
-    private static final String KEY_VOLUME      = "volume";
-    private static final String KEY_QUANTITY    = "quantity";
-    private static final String KEY_ABV         = "abv";
-    private static final String KEY_COMMENT     = "comment";
+    private static final String KEY_ID = "id";
+    private static final String KEY_DAY = "day";
+    private static final String KEY_MONTH = "month";
+    private static final String KEY_YEAR = "year";
+    private static final String KEY_TYPE = "type";
+    private static final String KEY_VOLUME = "volume";
+    private static final String KEY_QUANTITY = "quantity";
+    private static final String KEY_ABV = "abv";
+    private static final String KEY_COMMENT = "comment";
 
     /**
      * Constructor needed to initialise the database
+     *
      * @param context normally should be used as <code>DBHandler db = new DBHandler(this)</code>
      *                in another class
      */
@@ -43,6 +44,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
     /**
      * Implements method in SQLiteOpenHelper, see there for details
+     *
      * @param db SQLiteDatabase
      */
     @Override
@@ -63,7 +65,8 @@ public class DBHandler extends SQLiteOpenHelper {
      * Implements method in SQLiteOpenHelper, see there for details
      * Removes table definition from TABLE_ALCOHOLS if it already exists, then invokes onCreate()
      * to create the table again.
-     * @param db SQLiteDatabase
+     *
+     * @param db         SQLiteDatabase
      * @param oldVersion int
      * @param newVersion int
      */
@@ -77,6 +80,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
     /**
      * Adds fields of an Alcohol object into the table
+     *
      * @param alcohol the Alcohol object whose fields are to be added
      */
     public void addAlcohol(Alcohol alcohol) {
@@ -99,16 +103,17 @@ public class DBHandler extends SQLiteOpenHelper {
 
     /**
      * Get fields of an Alcohol object by ID
+     *
      * @param id int, is the PRIMARY INTEGER KEY in SQL
      * @return creates an Alcohol object from the retrieved fields and returns it
      */
     public Alcohol getAlcohol(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.query(TABLE_ALCOHOLS, new String[] {
-                KEY_ID, KEY_DAY, KEY_MONTH, KEY_YEAR, KEY_TYPE, KEY_VOLUME, KEY_QUANTITY, KEY_ABV, KEY_COMMENT
-               // 0         1       2           3         4         5           6           7           8
-        }, KEY_ID + "=?",
-                new String[] {
+        Cursor cursor = db.query(TABLE_ALCOHOLS, new String[]{
+                        KEY_ID, KEY_DAY, KEY_MONTH, KEY_YEAR, KEY_TYPE, KEY_VOLUME, KEY_QUANTITY, KEY_ABV, KEY_COMMENT
+                        // 0         1       2           3         4         5           6           7           8
+                }, KEY_ID + "=?",
+                new String[]{
                         String.valueOf(id)
                 }, null, null, null, null);
 
@@ -129,6 +134,7 @@ public class DBHandler extends SQLiteOpenHelper {
     /**
      * Sorts all Alcohol object fields from the table by date and creates an object with those
      * fields.
+     *
      * @return List<Alcohol>, an ArrayList of Alcohol objects
      */
     public List<Alcohol> getAllAlcohols() {
@@ -170,6 +176,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
     /**
      * Gets the total number of Alcohol object entries in the table
+     *
      * @return int, number of Alcohol objects
      */
     public int getAlcoholCount() {
@@ -185,6 +192,7 @@ public class DBHandler extends SQLiteOpenHelper {
     /**
      * Changes the fields of the Alcohol object.
      * Alcohol object is found in the table by getId()
+     *
      * @param alcohol the Alcohol object whose fields are to be updated in the table
      * @return int, 1 if successful, 0 otherwise
      */
@@ -203,18 +211,19 @@ public class DBHandler extends SQLiteOpenHelper {
 
         // Updating row
         return db.update(TABLE_ALCOHOLS, values, KEY_ID + " = ?",
-                new String[] {String.valueOf(alcohol.getId())});
+                new String[]{String.valueOf(alcohol.getId())});
     }
 
     /**
      * Deletes an Alcohol object from the table
      * Finds the Alcohol object by getId()
+     *
      * @param alcohol the Alcohol object whose fields are to be deleted from the table
      */
     public void deleteAlcohol(Alcohol alcohol) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_ALCOHOLS, KEY_ID + " = ?",
-                new String[] {String.valueOf(alcohol.getId())});
+                new String[]{String.valueOf(alcohol.getId())});
         db.close();
     }
 
@@ -233,6 +242,7 @@ public class DBHandler extends SQLiteOpenHelper {
     /**
      * Gets the correct AlcoholType enumeration from the Cursor
      * At the moment, AlcoholType is stored in the 5th column, therefore getString(4)
+     *
      * @param cursor SQLiteDatabase Cursor
      * @return AlcoholType enumeration, the correct type
      */

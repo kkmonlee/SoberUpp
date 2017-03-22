@@ -2,10 +2,8 @@ package gauge.soberupp;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.widget.DatePicker;
 import android.widget.TextView;
 
@@ -32,32 +30,32 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
     public void onDateSet(DatePicker view, int year, int month, int day) {
         // Do something with the date chosen by the user
         Calendar chosenDay = Calendar.getInstance();
-        chosenDay.set(year, month, day, 0,0,0);
+        chosenDay.set(year, month, day, 0, 0, 0);
         Calendar currentDay = Calendar.getInstance();
         currentDay.set(currentDay.get(Calendar.YEAR), currentDay.get(Calendar.MONTH), currentDay.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
 
         // Checks to see if the date is in the future and sets the text boxes accordingly
-        if(page.equals("AddData")) {
+        if (page.equals("AddData")) {
             TextView tv1 = (TextView) getActivity().findViewById(R.id.setDate);
             if (currentDay.compareTo(chosenDay) >= 0) {
                 tv1.setText(view.getDayOfMonth() + "-" + (view.getMonth() + 1) + "-" + view.getYear());
             } else {
                 tv1.setText("Date in future");
             }
-        } else if (page.equals("GraphFrom")){
+        } else if (page.equals("GraphFrom")) {
             TextView tv1 = (TextView) getActivity().findViewById(R.id.dateFromText);
             if (currentDay.compareTo(chosenDay) >= 0) {
                 tv1.setText(view.getDayOfMonth() + "-" + (view.getMonth() + 1) + "-" + view.getYear());
             } else {
                 tv1.setText("Date in future");
             }
-        } else if (page.equals("GraphTo")){
+        } else if (page.equals("GraphTo")) {
             TextView tv1 = (TextView) getActivity().findViewById(R.id.dateToText);
             if (currentDay.compareTo(chosenDay) >= 0) {
-                    tv1.setText(view.getDayOfMonth() + "-" + (view.getMonth() + 1) + "-" + view.getYear());
-                } else {
-                    tv1.setText("Date in future");
-                }
+                tv1.setText(view.getDayOfMonth() + "-" + (view.getMonth() + 1) + "-" + view.getYear());
+            } else {
+                tv1.setText("Date in future");
+            }
         }
     }
 }

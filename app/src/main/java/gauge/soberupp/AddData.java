@@ -2,21 +2,19 @@ package gauge.soberupp;
 
 import android.content.Context;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
-import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
-import android.view.View;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -24,9 +22,6 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -34,8 +29,14 @@ import java.util.List;
 public class AddData extends Navigation
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private DBHandler db = new DBHandler(this);
+    private ArrayList<Alcohol> alcohols = new ArrayList<>();
+    // This id correlates to Alcohol.id
+    private int id = 1;
+
     /**
      * Runs when the page is created
+     *
      * @param savedInstanceState : last instance of the page
      */
     @Override
@@ -52,7 +53,7 @@ public class AddData extends Navigation
         int year = c.get(Calendar.YEAR);
         int month = c.get(Calendar.MONTH) + 1;
         int day = c.get(Calendar.DAY_OF_MONTH);
-        TextView tv1= (TextView) findViewById(R.id.setDate);
+        TextView tv1 = (TextView) findViewById(R.id.setDate);
         tv1.setText(day + "-" + month + "-" + year);
 
         // START Code for the Navigation Bar
@@ -85,8 +86,10 @@ public class AddData extends Navigation
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 setVolumeSpinner(drinkType.getSelectedItem().toString());
             }
+
             @Override
-            public void onNothingSelected(AdapterView<?> parentView) {}
+            public void onNothingSelected(AdapterView<?> parentView) {
+            }
 
         });
 
@@ -107,6 +110,7 @@ public class AddData extends Navigation
 
     /**
      * Sets up the menu
+     *
      * @param menu : the menu to add
      * @return : if it is successful
      */
@@ -119,6 +123,7 @@ public class AddData extends Navigation
 
     /**
      * Performs an event if the titleBar event is selected
+     *
      * @param item : the item to be chosen
      * @return : a super call to the method about closing the titleBar menu
      */
@@ -139,6 +144,7 @@ public class AddData extends Navigation
 
     /**
      * Gets the menu item and sends it to the superior method to move page
+     *
      * @param item : The item of the menu to by selected
      * @return
      */
@@ -148,18 +154,13 @@ public class AddData extends Navigation
         return super.onNavigationItemSelected(item);
     }
 
-    private DBHandler db = new DBHandler(this);
-    private ArrayList<Alcohol> alcohols = new ArrayList<>();
-    // This id correlates to Alcohol.id
-    private int id  = 1;
-
-    private void setDrinkSpinner(Spinner spin){
+    private void setDrinkSpinner(Spinner spin) {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.Drinks, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spin.setAdapter(adapter);
     }
 
-    private void setVolumeSpinner(String drinkType){
+    private void setVolumeSpinner(String drinkType) {
         Spinner volume = (Spinner) findViewById(R.id.volume);
         EditText abv = (EditText) findViewById(R.id.ABVInput);
         ArrayAdapter<CharSequence> adapter;
@@ -228,15 +229,15 @@ public class AddData extends Navigation
         TextView message = (TextView) findViewById(R.id.message);
 
         //Error checking for the entry
-        if(date.equals("Date in future")){
+        if (date.equals("Date in future")) {
             message.setText("Enter valid date");
-        } else if(abvOfDrink.trim().isEmpty()){
+        } else if (abvOfDrink.trim().isEmpty()) {
             message.setText("ABV of drink is empty");
-        } else if(quantityDrunk.trim().isEmpty()){
+        } else if (quantityDrunk.trim().isEmpty()) {
             message.setText("Enter how many drinks you have drunk");
-        } else if(Double.parseDouble(abvOfDrink) >= 90.0){
+        } else if (Double.parseDouble(abvOfDrink) >= 90.0) {
             message.setText("ABV too high");
-        } else if(Double.parseDouble(quantityDrunk) >= 30.0){
+        } else if (Double.parseDouble(quantityDrunk) >= 30.0) {
             message.setText("You have drunk too many");
         } else {
             AlcoholType alcoholType = null;
@@ -274,12 +275,13 @@ public class AddData extends Navigation
 
     /**
      * This is executed when the "Read" button is pressed
-     *
+     * <p>
      * Creates a FileInputStream and opens data.txt.
      * Since FileInputStream reads by byte, we create a byte[] buffer of size 1024
      * The content of the file is then appended into a new string
-     *
+     * <p>
      * To access the file data, use fileContent.toString().
+     *
      * @param view View object required for button
      */
     public void readFile(View view) {
@@ -304,7 +306,7 @@ public class AddData extends Navigation
             log += "id: " + alcohol.getId() + ", Date: " + alcohol.getDate() +
                     ", Type: " + alcohol.getAlcoholType().getName() + ", Volume: " +
                     alcohol.getVolume() + ", Quantity: " + alcohol.getQuantity() +
-                    "Units: " + alcohol.getUnits() +  "\nComment: " + alcohol.getComment() +
+                    "Units: " + alcohol.getUnits() + "\nComment: " + alcohol.getComment() +
                     "\n";
         }
         readData.setMovementMethod(new ScrollingMovementMethod());
@@ -313,6 +315,7 @@ public class AddData extends Navigation
 
     /**
      * Shows the date picker when the button is pressed
+     *
      * @param v : the view of the button
      */
     public void showDatePickerDialog(View v) {

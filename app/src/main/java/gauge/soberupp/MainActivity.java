@@ -4,24 +4,18 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.view.View;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.TreeMap;
 
 import az.plainpie.PieView;
 import az.plainpie.animation.PieAngleAnimation;
@@ -72,21 +66,21 @@ public class MainActivity extends Navigation
         // Code to set pie chart
         //https://github.com/zurche/plain-pie?utm_source=android-arsenal.com&utm_medium=referral&utm_campaign=3689
         PieView pieView = (PieView) findViewById(R.id.pieView);
-        double percent = getUnitsDrunkThisWeek()*100 / 14;
-        if(percent == 0)
-            pieView.setPercentage((float)0.01);
+        double percent = getUnitsDrunkThisWeek() * 100 / 14;
+        if (percent == 0)
+            pieView.setPercentage((float) 0.01);
         else
-            pieView.setPercentage((float)percent);
+            pieView.setPercentage((float) percent);
         pieView.setInnerText("You have had " + Math.floor(percent) + "% of your weekly alowance");
         pieView.setPercentageTextSize(35);
         //Sets the colour of the bar
-        if(percent < 20){
+        if (percent < 20) {
             pieView.setPercentageBackgroundColor(Color.GREEN);
-        } else if(percent < 40){
+        } else if (percent < 40) {
             pieView.setPercentageBackgroundColor(Color.YELLOW);
-        }else if (percent < 60){
+        } else if (percent < 60) {
             pieView.setPercentageBackgroundColor(Color.parseColor("#ffcc00"));
-        }else if(percent < 80){
+        } else if (percent < 80) {
             pieView.setPercentageBackgroundColor(Color.parseColor("#ff9900"));
         } else {
             pieView.setPercentageBackgroundColor(Color.RED);
@@ -191,36 +185,39 @@ public class MainActivity extends Navigation
 
     /**
      * Moves the page ot the Add Data page
+     *
      * @param view : view of the button
      */
-    public void goToAddData(View view){
+    public void goToAddData(View view) {
         startActivity(new Intent(this, AddData.class));
     }
 
     /**
      * Moves the page ot the Sober Diary page
+     *
      * @param view : view of the button
      */
-    public void goToSoberDiary(View view){
+    public void goToSoberDiary(View view) {
         startActivity(new Intent(this, SoberDiary.class));
     }
 
     /**
      * Moves the page ot the Graphs page
+     *
      * @param view : view of the button
      */
-    public void goToGraphs(View view){
+    public void goToGraphs(View view) {
         startActivity(new Intent(this, Graph.class));
     }
 
     /**
      * Moves the page ot the Settings page
+     *
      * @param view : view of the button
      */
-    public void goToSettings(View view){
+    public void goToSettings(View view) {
         startActivity(new Intent(this, Settings.class));
     }
-
 
 
 }

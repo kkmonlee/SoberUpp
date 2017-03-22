@@ -1,11 +1,11 @@
 package gauge.soberupp;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.MenuItem;
 
 public class Navigation extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -17,6 +17,7 @@ public class Navigation extends AppCompatActivity implements NavigationView.OnNa
 
     /**
      * Gets the menu item, and moves the page to the appropiate page
+     *
      * @param item : The item of the menu to by selected
      * @return : the success of the menu change
      */
@@ -25,7 +26,7 @@ public class Navigation extends AppCompatActivity implements NavigationView.OnNa
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        if(!item.isChecked()) {
+        if (!item.isChecked()) {
             if (id == R.id.nav_home) {
                 startActivity(new Intent(this, MainActivity.class));
             } else if (id == R.id.nav_inputData) {

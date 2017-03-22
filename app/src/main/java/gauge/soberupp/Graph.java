@@ -3,16 +3,16 @@ package gauge.soberupp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
-import android.view.View;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +36,7 @@ public class Graph extends Navigation
 
     private List<Alcohol> alcohols;
     private GraphView graph;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,10 +57,10 @@ public class Graph extends Navigation
         TreeMap<Date, Double> alcoholList = new TreeMap<Date, Double>();
         for (Alcohol alcohol : alcohols) {
             Calendar date = Calendar.getInstance();
-            date.set(Integer.parseInt(alcohol.getYYYY()), Integer.parseInt(alcohol.getMM())-1, Integer.parseInt(alcohol.getDD()), 0,0,0);
+            date.set(Integer.parseInt(alcohol.getYYYY()), Integer.parseInt(alcohol.getMM()) - 1, Integer.parseInt(alcohol.getDD()), 0, 0, 0);
             Date d = date.getTime();
             System.out.println(d);
-            if(alcoholList.containsKey(d)){
+            if (alcoholList.containsKey(d)) {
                 alcoholList.put(d, alcoholList.get(d) + alcohol.getUnits());
             } else {
                 alcoholList.put(d, alcohol.getUnits());
@@ -67,9 +68,9 @@ public class Graph extends Navigation
         }
 
         // Initialises the bar graph
-        BarGraphSeries<DataPoint> series = new BarGraphSeries<>(new DataPoint[] {});
+        BarGraphSeries<DataPoint> series = new BarGraphSeries<>(new DataPoint[]{});
         // Adds the data to the graph
-        for(Date D : alcoholList.keySet()){
+        for (Date D : alcoholList.keySet()) {
             series.appendData(new DataPoint(D, alcoholList.get(D)), true, alcoholList.size());
         }
 
@@ -78,10 +79,10 @@ public class Graph extends Navigation
             @Override
             public void onTap(Series series, DataPointInterface dataPoint) {
                 Date day = new Date();
-                day.setTime((long)dataPoint.getX());
+                day.setTime((long) dataPoint.getX());
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
                 String date = sdf.format(day);
-                Toast.makeText(Graph.this,date + " Units : " + dataPoint.getY(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(Graph.this, date + " Units : " + dataPoint.getY(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -89,11 +90,11 @@ public class Graph extends Navigation
         graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this));
         graph.getGridLabelRenderer().setNumHorizontalLabels(3); // only 4 because of the space
 
-        if(!alcoholList.isEmpty()) {
+        if (!alcoholList.isEmpty()) {
             // set manual Y bounds
             graph.getViewport().setYAxisBoundsManual(true);
             graph.getViewport().setMinY(0);
-            graph.getViewport().setMaxY(Collections.max(alcoholList.values())+1);
+            graph.getViewport().setMaxY(Collections.max(alcoholList.values()) + 1);
 
             // set manual X bounds
             graph.getViewport().setXAxisBoundsManual(true);
@@ -113,15 +114,13 @@ public class Graph extends Navigation
         int year = c.get(Calendar.YEAR);
         int month = c.get(Calendar.MONTH) + 1;
         int day = c.get(Calendar.DAY_OF_MONTH);
-        TextView dateTo= (TextView) findViewById(R.id.dateToText);
-        TextView dateFrom= (TextView) findViewById(R.id.dateFromText);
+        TextView dateTo = (TextView) findViewById(R.id.dateToText);
+        TextView dateFrom = (TextView) findViewById(R.id.dateFromText);
         dateTo.setText(day + "-" + month + "-" + year);
-        dateFrom.setText((day-1) + "-" + month + "-" + year);
+        dateFrom.setText((day - 1) + "-" + month + "-" + year);
 
 
-
-
-    // START Code for the Navigation Bar
+        // START Code for the Navigation Bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -160,6 +159,7 @@ public class Graph extends Navigation
 
     /**
      * Sets up the menu
+     *
      * @param menu : the menu to add
      * @return : if it is successful
      */
@@ -172,6 +172,7 @@ public class Graph extends Navigation
 
     /**
      * Performs an event if the titleBar event is selected
+     *
      * @param item : the item to be chosen
      * @return : a super call to the method about closing the titleBar menu
      */
@@ -192,6 +193,7 @@ public class Graph extends Navigation
 
     /**
      * Gets the menu item and sends it to the superior method to move page
+     *
      * @param item : The item of the menu to by selected
      * @return
      */
@@ -203,15 +205,16 @@ public class Graph extends Navigation
 
     /**
      * Shows the date picker when the button is pressed
+     *
      * @param v : the view of the button
      */
     public void showDatePickerDialog(View v) {
         DialogFragment newFragment = new DatePickerFragment();
         Bundle page = new Bundle();
         // Gives the right bundle depending on whether it was picked
-        if(v.getId() == R.id.dateFrom) {
+        if (v.getId() == R.id.dateFrom) {
             page.putString("page", "GraphFrom");
-        } else if(v.getId() == R.id.dateTo){
+        } else if (v.getId() == R.id.dateTo) {
             page.putString("page", "GraphTo");
         }
         newFragment.setArguments(page);
@@ -220,24 +223,25 @@ public class Graph extends Navigation
 
     /**
      * Gets the dates from the screen, error checks them and sends then into the filer Graph method
+     *
      * @param view : the view of the button
      */
-    public void filterData(View view){
+    public void filterData(View view) {
         // Gets the text from the screen
         TextView dateFrom = (TextView) findViewById(R.id.dateFromText);
         TextView dateTo = (TextView) findViewById(R.id.dateToText);
         TextView errorText = (TextView) findViewById(R.id.errorText);
-        if(dateFrom.getText().equals("Date in future")|| dateTo.getText().equals("Date in future")){
+        if (dateFrom.getText().equals("Date in future") || dateTo.getText().equals("Date in future")) {
             errorText.setText("One or more dates are in the future");
         } else {
             // Checks to see if date from is less than date to
             String[] dateFromSplit = dateFrom.getText().toString().split("-");
             String[] dateToSplit = dateTo.getText().toString().split("-");
             Calendar dateFromDay = Calendar.getInstance();
-            dateFromDay.set(Integer.valueOf(dateFromSplit[2]), Integer.valueOf(dateFromSplit[1])-1, Integer.valueOf(dateFromSplit[0]), 0,0,0);
+            dateFromDay.set(Integer.valueOf(dateFromSplit[2]), Integer.valueOf(dateFromSplit[1]) - 1, Integer.valueOf(dateFromSplit[0]), 0, 0, 0);
             Calendar dateToDay = Calendar.getInstance();
-            dateToDay.set(Integer.valueOf(dateToSplit[2]), Integer.valueOf(dateToSplit[1])-1, Integer.valueOf(dateToSplit[0]), 0,0,0);
-            if(dateToDay.compareTo(dateFromDay) > 0){
+            dateToDay.set(Integer.valueOf(dateToSplit[2]), Integer.valueOf(dateToSplit[1]) - 1, Integer.valueOf(dateToSplit[0]), 0, 0, 0);
+            if (dateToDay.compareTo(dateFromDay) > 0) {
                 filterGraph(dateFromDay, dateToDay);
                 errorText.setText("Data Filtered");
             } else {
@@ -248,8 +252,9 @@ public class Graph extends Navigation
 
     /**
      * Filters the data series with the selected range
+     *
      * @param dateFrom : the date the filtered data starts
-     * @param dateTo : the last date of the filtering
+     * @param dateTo   : the last date of the filtering
      */
     private void filterGraph(Calendar dateFrom, Calendar dateTo) {
         // Makes inequality inclusive on both sides
@@ -263,7 +268,7 @@ public class Graph extends Navigation
             date.set(Integer.parseInt(alcohol.getYYYY()), Integer.parseInt(alcohol.getMM()) - 1, Integer.parseInt(alcohol.getDD()), 0, 0, 0);
             Date d = date.getTime();
             // dateFrom <= date <= dateTo
-            if ((date.compareTo(dateFrom) >= 0) && ((dateTo.compareTo(date) >= 0)||(dateTo.equals(date)))) {
+            if ((date.compareTo(dateFrom) >= 0) && ((dateTo.compareTo(date) >= 0) || (dateTo.equals(date)))) {
                 System.out.println(date);
                 if (alcoholList.containsKey(d)) {
                     alcoholList.put(d, alcoholList.get(d) + alcohol.getUnits());
@@ -284,20 +289,19 @@ public class Graph extends Navigation
             @Override
             public void onTap(Series series, DataPointInterface dataPoint) {
                 Date day = new Date();
-                day.setTime((long)dataPoint.getX());
+                day.setTime((long) dataPoint.getX());
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
                 String date = sdf.format(day);
-                Toast.makeText(Graph.this,date + " Units : " + dataPoint.getY(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(Graph.this, date + " Units : " + dataPoint.getY(), Toast.LENGTH_SHORT).show();
             }
         });
 
 
-
-        if(!alcoholList.isEmpty()) {
+        if (!alcoholList.isEmpty()) {
             // set manual Y bounds
             graph.getViewport().setYAxisBoundsManual(true);
             graph.getViewport().setMinY(0);
-            graph.getViewport().setMaxY(Collections.max(alcoholList.values())+5);
+            graph.getViewport().setMaxY(Collections.max(alcoholList.values()) + 5);
 
             // set manual X bounds
             graph.getViewport().setXAxisBoundsManual(true);
