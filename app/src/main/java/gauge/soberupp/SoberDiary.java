@@ -16,11 +16,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -152,12 +154,18 @@ public class SoberDiary extends Navigation
     private String setRecordsForDay(CalendarDay selectedDate) {
         String log = "";
         Calendar chosenDay = Calendar.getInstance();
-        chosenDay.set(selectedDate.getYear(), selectedDate.getMonth() + 1, selectedDate.getDay(), 0, 0, 0);
+        chosenDay.set(selectedDate.getYear(), selectedDate.getMonth(), selectedDate.getDay(), 0, 0, 0);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        String dateChosen = sdf.format(chosenDay.getTime());
+
         for (Alcohol alcohol : alcohols) {
             Calendar currentDay = Calendar.getInstance();
             currentDay.set(Integer.parseInt(alcohol.getYYYY()),
-                    Integer.parseInt(alcohol.getMM()), Integer.parseInt(alcohol.getDD()), 0, 0, 0);
-            if (chosenDay.equals(currentDay)) {
+                    Integer.parseInt(alcohol.getMM())-1, Integer.parseInt(alcohol.getDD()), 0, 0, 0);
+            String alcoholDate = sdf.format(currentDay.getTime());
+
+            if (alcoholDate.equals(dateChosen)) {
                 log += "id: " + alcohol.getId() + ", Date: " + alcohol.getDate() +
                         ", Type: " + alcohol.getAlcoholType().getName() + ", Volume: " +
                         alcohol.getVolume() + ", Quantity: " + alcohol.getQuantity() +
