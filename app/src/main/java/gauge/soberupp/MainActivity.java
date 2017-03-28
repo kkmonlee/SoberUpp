@@ -96,27 +96,6 @@ public class MainActivity extends Navigation
     }
 
     /**
-     * Performs an event if the titleBar event is selected
-     *
-     * @param item : the item to be chosen
-     * @return : a super call to the method about closing the titleBar menu
-     */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    /**
      * Gets the menu item and sends it to the superior method to move page
      *
      * @param item : The item of the menu to by selected

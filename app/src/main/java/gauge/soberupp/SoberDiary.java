@@ -87,26 +87,6 @@ public class SoberDiary extends Navigation
         }
     }
 
-    /**
-     * Performs an event if the titleBar event is selected
-     *
-     * @param item : the item to be chosen
-     * @return : a super call to the method about closing the titleBar menu
-     */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     @Override
     public void onDateSelected(@NonNull MaterialCalendarView widget, @Nullable CalendarDay date, boolean selected) {
         TextView day = (TextView) findViewById(R.id.DataForTheDay);
