@@ -101,19 +101,6 @@ public class AddData extends Navigation
     }
 
     /**
-     * Sets up the menu
-     *
-     * @param menu : the menu to add
-     * @return : if it is successful
-     */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    /**
      * Performs an event if the titleBar event is selected
      *
      * @param item : the item to be chosen
