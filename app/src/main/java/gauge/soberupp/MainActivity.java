@@ -1,6 +1,7 @@
 package gauge.soberupp;
 
 import android.content.Intent;
+
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -39,15 +40,6 @@ public class MainActivity extends Navigation
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -72,7 +64,7 @@ public class MainActivity extends Navigation
         else
             pieView.setPercentage((float) percent);
         pieView.setInnerText("You have had " + Math.floor(percent) + "% of your weekly alowance");
-        pieView.setPercentageTextSize(35);
+        pieView.setPercentageTextSize(30);
         //Sets the colour of the bar
         if (percent < 20) {
             pieView.setPercentageBackgroundColor(Color.GREEN);
