@@ -357,8 +357,4 @@ public class EditData extends Navigation
             Snackbar.make(view, "You have no data!", Snackbar.LENGTH_LONG).setAction("Action", null).show();
         }
     }
-
-
 }
-
-
