@@ -89,7 +89,6 @@ public class Graph extends Navigation
         // set date label formatter
         graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this));
         graph.getGridLabelRenderer().setNumHorizontalLabels(3); // only 4 because of the space
-
         if (!alcoholList.isEmpty()) {
             // set manual Y bounds
             graph.getViewport().setYAxisBoundsManual(true);
