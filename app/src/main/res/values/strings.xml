@@ -19,9 +19,17 @@
         <item>Other</item>
     </string-array>
 
-    <string-array name="VolumeBeerCider">
-        <item>Can 440ml</item>
+    <string-array name="VolumeBeer">
         <item>Half Pint 285ml</item>
+        <item>Bottle 300ml</item>
+        <item>Can 440ml</item>
+        <item>Bottle 500ml</item>
+        <item>Pint 568ml</item>
+    </string-array>
+
+    <string-array name="VolumeCider">
+        <item>Half Pint 285ml</item>
+        <item>Can 440ml</item>
         <item>Pint 568ml</item>
         <item>Bottle 2000ml</item>
     </string-array>
@@ -39,10 +47,10 @@
     <string-array name="VolumeOthers">
         <item>Shot 25ml</item>
         <item>Double Shot 50ml</item>
-        <item>Can 440ml</item>
-        <item>Half Pint 285ml</item>
-        <item>Pint 568ml</item>
         <item>Glass 175ml</item>
+        <item>Half Pint 285ml</item>
+        <item>Can 440ml</item>
+        <item>Pint 568ml</item>
         <item>Bottle 750ml</item>
         <item>Bottle 2000ml</item>
 

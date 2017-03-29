@@ -2,23 +2,17 @@ package gauge.soberupp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 public class Settings extends Navigation
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -92,7 +86,7 @@ public class Settings extends Navigation
     }
 
 
-    public void setCurrentGoal(){
+    public void setCurrentGoal() {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
         //Get the Monday for start of week
@@ -118,7 +112,7 @@ public class Settings extends Navigation
         currentGoal.setText("Your current goal is \n From " + dateFromString + " to " + dateToString + "\n with ?? units this week");
     }
 
-    public void setNewGoalDate(){
+    public void setNewGoalDate() {
         // Gets the Monday of the beginning of next week
         Calendar dateTo = Calendar.getInstance();
         dateTo.set(dateTo.get(Calendar.YEAR), dateTo.get(Calendar.MONTH), dateTo.get(Calendar.DAY_OF_MONTH), 0, 0, 0);

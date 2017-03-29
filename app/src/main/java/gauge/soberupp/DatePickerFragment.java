@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
 
@@ -36,11 +37,11 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
 
         // Checks to see if the date is in the future and sets the text boxes accordingly
         if (page.equals("AddData")) {
-            TextView tv1 = (TextView) getActivity().findViewById(R.id.setDate);
+            Button datePicker = (Button) getActivity().findViewById(R.id.chooseDate);
             if (currentDay.compareTo(chosenDay) >= 0) {
-                tv1.setText(view.getDayOfMonth() + "-" + (view.getMonth() + 1) + "-" + view.getYear());
+                datePicker.setText(view.getDayOfMonth() + "-" + (view.getMonth() + 1) + "-" + view.getYear());
             } else {
-                tv1.setText("Date in future");
+                datePicker.setText("Date in future");
             }
         } else if (page.equals("GraphFrom")) {
             TextView tv1 = (TextView) getActivity().findViewById(R.id.dateFromText);

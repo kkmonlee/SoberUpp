@@ -3,7 +3,6 @@ package gauge.soberupp;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
@@ -12,12 +11,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -53,8 +52,6 @@ public class AddData extends Navigation
         int year = c.get(Calendar.YEAR);
         int month = c.get(Calendar.MONTH) + 1;
         int day = c.get(Calendar.DAY_OF_MONTH);
-        TextView tv1 = (TextView) findViewById(R.id.setDate);
-        tv1.setText(day + "-" + month + "-" + year);
 
         // START Code for the Navigation Bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -124,9 +121,12 @@ public class AddData extends Navigation
         ArrayAdapter<CharSequence> adapter;
         switch (drinkType) {
             case "Beer":
+                abv.setText("4.5");
+                adapter = ArrayAdapter.createFromResource(this, R.array.VolumeBeer, android.R.layout.simple_spinner_item);
+                break;
             case "Cider":
                 abv.setText("4.5");
-                adapter = ArrayAdapter.createFromResource(this, R.array.VolumeBeerCider, android.R.layout.simple_spinner_item);
+                adapter = ArrayAdapter.createFromResource(this, R.array.VolumeCider, android.R.layout.simple_spinner_item);
                 break;
             case "Wine":
                 abv.setText("12");
@@ -157,7 +157,7 @@ public class AddData extends Navigation
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view1.getWindowToken(), 0);
         }
-        TextView selectedDate = (TextView) findViewById(R.id.setDate);
+        Button selectedDate = (Button) findViewById(R.id.chooseDate);
         //Need to store
         String date = selectedDate.getText().toString();
 
@@ -187,7 +187,7 @@ public class AddData extends Navigation
         TextView message = (TextView) findViewById(R.id.message);
 
         //Error checking for the entry
-        if (date.equals("Date in future")) {
+        if (date.equals("Date in future") || date.equals("Choose Date")) {
             message.setText("Enter valid date");
         } else if (abvOfDrink.trim().isEmpty()) {
             message.setText("ABV of drink is empty");
@@ -228,6 +228,7 @@ public class AddData extends Navigation
             id++;
             quantity.setText("");
             comments.setText("");
+            message.setText("");
         }
     }
 
