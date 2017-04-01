@@ -93,7 +93,7 @@ public class Settings extends Navigation
         Calendar dateFrom = Calendar.getInstance();
         dateFrom.set(dateFrom.get(Calendar.YEAR), dateFrom.get(Calendar.MONTH), dateFrom.get(Calendar.DAY_OF_MONTH) - 1, 0, 0, 0);
         while (dateFrom.get(Calendar.DAY_OF_WEEK) > dateFrom.getFirstDayOfWeek()) {
-            dateFrom.add(Calendar.DATE, -1); // Substract 1 day until first day of week.
+            dateFrom.add(Calendar.DATE, -1); // Subtract 1 day until first day of week.
         }
         dateFrom.set(dateFrom.get(Calendar.YEAR), dateFrom.get(Calendar.MONTH), dateFrom.get(Calendar.DAY_OF_MONTH) + 1, 0, 0, 0);
         String dateFromString = sdf.format(dateFrom.getTime());

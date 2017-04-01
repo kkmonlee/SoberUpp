@@ -19,9 +19,11 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
     // Database name
     private static final String DATABASE_NAME = "AlcoholInfo";
-    // Alcohols table name
+    // Table names
     private static final String TABLE_ALCOHOLS = "alcohols";
+    private static final String TABLE_GOALS = "goals";
     // Alcohols table columns names
+    private static final String KEY_GOAL = "goal";
     private static final String KEY_ID = "id";
     private static final String KEY_DAY = "day";
     private static final String KEY_MONTH = "month";
@@ -57,8 +59,13 @@ public class DBHandler extends SQLiteOpenHelper {
                 KEY_TYPE + " TEXT, " + KEY_VOLUME + " REAL, " +
                 KEY_QUANTITY + " REAL, " + KEY_ABV + " REAL, " +
                 KEY_COMMENT + " TEXT" + ")";
+        // Creates the Goals table
+        String CREATE_GOAL_TABLE = "CREATE TABLE " + TABLE_GOALS + " (" +
+                KEY_ID + " INTEGER PRIMARY KEY, " + KEY_GOAL + " INTEGER" +
+                ")";
 
         db.execSQL(CREATE_ALCOHOL_TABLE);
+        db.execSQL(CREATE_GOAL_TABLE);
     }
 
     /**
@@ -74,8 +81,23 @@ public class DBHandler extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older table if existed
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ALCOHOLS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_GOALS);
         // Create table again
         onCreate(db);
+    }
+
+    /**
+     * Adds a new goal to the goals column
+     * @param goal int, number of units per week?
+     */
+    public void addGoal(int goal) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(KEY_GOAL, goal);
+
+        db.insert(TABLE_GOALS, null, values);
+        db.close();
     }
 
     /**
@@ -99,6 +121,26 @@ public class DBHandler extends SQLiteOpenHelper {
         // Insert row
         db.insert(TABLE_ALCOHOLS, null, values);
         db.close(); // Closing database connection
+    }
+
+    /**
+     * Gets the units per week
+     * @return int, amount of units per week
+     */
+    public int getGoal() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.query(TABLE_GOALS, new String[] {KEY_ID, KEY_GOAL}, KEY_ID + "=?",
+                new String[]{String.valueOf(0)}, null, null, null, null);
+
+        if (cursor != null) {
+            cursor.moveToFirst();
+        }
+
+        assert cursor != null;
+        int goal = cursor.getInt(1);
+        cursor.close();
+
+        return goal;
     }
 
     /**
@@ -190,6 +232,20 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
     /**
+     * Updates the goal value to another value
+     * @param newGoal int, new goal value
+     * @return int, 1 if successful, 0 otherwise
+     */
+    public int updateGoal(int newGoal) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(KEY_GOAL, newGoal);
+
+        return db.update(TABLE_GOALS, values, KEY_ID + " = ?", new String[] {String.valueOf(0)});
+    }
+
+    /**
      * Changes the fields of the Alcohol object.
      * Alcohol object is found in the table by getId()
      *
@@ -211,7 +267,14 @@ public class DBHandler extends SQLiteOpenHelper {
 
         // Updating row
         return db.update(TABLE_ALCOHOLS, values, KEY_ID + " = ?",
-                new String[]{String.valueOf(alcohol.getId())});
+                new String[] {String.valueOf(alcohol.getId())});
+    }
+
+    public void deleteGoal() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_ALCOHOLS, KEY_ID + " = ?",
+                new String[]{String.valueOf(0)});
+        db.close();
     }
 
     /**
