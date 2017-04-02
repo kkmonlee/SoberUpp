@@ -119,7 +119,7 @@ public class SoberDiary extends Navigation
             String alcoholDate = sdf.format(currentDay.getTime());
 
             if (alcoholDate.equals(dateChosen)) {
-                log += "id: " + alcohol.getId() + ", Date: " + alcohol.getDate() +
+                log += "Date: " + alcohol.getDate() +
                         ", Type: " + alcohol.getAlcoholType().getName() + ", Volume: " +
                         alcohol.getVolume() + ", Quantity: " + alcohol.getQuantity() +
                         ", Units: " + alcohol.getUnits() + "\nComment: " + alcohol.getComment() +

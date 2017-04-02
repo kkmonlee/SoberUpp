@@ -4,13 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -18,6 +19,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -158,28 +161,21 @@ public class AddData extends Navigation
             imm.hideSoftInputFromWindow(view1.getWindowToken(), 0);
         }
         Button selectedDate = (Button) findViewById(R.id.chooseDate);
-        //Need to store
         String date = selectedDate.getText().toString();
 
         EditText abv = (EditText) findViewById(R.id.ABVInput);
-        //Need to store
         String abvOfDrink = abv.getText().toString();
 
         EditText quantity = (EditText) findViewById(R.id.numberDrunk);
-        // Need to store
         String quantityDrunk = quantity.getText().toString();
 
         Spinner drinkTypeSpinner = (Spinner) findViewById(R.id.DrinkType);
-        // Need to store
         String drinkType = drinkTypeSpinner.getSelectedItem().toString();
 
         Spinner drinkVolumeSpinner = (Spinner) findViewById(R.id.volume);
-        // Need to store
         String drinkVolume = drinkVolumeSpinner.getSelectedItem().toString();
 
         EditText comments = (EditText) findViewById(R.id.commentsInput);
-        //TODO store this to alcohol object and db
-        // Need to store
         String commentsInput = comments.getText().toString();
 
         String[] volumeSplit = drinkVolume.split(" ");
@@ -195,8 +191,6 @@ public class AddData extends Navigation
             message.setText("Enter how many drinks you have drunk");
         } else if (Double.parseDouble(abvOfDrink) >= 90.0) {
             message.setText("ABV too high");
-        } else if (Double.parseDouble(quantityDrunk) >= 30.0) {
-            message.setText("You have drunk too many");
         } else {
             AlcoholType alcoholType = null;
             switch (drinkType) {
@@ -221,28 +215,74 @@ public class AddData extends Navigation
             Alcohol alcohol = new Alcohol(id, date, alcoholType,
                     Double.valueOf(volumeSplit[volumeSplit.length - 1].substring(0, volumeSplit[1].length() - 2)),
                     Double.valueOf(quantityDrunk), Double.valueOf(abvOfDrink), commentsInput);
-
-            db.addAlcohol(alcohol);
-            alcohols.add(alcohol);
-            Snackbar.make(view, "Alcohol Entry has been added", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-            id++;
+            callPopup(alcohol);
             quantity.setText("");
             comments.setText("");
             message.setText("");
         }
     }
 
-    /**
-     * This is executed when the "Read" button is pressed
-     * <p>
-     * Creates a FileInputStream and opens data.txt.
-     * Since FileInputStream reads by byte, we create a byte[] buffer of size 1024
-     * The content of the file is then appended into a new string
-     * <p>
-     * To access the file data, use fileContent.toString().
-     *
-     * @param view View object required for button
-     */
+    private void callPopup(Alcohol alcohol) {
+        final Alcohol alcoholToBeVerified = alcohol;
+        // Creates the pop up window
+        final LayoutInflater layoutInflater = (LayoutInflater) getBaseContext()
+                .getSystemService(LAYOUT_INFLATER_SERVICE);
+
+        View popupView = layoutInflater.inflate(R.layout.popup, null);
+
+        final PopupWindow popupWindow = new PopupWindow(popupView,
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT,
+                true);
+
+        popupWindow.setTouchable(true);
+        popupWindow.setFocusable(true);
+
+        popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+
+        // Sets the text to show whats being added
+        TextView popUp = (TextView) popupView.findViewById(R.id.popupText);
+        if(alcoholToBeVerified.getVolume() >= 30) {
+            popUp.setText("Entry to be added - Nuber drunk seems to be high\n" + "Date: " + alcohol.getDate() +
+                    ", Type: " + alcohol.getAlcoholType().getName() + ", Volume: " +
+                    alcohol.getVolume() + ", Quantity: " + alcohol.getQuantity() +
+                    "Units: " + alcohol.getUnits() + "\nComment: " + alcohol.getComment());
+        } else {
+            popUp.setText("Entry to be added\n" + "Date: " + alcohol.getDate() +
+                    ", Type: " + alcohol.getAlcoholType().getName() + ", Volume: " +
+                    alcohol.getVolume() + ", Quantity: " + alcohol.getQuantity() +
+                    "Units: " + alcohol.getUnits() + "\nComment: " + alcohol.getComment());
+        }
+
+        // Decides what happens on the button clicks
+        ((Button) popupView.findViewById(R.id.dismiss))
+                .setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View arg0) {
+                        popupWindow.dismiss();
+                    }
+                });
+        ((Button) popupView.findViewById(R.id.confirm))
+                .setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View arg0) {
+                        popupWindow.dismiss();
+                        db.addAlcohol(alcoholToBeVerified);
+                        alcohols.add(alcoholToBeVerified);
+                        id++;
+                    }
+                });
+    }
+
+
+        /**
+         * This is executed when the "Read" button is pressed
+         *
+         * Creates a FileInputStream and opens data.txt.
+         * Since FileInputStream reads by byte, we create a byte[] buffer of size 1024
+         * The content of the file is then appended into a new string
+         *
+         * To access the file data, use fileContent.toString().
+         *
+         * @param view View object required for button
+         */
     public void readFile(View view) {
         printData(db.getAllAlcohols());
     }
@@ -262,7 +302,7 @@ public class AddData extends Navigation
         final TextView readData = (TextView) findViewById(R.id.printData);
         String log = "";
         for (Alcohol alcohol : alcoholList) {
-            log += "id: " + alcohol.getId() + ", Date: " + alcohol.getDate() +
+            log +=  "Date: " + alcohol.getDate() +
                     ", Type: " + alcohol.getAlcoholType().getName() + ", Volume: " +
                     alcohol.getVolume() + ", Quantity: " + alcohol.getQuantity() +
                     "Units: " + alcohol.getUnits() + "\nComment: " + alcohol.getComment() +
