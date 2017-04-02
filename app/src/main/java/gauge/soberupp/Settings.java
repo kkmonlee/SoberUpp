@@ -3,12 +3,18 @@ package gauge.soberupp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -72,8 +78,7 @@ public class Settings extends Navigation
      * @param view : the view of the button
      */
     public void clearDB(View view) {
-        DBHandler db = new DBHandler(this);
-        db.deleteAll();
+        callPopup();
     }
 
     /**
@@ -124,6 +129,46 @@ public class Settings extends Navigation
         String date = sdf.format(dateTo.getTime());
         TextView dateForNewGoal = (TextView) findViewById(R.id.goalSetDate);
         dateForNewGoal.setText("The next goal is for the week beginning " + date);
-
     }
+
+    /**
+     * Sets the popup to confirm deletion of database
+     */
+    private void callPopup() {
+        // Creates the pop up window
+        final LayoutInflater layoutInflater = (LayoutInflater) getBaseContext()
+                .getSystemService(LAYOUT_INFLATER_SERVICE);
+
+        View popupView = layoutInflater.inflate(R.layout.popup, null);
+
+        final PopupWindow popupWindow = new PopupWindow(popupView,
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT,
+                true);
+
+        popupWindow.setTouchable(true);
+        popupWindow.setFocusable(true);
+
+        popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+
+        TextView popUp = (TextView) popupView.findViewById(R.id.popupText);
+        popUp.setText("Are you sure you want to delete all entries");
+        // Decides what happens on the button clicks
+        ((Button) popupView.findViewById(R.id.cancel))
+                .setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View arg0) {
+                        popupWindow.dismiss();
+                        Snackbar.make(getCurrentFocus(), "Database not cleared", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                    }
+                });
+        ((Button) popupView.findViewById(R.id.confirm))
+                .setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View arg0) {
+                        popupWindow.dismiss();
+                        DBHandler db = new DBHandler(getApplicationContext());
+                        db.deleteAll();
+                        Snackbar.make(getCurrentFocus(), "Database Cleared", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                    }
+                });
+    }
+
 }

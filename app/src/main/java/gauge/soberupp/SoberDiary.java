@@ -50,7 +50,6 @@ public class SoberDiary extends Navigation
         widget.addDecorator(new EventDecorator(Color.parseColor("#ff9900"), getDays(5, 10)));
         widget.addDecorator(new EventDecorator(Color.YELLOW, getDays(3, 5)));
         widget.addDecorator(new EventDecorator(Color.GREEN, getDays(0, 3)));
-
         //Sets the title of the page
         setTitle("Sober Diary");
         Intent intent = getIntent();

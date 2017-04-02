@@ -26,10 +26,10 @@
                 android:text="It's a PopupWindow" />
 
             <Button
-                android:id="@+id/dismiss"
+                android:id="@+id/cancel"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="Dismiss" />
+                android:text="Cancel" />
 
             <Button
                 android:id="@+id/confirm"

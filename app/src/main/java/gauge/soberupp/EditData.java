@@ -9,12 +9,17 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -343,18 +348,69 @@ public class EditData extends Navigation
     }
 
     public void removeEntry(View view) {
+        // Removes the keyboard
+        View view1 = this.getCurrentFocus();
+        if (view1 != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view1.getWindowToken(), 0);
+        }
         // Guarding for null pointer
         if (!alcohols.isEmpty()) {
             //Gets the id of the alcohol entry to be removed
             Spinner entrySelect = (Spinner) findViewById(R.id.entrySelect);
             Alcohol alcoholSelected = alcohols.get((int) entrySelect.getSelectedItemId());
             // Deletes it from the db
-            db.deleteAlcohol(alcoholSelected);
-            Snackbar.make(view, "Alcohol Entry has been deleted", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+            callPopup(alcoholSelected);
             alcohols = db.getAllAlcohols();
             setEntrySpinner(entrySelect);
         } else {
             Snackbar.make(view, "You have no data!", Snackbar.LENGTH_LONG).setAction("Action", null).show();
         }
+    }
+
+    /**
+     * Sets the popup to confirm deletion
+     * @param alcohol : the alcohol element to be deleted
+     */
+    private void callPopup(Alcohol alcohol) {
+        final Alcohol alcoholSelected = alcohol;
+        // Creates the pop up window
+        final LayoutInflater layoutInflater = (LayoutInflater) getBaseContext()
+                .getSystemService(LAYOUT_INFLATER_SERVICE);
+
+        View popupView = layoutInflater.inflate(R.layout.popup, null);
+
+        final PopupWindow popupWindow = new PopupWindow(popupView,
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT,
+                true);
+
+        popupWindow.setTouchable(true);
+        popupWindow.setFocusable(true);
+
+        popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+
+        // Sets the text to show whats being added
+        TextView popUp = (TextView) popupView.findViewById(R.id.popupText);
+        popUp.setText("Entry to be deleted\n" + "Date: " + alcohol.getDate() +
+                ", Type: " + alcohol.getAlcoholType().getName() + ", Volume: " +
+                alcohol.getVolume() + ", Quantity: " + alcohol.getQuantity() +
+                "Units: " + alcohol.getUnits() + "\nComment: " + alcohol.getComment());
+
+        // Decides what happens on the button clicks
+        ((Button) popupView.findViewById(R.id.cancel))
+                .setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View arg0) {
+                        popupWindow.dismiss();
+                        Snackbar.make(getCurrentFocus(), "Entry not deleted", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                    }
+                });
+        ((Button) popupView.findViewById(R.id.confirm))
+                .setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View arg0) {
+                        popupWindow.dismiss();
+                        db.deleteAlcohol(alcoholSelected);
+                        Snackbar.make(getCurrentFocus(), "Entry deleted", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                    }
+                });
     }
 }

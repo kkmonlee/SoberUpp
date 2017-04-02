@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -55,6 +56,8 @@ public class AddData extends Navigation
         int year = c.get(Calendar.YEAR);
         int month = c.get(Calendar.MONTH) + 1;
         int day = c.get(Calendar.DAY_OF_MONTH);
+        Button datePicker = (Button) findViewById(R.id.chooseDate);
+        datePicker.setText(day + "-" + month + "-" + year);
 
         // START Code for the Navigation Bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -71,6 +74,7 @@ public class AddData extends Navigation
         navigationView.setNavigationItemSelectedListener(this);
         // END Code for the Navigation Bar
 
+        // Sets the spinner and selects the on selected item action
         final Spinner drinkType = (Spinner) findViewById(R.id.DrinkType);
         setDrinkSpinner(drinkType);
         drinkType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -78,11 +82,9 @@ public class AddData extends Navigation
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 setVolumeSpinner(drinkType.getSelectedItem().toString());
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
             }
-
         });
 
     }
@@ -213,7 +215,7 @@ public class AddData extends Navigation
             assert alcoholType != null;
 
             Alcohol alcohol = new Alcohol(id, date, alcoholType,
-                    Double.valueOf(volumeSplit[volumeSplit.length - 1].substring(0, volumeSplit[1].length() - 2)),
+                    Double.valueOf(volumeSplit[volumeSplit.length - 1].substring(0, volumeSplit[volumeSplit.length - 1].length() - 2)),
                     Double.valueOf(quantityDrunk), Double.valueOf(abvOfDrink), commentsInput);
             callPopup(alcohol);
             quantity.setText("");
@@ -222,6 +224,10 @@ public class AddData extends Navigation
         }
     }
 
+    /**
+     * Sets the popup to confirm addition
+     * @param alcohol : the alcohol element to be added
+     */
     private void callPopup(Alcohol alcohol) {
         final Alcohol alcoholToBeVerified = alcohol;
         // Creates the pop up window
@@ -254,10 +260,11 @@ public class AddData extends Navigation
         }
 
         // Decides what happens on the button clicks
-        ((Button) popupView.findViewById(R.id.dismiss))
+        ((Button) popupView.findViewById(R.id.cancel))
                 .setOnClickListener(new View.OnClickListener() {
                     public void onClick(View arg0) {
                         popupWindow.dismiss();
+                        Snackbar.make(getCurrentFocus(), "Entry not added", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                     }
                 });
         ((Button) popupView.findViewById(R.id.confirm))
@@ -267,6 +274,7 @@ public class AddData extends Navigation
                         db.addAlcohol(alcoholToBeVerified);
                         alcohols.add(alcoholToBeVerified);
                         id++;
+                        Snackbar.make(getCurrentFocus(), "Entry added", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                     }
                 });
     }
