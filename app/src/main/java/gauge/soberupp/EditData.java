@@ -21,6 +21,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -66,7 +67,6 @@ public class EditData extends Navigation
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 setVolumeSpinner(drinkType.getSelectedItem().toString());
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
             }
@@ -83,12 +83,24 @@ public class EditData extends Navigation
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 setData(entrySelect.getSelectedItemId());
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
             }
 
         });
+
+        // Sets the spinner and selects the on selected item action
+        final Spinner drinkVolume = (Spinner) findViewById(R.id.sizeSpinner);
+        drinkVolume.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                setCustomVolume(drinkVolume.getSelectedItem().toString());
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+            }
+        });
+
     }
 
     /**
@@ -156,7 +168,6 @@ public class EditData extends Navigation
             //Gets the elements needed to be set
             TextView dateSelected = (TextView) findViewById(R.id.dateSelected);
             Spinner drink = (Spinner) findViewById(R.id.drinkSpinner);
-            Spinner volume = (Spinner) findViewById(R.id.sizeSpinner);
             EditText abv = (EditText) findViewById(R.id.ABVText);
             EditText numberDrunk = (EditText) findViewById(R.id.numberDrunkText);
             EditText comments = (EditText) findViewById(R.id.CommentsText);
@@ -248,16 +259,41 @@ public class EditData extends Navigation
 
                 // Sets the volume spinner to the correct record
                 String volumeSelected = null;
+                TableRow customVolume = (TableRow) findViewById(R.id.editCustomMl);
                 for (String s : volumes) {
                     String[] volumeSplit = s.split(" ");
-                    if (Double.valueOf(volumeSplit[volumeSplit.length - 1].substring(0, volumeSplit[1].length() - 2)) == alcoholSelected.getVolume()) {
+                    if(s.equals("Other")){
+                        break;
+                    } else if (Double.valueOf(volumeSplit[volumeSplit.length - 1].substring(0, volumeSplit[1].length() - 2)) == alcoholSelected.getVolume()) {
                         volumeSelected = s;
                     }
                 }
-                volume.setSelection(((ArrayAdapter) volume.getAdapter()).getPosition(volumeSelected));
+
+                // Checks if it is a custom volume
+                if(volumeSelected == null){
+                    customVolume.setVisibility(View.VISIBLE);
+                    EditText editTextVolume = (EditText) findViewById(R.id.editCustomVolume);
+                    editTextVolume.setText(String.valueOf(alcoholSelected.getVolume()));
+                    volume.setSelection(((ArrayAdapter) volume.getAdapter()).getPosition("Other"));
+                } else {
+                    volume.setSelection(((ArrayAdapter) volume.getAdapter()).getPosition(volumeSelected));
+                }
             }
         }
     }
+
+    /**
+     * Shows the custom volume row if other is selected
+     * @param volumeSelected : the volume amount selected
+     */
+    private void setCustomVolume(String volumeSelected){
+        TableRow customVolume = (TableRow) findViewById(R.id.editCustomMl);
+        customVolume.setVisibility(View.INVISIBLE);
+        if(volumeSelected.equals("Other")){
+            customVolume.setVisibility(View.VISIBLE);
+        }
+    }
+
 
     /**
      * Updates the record of the alcohol when the button is pressed
@@ -288,6 +324,11 @@ public class EditData extends Navigation
             String quantityDrunk = numberDrunk.getText().toString();
             String drinkType = drink.getSelectedItem().toString();
             String drinkVolume = volume.getSelectedItem().toString();
+            if(drinkVolume.equals("Other")){
+                EditText volumeEditText = (EditText) findViewById(R.id.editCustomVolume);
+                drinkVolume = volumeEditText.getText().toString() + "ml";
+            }
+
             String commentsInput = comments.getText().toString();
 
             String[] volumeSplit = drinkVolume.split(" ");
@@ -303,6 +344,8 @@ public class EditData extends Navigation
                 message.setText("ABV too high");
             } else if (Double.parseDouble(quantityDrunk) >= 30.0) {
                 message.setText("You have drunk too many");
+            }  else if(drinkVolume.isEmpty() || drinkVolume.equals("0ml")){
+                message.setText("Set Valid Volume");
             } else {
 
                 AlcoholType alcoholType = null;
@@ -330,7 +373,7 @@ public class EditData extends Navigation
 
                 // Creates the alcohol object with the data provided
                 Alcohol alcohol = new Alcohol(alcoholSelected.getId(), date, alcoholType,
-                        Double.valueOf(volumeSplit[volumeSplit.length - 1].substring(0, volumeSplit[1].length() - 2)),
+                        Double.valueOf(volumeSplit[volumeSplit.length - 1].substring(0, volumeSplit[volumeSplit.length -1].length() - 2)),
                         Double.valueOf(quantityDrunk), Double.valueOf(abvOfDrink), commentsInput);
 
                 // Updates the old alcohol entry with the new one
