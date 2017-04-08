@@ -61,8 +61,9 @@ public class DBHandler extends SQLiteOpenHelper {
                 KEY_COMMENT + " TEXT" + ")";
         // Creates the Goals table
         String CREATE_GOAL_TABLE = "CREATE TABLE " + TABLE_GOALS + " (" +
-                KEY_ID + " INTEGER PRIMARY KEY, " + KEY_GOAL + " INTEGER" +
-                ")";
+                KEY_ID + " INTEGER PRIMARY KEY, " + KEY_GOAL + " INTEGER, " +
+                KEY_DAY + " INTEGER, " + KEY_MONTH + " INTEGER, " + KEY_YEAR +
+                " INTEGER" + ")";
 
         db.execSQL(CREATE_ALCOHOL_TABLE);
         db.execSQL(CREATE_GOAL_TABLE);
@@ -127,10 +128,10 @@ public class DBHandler extends SQLiteOpenHelper {
      * Gets the units per week
      * @return int, amount of units per week
      */
-    public int getGoal() {
+    public int getGoal(int i) {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.query(TABLE_GOALS, new String[] {KEY_ID, KEY_GOAL}, KEY_ID + "=?",
-                new String[]{String.valueOf(0)}, null, null, null, null);
+                new String[]{String.valueOf(i)}, null, null, null, null);
 
         if (cursor != null) {
             cursor.moveToFirst();
@@ -236,13 +237,13 @@ public class DBHandler extends SQLiteOpenHelper {
      * @param newGoal int, new goal value
      * @return int, 1 if successful, 0 otherwise
      */
-    public int updateGoal(int newGoal) {
+    public int updateGoal(int i, int newGoal) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
         values.put(KEY_GOAL, newGoal);
 
-        return db.update(TABLE_GOALS, values, KEY_ID + " = ?", new String[] {String.valueOf(0)});
+        return db.update(TABLE_GOALS, values, KEY_ID + " = ?", new String[] {String.valueOf(i)});
     }
 
     /**
@@ -270,10 +271,10 @@ public class DBHandler extends SQLiteOpenHelper {
                 new String[] {String.valueOf(alcohol.getId())});
     }
 
-    public void deleteGoal() {
+    public void deleteGoal(int i) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_ALCOHOLS, KEY_ID + " = ?",
-                new String[]{String.valueOf(0)});
+                new String[]{String.valueOf(i)});
         db.close();
     }
 
