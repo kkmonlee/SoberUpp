@@ -86,6 +86,7 @@ public class MainActivity extends Navigation
     }
 
     // Creates a notification
+    //https://gist.github.com/BrandonSmith/6679223
     private void scheduleNotification(Notification notification, int delay) {
 
         Intent notificationIntent = new Intent(this, NotificationReciever.class);
