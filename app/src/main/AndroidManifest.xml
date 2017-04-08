@@ -60,6 +60,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="gauge.soberupp.Settings" />
         </activity>
+        <receiver android:name=".NotificationReciever" />
+
     </application>
 
 </manifest>

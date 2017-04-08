@@ -1,8 +1,13 @@
 package gauge.soberupp;
 
+import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -76,6 +81,31 @@ public class MainActivity extends Navigation
         PieAngleAnimation animation = new PieAngleAnimation(pieView);
         animation.setDuration(2500); //This is the duration of the animation in millis
         pieView.startAnimation(animation);
+
+        scheduleNotification(getNotification(), 1000);
+    }
+
+    // Creates a notification
+    private void scheduleNotification(Notification notification, int delay) {
+
+        Intent notificationIntent = new Intent(this, NotificationReciever.class);
+        notificationIntent.putExtra(NotificationReciever.NOTIFICATION_ID, 1);
+        notificationIntent.putExtra(NotificationReciever.NOTIFICATION, notification);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Calendar alarmTime = Calendar.getInstance();
+        alarmTime.set(alarmTime.YEAR, alarmTime.MONTH, alarmTime.DAY_OF_MONTH, 18, 0,0);
+        long futureInMillis = alarmTime.getTimeInMillis();
+        AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+    }
+
+    private Notification getNotification() {
+        Notification.Builder builder = new Notification.Builder(this);
+        builder.setContentTitle("SoberUpp");
+        builder.setContentText("HI");
+        builder.setSmallIcon(R.mipmap.ic_launcher);
+        return builder.build();
     }
 
     /**
