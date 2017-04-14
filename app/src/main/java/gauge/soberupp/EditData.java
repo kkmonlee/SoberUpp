@@ -67,6 +67,7 @@ public class EditData extends Navigation
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 setVolumeSpinner(drinkType.getSelectedItem().toString());
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
             }
@@ -83,6 +84,7 @@ public class EditData extends Navigation
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 setData(entrySelect.getSelectedItemId());
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
             }
@@ -96,6 +98,7 @@ public class EditData extends Navigation
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 setCustomVolume(drinkVolume.getSelectedItem().toString());
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
             }
@@ -262,7 +265,7 @@ public class EditData extends Navigation
                 TableRow customVolume = (TableRow) findViewById(R.id.editCustomMl);
                 for (String s : volumes) {
                     String[] volumeSplit = s.split(" ");
-                    if(s.equals("Other")){
+                    if (s.equals("Other")) {
                         break;
                     } else if (Double.valueOf(volumeSplit[volumeSplit.length - 1].substring(0, volumeSplit[1].length() - 2)) == alcoholSelected.getVolume()) {
                         volumeSelected = s;
@@ -270,7 +273,7 @@ public class EditData extends Navigation
                 }
 
                 // Checks if it is a custom volume
-                if(volumeSelected == null){
+                if (volumeSelected == null) {
                     customVolume.setVisibility(View.VISIBLE);
                     EditText editTextVolume = (EditText) findViewById(R.id.editCustomVolume);
                     editTextVolume.setText(String.valueOf(alcoholSelected.getVolume()));
@@ -284,12 +287,13 @@ public class EditData extends Navigation
 
     /**
      * Shows the custom volume row if other is selected
+     *
      * @param volumeSelected : the volume amount selected
      */
-    private void setCustomVolume(String volumeSelected){
+    private void setCustomVolume(String volumeSelected) {
         TableRow customVolume = (TableRow) findViewById(R.id.editCustomMl);
         customVolume.setVisibility(View.INVISIBLE);
-        if(volumeSelected.equals("Other")){
+        if (volumeSelected.equals("Other")) {
             customVolume.setVisibility(View.VISIBLE);
         }
     }
@@ -324,7 +328,7 @@ public class EditData extends Navigation
             String quantityDrunk = numberDrunk.getText().toString();
             String drinkType = drink.getSelectedItem().toString();
             String drinkVolume = volume.getSelectedItem().toString();
-            if(drinkVolume.equals("Other")){
+            if (drinkVolume.equals("Other")) {
                 EditText volumeEditText = (EditText) findViewById(R.id.editCustomVolume);
                 drinkVolume = volumeEditText.getText().toString() + "ml";
             }
@@ -344,7 +348,7 @@ public class EditData extends Navigation
                 message.setText("ABV too high");
             } else if (Double.parseDouble(quantityDrunk) >= 30.0) {
                 message.setText("You have drunk too many");
-            }  else if(drinkVolume.isEmpty() || drinkVolume.equals("0ml")){
+            } else if (drinkVolume.isEmpty() || drinkVolume.equals("0ml")) {
                 message.setText("Set Valid Volume");
             } else {
 
@@ -373,7 +377,7 @@ public class EditData extends Navigation
 
                 // Creates the alcohol object with the data provided
                 Alcohol alcohol = new Alcohol(alcoholSelected.getId(), date, alcoholType,
-                        Double.valueOf(volumeSplit[volumeSplit.length - 1].substring(0, volumeSplit[volumeSplit.length -1].length() - 2)),
+                        Double.valueOf(volumeSplit[volumeSplit.length - 1].substring(0, volumeSplit[volumeSplit.length - 1].length() - 2)),
                         Double.valueOf(quantityDrunk), Double.valueOf(abvOfDrink), commentsInput);
 
                 // Updates the old alcohol entry with the new one
@@ -413,6 +417,7 @@ public class EditData extends Navigation
 
     /**
      * Sets the popup to confirm deletion
+     *
      * @param alcohol : the alcohol element to be deleted
      */
     private void callPopup(Alcohol alcohol) {

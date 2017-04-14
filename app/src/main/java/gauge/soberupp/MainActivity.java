@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -95,9 +94,9 @@ public class MainActivity extends Navigation
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Calendar alarmTime = Calendar.getInstance();
-        alarmTime.set(alarmTime.YEAR, alarmTime.MONTH, alarmTime.DAY_OF_MONTH, 18, 0,0);
+        alarmTime.set(alarmTime.YEAR, alarmTime.MONTH, alarmTime.DAY_OF_MONTH, 18, 0, 0);
         long futureInMillis = alarmTime.getTimeInMillis();
-        AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
     }
 

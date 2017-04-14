@@ -15,10 +15,10 @@ import java.util.List;
 
 public class DBHandler extends SQLiteOpenHelper {
 
-    // Database version
-    private static final int DATABASE_VERSION = 1;
     // Database name
     public static final String DATABASE_NAME = "AlcoholInfo";
+    // Database version
+    private static final int DATABASE_VERSION = 1;
     // Table names
     private static final String TABLE_ALCOHOLS = "alcohols";
     private static final String TABLE_GOALS = "goals";
@@ -89,6 +89,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
     /**
      * Adds a new goal to the goals column
+     *
      * @param goal
      * @param date
      */
@@ -133,11 +134,12 @@ public class DBHandler extends SQLiteOpenHelper {
 
     /**
      * Gets the units per week
+     *
      * @return int, amount of units per week
      */
     public int getGoal(int i) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.query(TABLE_GOALS, new String[] {KEY_ID, KEY_GOAL}, KEY_ID + "=?",
+        Cursor cursor = db.query(TABLE_GOALS, new String[]{KEY_ID, KEY_GOAL}, KEY_ID + "=?",
                 new String[]{String.valueOf(i)}, null, null, null, null);
 
         if (cursor != null) {
@@ -183,7 +185,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
     public List<Integer> getAllGoals() {
         List<Integer> goalList = new ArrayList<>();
-        String selectQuery = "SELECT * FROM " + TABLE_GOALS+ " ORDER BY " + KEY_DAY +
+        String selectQuery = "SELECT * FROM " + TABLE_GOALS + " ORDER BY " + KEY_DAY +
                 "," + KEY_MONTH + "," + KEY_YEAR + " DESC";
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -260,6 +262,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
     /**
      * Updates the goal value to another value
+     *
      * @param newGoal int, new goal value
      * @return int, 1 if successful, 0 otherwise
      */
@@ -269,7 +272,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
         values.put(KEY_GOAL, newGoal);
 
-        return db.update(TABLE_GOALS, values, KEY_ID + " = ?", new String[] {String.valueOf(i)});
+        return db.update(TABLE_GOALS, values, KEY_ID + " = ?", new String[]{String.valueOf(i)});
     }
 
     /**
@@ -294,7 +297,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
         // Updating row
         return db.update(TABLE_ALCOHOLS, values, KEY_ID + " = ?",
-                new String[] {String.valueOf(alcohol.getId())});
+                new String[]{String.valueOf(alcohol.getId())});
     }
 
     public void deleteGoal(int i) {

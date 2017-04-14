@@ -83,6 +83,7 @@ public class AddData extends Navigation
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 setVolumeSpinner(drinkType.getSelectedItem().toString());
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
             }
@@ -95,6 +96,7 @@ public class AddData extends Navigation
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 setCustomVolume(drinkVolume.getSelectedItem().toString());
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
             }
@@ -129,6 +131,7 @@ public class AddData extends Navigation
 
     /**
      * Sets the drink spinner to the array
+     *
      * @param spin : the drink spinner
      */
     private void setDrinkSpinner(Spinner spin) {
@@ -139,6 +142,7 @@ public class AddData extends Navigation
 
     /**
      * Sets the volume spinner depending on what drink was selected
+     *
      * @param drinkType : the drink type selected
      */
     private void setVolumeSpinner(String drinkType) {
@@ -176,18 +180,20 @@ public class AddData extends Navigation
 
     /**
      * Shows the custom volume row if other is selected
+     *
      * @param volumeSelected : the volume amount selected
      */
-    private void setCustomVolume(String volumeSelected){
+    private void setCustomVolume(String volumeSelected) {
         TableRow customVolume = (TableRow) findViewById(R.id.customMl);
         customVolume.setVisibility(View.INVISIBLE);
-        if(volumeSelected.equals("Other")){
+        if (volumeSelected.equals("Other")) {
             customVolume.setVisibility(View.VISIBLE);
         }
     }
 
     /**
      * Adds the data to the database when the button is selected
+     *
      * @param view : the view of the button
      */
     public void getData(View view) {
@@ -214,7 +220,7 @@ public class AddData extends Navigation
 
         Spinner drinkVolumeSpinner = (Spinner) findViewById(R.id.volume);
         String drinkVolume = drinkVolumeSpinner.getSelectedItem().toString();
-        if(drinkVolume.equals("Other")){
+        if (drinkVolume.equals("Other")) {
             EditText volumeEditText = (EditText) findViewById(R.id.customVolume);
             drinkVolume = volumeEditText.getText().toString() + "ml";
         }
@@ -235,7 +241,7 @@ public class AddData extends Navigation
             message.setText("Enter how many drinks you have drunk");
         } else if (Double.parseDouble(abvOfDrink) >= 90.0) {
             message.setText("ABV too high");
-        } else if(drinkVolume.isEmpty() || drinkVolume.equals("0ml")){
+        } else if (drinkVolume.isEmpty() || drinkVolume.equals("0ml")) {
             message.setText("Set Valid Volume");
         } else {
             AlcoholType alcoholType = null;
@@ -270,6 +276,7 @@ public class AddData extends Navigation
 
     /**
      * Sets the popup to confirm addition
+     *
      * @param alcohol : the alcohol element to be added
      */
     private void callPopup(Alcohol alcohol) {
@@ -291,7 +298,7 @@ public class AddData extends Navigation
 
         // Sets the text to show whats being added
         TextView popUp = (TextView) popupView.findViewById(R.id.popupText);
-        if(alcoholToBeVerified.getVolume() >= 30) {
+        if (alcoholToBeVerified.getVolume() >= 30) {
             popUp.setText("Entry to be added - Nuber drunk seems to be high\n" + "Date: " + alcohol.getDate() +
                     ", Type: " + alcohol.getAlcoholType().getName() + ", Volume: " +
                     alcohol.getVolume() + ", Quantity: " + alcohol.getQuantity() +
@@ -324,17 +331,17 @@ public class AddData extends Navigation
     }
 
 
-        /**
-         * This is executed when the "Read" button is pressed
-         *
-         * Creates a FileInputStream and opens data.txt.
-         * Since FileInputStream reads by byte, we create a byte[] buffer of size 1024
-         * The content of the file is then appended into a new string
-         *
-         * To access the file data, use fileContent.toString().
-         *
-         * @param view View object required for button
-         */
+    /**
+     * This is executed when the "Read" button is pressed
+     * <p>
+     * Creates a FileInputStream and opens data.txt.
+     * Since FileInputStream reads by byte, we create a byte[] buffer of size 1024
+     * The content of the file is then appended into a new string
+     * <p>
+     * To access the file data, use fileContent.toString().
+     *
+     * @param view View object required for button
+     */
     public void readFile(View view) {
         printData(db.getAllAlcohols());
     }
@@ -354,7 +361,7 @@ public class AddData extends Navigation
         final TextView readData = (TextView) findViewById(R.id.printData);
         String log = "";
         for (Alcohol alcohol : alcoholList) {
-            log +=  "Date: " + alcohol.getDate() +
+            log += "Date: " + alcohol.getDate() +
                     ", Type: " + alcohol.getAlcoholType().getName() + ", Volume: " +
                     alcohol.getVolume() + ", Quantity: " + alcohol.getQuantity() +
                     "Units: " + alcohol.getUnits() + "\nComment: " + alcohol.getComment() +
