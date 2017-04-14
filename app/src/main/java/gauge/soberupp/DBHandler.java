@@ -89,13 +89,20 @@ public class DBHandler extends SQLiteOpenHelper {
 
     /**
      * Adds a new goal to the goals column
-     * @param goal int, number of units per week?
+     * @param goal
+     * @param date
      */
-    public void addGoal(int goal) {
+    public void addGoal(int goal, String date) {
+        String[] split = date.split("-");
+
+
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
         values.put(KEY_GOAL, goal);
+        values.put(KEY_DAY, split[0]);
+        values.put(KEY_MONTH, split[1]);
+        values.put(KEY_YEAR, split[2]);
 
         db.insert(TABLE_GOALS, null, values);
         db.close();
@@ -172,6 +179,25 @@ public class DBHandler extends SQLiteOpenHelper {
         Alcohol alcohol = new Alcohol(Integer.parseInt(cursor.getString(0)), date, alcoholType, cursor.getDouble(5), cursor.getDouble(6), cursor.getDouble(7), cursor.getString(8));
         cursor.close();
         return alcohol;
+    }
+
+    public List<Integer> getAllGoals() {
+        List<Integer> goalList = new ArrayList<>();
+        String selectQuery = "SELECT * FROM " + TABLE_GOALS+ " ORDER BY " + KEY_DAY +
+                "," + KEY_MONTH + "," + KEY_YEAR + " DESC";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                goalList.add(cursor.getInt(1));
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+
+        return goalList;
     }
 
     /**
