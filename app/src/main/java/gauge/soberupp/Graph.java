@@ -216,7 +216,7 @@ public class Graph extends Navigation
         graph.removeAllSeries();
 
         // Checks if the data has been filtered to unfilter it
-        if(!errorText.getText().toString().equals("Data Filtered")) {
+        if (!errorText.getText().toString().equals("Data Filtered")) {
             // Makes inequality inclusive on both sides
             dateTo.set(dateTo.get(Calendar.YEAR), dateTo.get(Calendar.MONTH), dateTo.get(Calendar.DAY_OF_MONTH) + 1, 0, 0, 0);
             // Removes the previous series from the graph

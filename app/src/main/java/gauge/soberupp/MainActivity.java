@@ -208,9 +208,10 @@ public class MainActivity extends Navigation
 
     /**
      * Gets the current goal value
+     *
      * @return : the current goal
      */
-    private int getCurrentGoal(){
+    private int getCurrentGoal() {
         //Get the Monday for start of week
         Calendar dateFrom = Calendar.getInstance();
         dateFrom.set(dateFrom.get(Calendar.YEAR), dateFrom.get(Calendar.MONTH), dateFrom.get(Calendar.DAY_OF_MONTH) - 1, 0, 0, 0);
@@ -225,29 +226,30 @@ public class MainActivity extends Navigation
 
     /**
      * Gets the goal for the date provided
+     *
      * @param date : the date string
      * @return : the goal
      */
-    public int getGoal(String date){
+    public int getGoal(String date) {
         HashMap<String, Integer> goals = db.getAllGoals();
         // Defaults to 14 if there are no goals set
-        if(goals.size() == 0) {
+        if (goals.size() == 0) {
             return 14;
         } else {
             // Checks if they have added a goal for this week
-            if(goals.containsKey(date)){
+            if (goals.containsKey(date)) {
                 return goals.get(date);
             } else {
-                while(true) {
+                while (true) {
                     // Goes to previous weeks goals instead
                     String[] dateSplit = date.split("-");
                     Calendar goalDate = Calendar.getInstance();
-                    goalDate.set(Integer.parseInt(dateSplit[2]), Integer.parseInt(dateSplit[1])-1, Integer.parseInt(dateSplit[0]));
+                    goalDate.set(Integer.parseInt(dateSplit[2]), Integer.parseInt(dateSplit[1]) - 1, Integer.parseInt(dateSplit[0]));
                     // Gets Last weeks date
                     goalDate.add(Calendar.DATE, -7);
                     date = sdf.format(goalDate.getTime());
-                    if(goals.containsKey(date)){
-                        return(goals.get(date));
+                    if (goals.containsKey(date)) {
+                        return (goals.get(date));
                     }
                 }
             }
