@@ -22,7 +22,7 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
     // Table names
     private static final String TABLE_ALCOHOLS = "alcohols";
-    private static final String TABLE_GOALS = "goals";
+    private static final String TABLE_GOALS = "goalsTable";
     // Alcohols table columns names
     private static final String KEY_GOAL = "goal";
     private static final String KEY_ID = "id";
@@ -52,6 +52,11 @@ public class DBHandler extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase db) {
+        String CREATE_GOAL_TABLE = "CREATE TABLE " + TABLE_GOALS + " (" +
+                KEY_ID + " INTEGER PRIMARY KEY, " + KEY_GOAL + " INTEGER, " +
+                KEY_DAY + " TEXT, " + KEY_MONTH + " TEXT, " + KEY_YEAR +
+                " TEXT" + ")";
+        db.execSQL(CREATE_GOAL_TABLE);
         // Date is cursor.getString(1)
         // Units is cursor.getDouble(2);
         String CREATE_ALCOHOL_TABLE = "CREATE TABLE " + TABLE_ALCOHOLS + " (" +
@@ -61,13 +66,7 @@ public class DBHandler extends SQLiteOpenHelper {
                 KEY_QUANTITY + " REAL, " + KEY_ABV + " REAL, " +
                 KEY_COMMENT + " TEXT" + ")";
         // Creates the Goals table
-        String CREATE_GOAL_TABLE = "CREATE TABLE " + TABLE_GOALS + " (" +
-                KEY_ID + " INTEGER PRIMARY KEY, " + KEY_GOAL + " INTEGER, " +
-                KEY_DAY + " TEXT, " + KEY_MONTH + " TEXT, " + KEY_YEAR +
-                " TEXT" + ")";
-
         db.execSQL(CREATE_ALCOHOL_TABLE);
-        db.execSQL(CREATE_GOAL_TABLE);
     }
 
     /**
@@ -211,7 +210,7 @@ public class DBHandler extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 String date = cursor.getString(2) + "-" + cursor.getString(3) + "-" + cursor.getString(4);
-                if(date.equals(dateNeeded)){
+                if (date.equals(dateNeeded)) {
                     return cursor.getInt(0);
                 }
             } while (cursor.moveToNext());

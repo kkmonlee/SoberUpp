@@ -21,8 +21,6 @@ import android.widget.TextView;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
 
 public class Settings extends Navigation
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -100,9 +98,10 @@ public class Settings extends Navigation
 
     /**
      * Goes to the trophies page
+     *
      * @param view : the view of the button
      */
-    public void goToTrophies(View view){
+    public void goToTrophies(View view) {
         startActivity(new Intent(this, TrophyPage.class));
     }
 
@@ -161,29 +160,30 @@ public class Settings extends Navigation
 
     /**
      * Gets the goal for the date provided
+     *
      * @param date : the date string
      * @return : the goal
      */
-    public int getGoal(String date){
+    public int getGoal(String date) {
         HashMap<String, Integer> goals = db.getAllGoals();
         // Defaults to 14 if there are no goals set
-        if(goals.size() == 0) {
+        if (goals.size() == 0) {
             return 14;
         } else {
             // Checks if they have added a goal for this week
-            if(goals.containsKey(date)){
+            if (goals.containsKey(date)) {
                 return goals.get(date);
             } else {
-                while(true) {
+                while (true) {
                     // Goes to previous weeks goals instead
                     String[] dateSplit = date.split("-");
                     Calendar goalDate = Calendar.getInstance();
-                    goalDate.set(Integer.parseInt(dateSplit[2]), Integer.parseInt(dateSplit[1])-1, Integer.parseInt(dateSplit[0]));
+                    goalDate.set(Integer.parseInt(dateSplit[2]), Integer.parseInt(dateSplit[1]) - 1, Integer.parseInt(dateSplit[0]));
                     // Gets Last weeks date
                     goalDate.add(Calendar.DATE, -7);
                     date = sdf.format(goalDate.getTime());
-                     if(goals.containsKey(date)){
-                        return(goals.get(date));
+                    if (goals.containsKey(date)) {
+                        return (goals.get(date));
                     }
                 }
             }
@@ -192,9 +192,10 @@ public class Settings extends Navigation
 
     /**
      * Edits the current goal for this week
+     *
      * @param view
      */
-    public void editCurrentGoal(View view){
+    public void editCurrentGoal(View view) {
         //Get the Monday for start of week
         Calendar dateFrom = Calendar.getInstance();
         dateFrom.set(dateFrom.get(Calendar.YEAR), dateFrom.get(Calendar.MONTH), dateFrom.get(Calendar.DAY_OF_MONTH) - 1, 0, 0, 0);
@@ -209,11 +210,11 @@ public class Settings extends Navigation
         int editGoal = Integer.parseInt(goal.getText().toString());
 
         // Checks if there is a goal for this week set
-        if(db.getAllGoals().size() == 0){
+        if (db.getAllGoals().size() == 0) {
             db.addGoal(editGoal, dateFromString);
         } else {
             // Checks if there is a goal for this week
-            if(db.getGoalID(dateFromString) == -1){
+            if (db.getGoalID(dateFromString) == -1) {
                 // Adds a goal
                 db.addGoal(editGoal, dateFromString);
             } else {
@@ -224,7 +225,7 @@ public class Settings extends Navigation
         setCurrentGoal();
     }
 
-    public void setNextGoal(View view){
+    public void setNextGoal(View view) {
         // Gets the Monday of the beginning of next week
         Calendar dateFrom = Calendar.getInstance();
         dateFrom.set(dateFrom.get(Calendar.YEAR), dateFrom.get(Calendar.MONTH), dateFrom.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
@@ -239,11 +240,11 @@ public class Settings extends Navigation
         int editGoal = Integer.parseInt(goal.getText().toString());
 
         // Checks if there is a goal for next week set
-        if(db.getAllGoals().size() == 0){
+        if (db.getAllGoals().size() == 0) {
             db.addGoal(editGoal, date);
         } else {
             // Checks if there is a goal next week
-            if(db.getGoalID(date) == -1){
+            if (db.getGoalID(date) == -1) {
                 // Adds a goal
                 db.addGoal(editGoal, date);
             } else {
@@ -253,7 +254,6 @@ public class Settings extends Navigation
         }
         setNewGoalDate();
     }
-
 
 
     /**
