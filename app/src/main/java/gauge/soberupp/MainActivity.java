@@ -105,7 +105,7 @@ public class MainActivity extends Navigation
     private Notification getNotification() {
         Notification.Builder builder = new Notification.Builder(this);
         builder.setContentTitle("SoberUpp");
-        builder.setContentText("HI");
+        builder.setContentText("Have you remembered to add data today?");
         builder.setSmallIcon(R.mipmap.ic_launcher);
         return builder.build();
     }
@@ -136,7 +136,7 @@ public class MainActivity extends Navigation
     }
 
     /**
-     * Calculates how manu units have been drunk this week
+     * Calculates how many units have been drunk this week
      */
     private double getUnitsDrunkThisWeek() {
         //Get the Monday for start of week
@@ -155,15 +155,12 @@ public class MainActivity extends Navigation
         }
         dateTo.set(dateTo.get(Calendar.YEAR), dateTo.get(Calendar.MONTH), dateTo.get(Calendar.DAY_OF_MONTH) + 1, 0, 0, 0);
 
-        System.out.println(sdf.format(dateFrom.getTime()));
-        System.out.println(sdf.format(dateTo.getTime()));
         // Iterates though the alcohol list and works out which ones are in the range
         double units = 0;
         for (Alcohol alcohol : alcohols) {
             Calendar date = Calendar.getInstance();
             date.set(Integer.parseInt(alcohol.getYYYY()), Integer.parseInt(alcohol.getMM()) - 1, Integer.parseInt(alcohol.getDD()), 0, 0, 0);
             // dateFrom <= date < dateTo
-            System.out.println(sdf.format(date.getTime()));
             if ((date.compareTo(dateFrom) >= 0) && ((dateTo.compareTo(date) >= 0) || (dateTo.equals(date)))) {
                 units += alcohol.getUnits();
             }
@@ -209,6 +206,10 @@ public class MainActivity extends Navigation
     }
 
 
+    /**
+     * Gets the current goal value
+     * @return : the current goal
+     */
     private int getCurrentGoal(){
         //Get the Monday for start of week
         Calendar dateFrom = Calendar.getInstance();

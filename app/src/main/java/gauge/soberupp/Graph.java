@@ -33,6 +33,8 @@ public class Graph extends Navigation
 
     private List<Alcohol> alcohols;
     private GraphView graph;
+    private SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +79,6 @@ public class Graph extends Navigation
             public void onTap(Series series, DataPointInterface dataPoint) {
                 Date day = new Date();
                 day.setTime((long) dataPoint.getX());
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
                 String date = sdf.format(day);
                 Toast.makeText(Graph.this, date + " Units : " + dataPoint.getY(), Toast.LENGTH_SHORT).show();
             }
@@ -222,7 +223,6 @@ public class Graph extends Navigation
             Date d = date.getTime();
             // dateFrom <= date <= dateTo
             if ((date.compareTo(dateFrom) >= 0) && ((dateTo.compareTo(date) >= 0) || (dateTo.equals(date)))) {
-                System.out.println(date);
                 if (alcoholList.containsKey(d)) {
                     alcoholList.put(d, alcoholList.get(d) + alcohol.getUnits());
                 } else {
