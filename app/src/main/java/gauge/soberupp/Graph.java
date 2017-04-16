@@ -10,6 +10,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -197,7 +198,6 @@ public class Graph extends Navigation
             dateToDay.set(Integer.valueOf(dateToSplit[2]), Integer.valueOf(dateToSplit[1]) - 1, Integer.valueOf(dateToSplit[0]), 0, 0, 0);
             if (dateToDay.compareTo(dateFromDay) > 0) {
                 filterGraph(dateFromDay, dateToDay);
-                errorText.setText("Data Filtered");
             } else {
                 errorText.setText("Date From is greater or equal than the Date to");
             }
@@ -211,57 +211,115 @@ public class Graph extends Navigation
      * @param dateTo   : the last date of the filtering
      */
     private void filterGraph(Calendar dateFrom, Calendar dateTo) {
-        // Makes inequality inclusive on both sides
-        dateTo.set(dateTo.get(Calendar.YEAR), dateTo.get(Calendar.MONTH), dateTo.get(Calendar.DAY_OF_MONTH) + 1, 0, 0, 0);
-        // Removes the previous series from the graph
+        TextView errorText = (TextView) findViewById(R.id.errorText);
+        Button filterData = (Button) findViewById(R.id.SubmitButton);
         graph.removeAllSeries();
-        TreeMap<Date, Double> alcoholList = new TreeMap<Date, Double>();
-        // Iterates through the alcohols to see if they are in the range
-        for (Alcohol alcohol : alcohols) {
-            Calendar date = Calendar.getInstance();
-            date.set(Integer.parseInt(alcohol.getYYYY()), Integer.parseInt(alcohol.getMM()) - 1, Integer.parseInt(alcohol.getDD()), 0, 0, 0);
-            Date d = date.getTime();
-            // dateFrom <= date <= dateTo
-            if ((date.compareTo(dateFrom) >= 0) && ((dateTo.compareTo(date) >= 0) || (dateTo.equals(date)))) {
+
+        // Checks if the data has been filtered to unfilter it
+        if(!errorText.getText().toString().equals("Data Filtered")) {
+            // Makes inequality inclusive on both sides
+            dateTo.set(dateTo.get(Calendar.YEAR), dateTo.get(Calendar.MONTH), dateTo.get(Calendar.DAY_OF_MONTH) + 1, 0, 0, 0);
+            // Removes the previous series from the graph
+            TreeMap<Date, Double> alcoholList = new TreeMap<Date, Double>();
+            // Iterates through the alcohols to see if they are in the range
+            for (Alcohol alcohol : alcohols) {
+                Calendar date = Calendar.getInstance();
+                date.set(Integer.parseInt(alcohol.getYYYY()), Integer.parseInt(alcohol.getMM()) - 1, Integer.parseInt(alcohol.getDD()), 0, 0, 0);
+                Date d = date.getTime();
+                // dateFrom <= date <= dateTo
+                if ((date.compareTo(dateFrom) >= 0) && ((dateTo.compareTo(date) >= 0) || (dateTo.equals(date)))) {
+                    if (alcoholList.containsKey(d)) {
+                        alcoholList.put(d, alcoholList.get(d) + alcohol.getUnits());
+                    } else {
+                        alcoholList.put(d, alcohol.getUnits());
+                    }
+                }
+            }
+            // Adds all the points to the graph
+            BarGraphSeries<DataPoint> series = new BarGraphSeries<>(new DataPoint[]{});
+            // Adds the data to the graph
+            for (Date D : alcoholList.keySet()) {
+                series.appendData(new DataPoint(D, alcoholList.get(D)), true, alcoholList.size());
+            }
+
+            // Adds a listener to the graph to display the data entry when you tap the graph
+            series.setOnDataPointTapListener(new OnDataPointTapListener() {
+                @Override
+                public void onTap(Series series, DataPointInterface dataPoint) {
+                    Date day = new Date();
+                    day.setTime((long) dataPoint.getX());
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                    String date = sdf.format(day);
+                    Toast.makeText(Graph.this, date + " Units : " + dataPoint.getY(), Toast.LENGTH_SHORT).show();
+                }
+            });
+
+
+            if (!alcoholList.isEmpty()) {
+                // set manual Y bounds
+                graph.getViewport().setYAxisBoundsManual(true);
+                graph.getViewport().setMinY(0);
+                graph.getViewport().setMaxY(Collections.max(alcoholList.values()) + 5);
+
+                // set manual X bounds
+                graph.getViewport().setXAxisBoundsManual(true);
+                graph.getViewport().setMinX(alcoholList.firstKey().getTime());
+                graph.getViewport().setMaxX(alcoholList.lastKey().getTime());
+            }
+            graph.addSeries(series);
+            errorText.setText("Data Filtered");
+            filterData.setText("Unfilter Data");
+        } else {
+            // Adds each days entry to a treemap
+            TreeMap<Date, Double> alcoholList = new TreeMap<Date, Double>();
+            for (Alcohol alcohol : alcohols) {
+                Calendar date = Calendar.getInstance();
+                date.set(Integer.parseInt(alcohol.getYYYY()), Integer.parseInt(alcohol.getMM()) - 1, Integer.parseInt(alcohol.getDD()), 0, 0, 0);
+                Date d = date.getTime();
                 if (alcoholList.containsKey(d)) {
                     alcoholList.put(d, alcoholList.get(d) + alcohol.getUnits());
                 } else {
                     alcoholList.put(d, alcohol.getUnits());
                 }
             }
-        }
-        // Adds all the points to the graph
-        BarGraphSeries<DataPoint> series = new BarGraphSeries<>(new DataPoint[]{});
-        // Adds the data to the graph
-        for (Date D : alcoholList.keySet()) {
-            series.appendData(new DataPoint(D, alcoholList.get(D)), true, alcoholList.size());
-        }
 
-        // Adds a listener to the graph to display the data entry when you tap the graph
-        series.setOnDataPointTapListener(new OnDataPointTapListener() {
-            @Override
-            public void onTap(Series series, DataPointInterface dataPoint) {
-                Date day = new Date();
-                day.setTime((long) dataPoint.getX());
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                String date = sdf.format(day);
-                Toast.makeText(Graph.this, date + " Units : " + dataPoint.getY(), Toast.LENGTH_SHORT).show();
+            // Initialises the bar graph
+            BarGraphSeries<DataPoint> series = new BarGraphSeries<>(new DataPoint[]{});
+            // Adds the data to the graph
+            for (Date D : alcoholList.keySet()) {
+                series.appendData(new DataPoint(D, alcoholList.get(D)), true, alcoholList.size());
             }
-        });
 
+            // Sets up an listener to show the date and units drunk on the selected day
+            series.setOnDataPointTapListener(new OnDataPointTapListener() {
+                @Override
+                public void onTap(Series series, DataPointInterface dataPoint) {
+                    Date day = new Date();
+                    day.setTime((long) dataPoint.getX());
+                    String date = sdf.format(day);
+                    Toast.makeText(Graph.this, date + " Units : " + dataPoint.getY(), Toast.LENGTH_SHORT).show();
+                }
+            });
 
-        if (!alcoholList.isEmpty()) {
-            // set manual Y bounds
-            graph.getViewport().setYAxisBoundsManual(true);
-            graph.getViewport().setMinY(0);
-            graph.getViewport().setMaxY(Collections.max(alcoholList.values()) + 5);
+            // set date label formatter
+            graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this));
+            graph.getGridLabelRenderer().setNumHorizontalLabels(3); // only 4 because of the space
+            if (!alcoholList.isEmpty()) {
+                // set manual Y bounds
+                graph.getViewport().setYAxisBoundsManual(true);
+                graph.getViewport().setMinY(0);
+                graph.getViewport().setMaxY(Collections.max(alcoholList.values()) + 1);
 
-            // set manual X bounds
-            graph.getViewport().setXAxisBoundsManual(true);
-            graph.getViewport().setMinX(alcoholList.firstKey().getTime());
-            graph.getViewport().setMaxX(alcoholList.lastKey().getTime());
+                // set manual X bounds
+                graph.getViewport().setXAxisBoundsManual(true);
+                graph.getViewport().setMinX(alcoholList.firstKey().getTime());
+                graph.getViewport().setMaxX(alcoholList.lastKey().getTime());
+            }
+            graph.addSeries(series);
+            errorText.setText("Data Unfiltered");
+            filterData.setText("Filter Data");
+
         }
-        graph.addSeries(series);
     }
 
 }
