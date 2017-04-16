@@ -185,7 +185,7 @@ public class AddData extends Navigation
      */
     private void setCustomVolume(String volumeSelected) {
         TableRow customVolume = (TableRow) findViewById(R.id.customMl);
-        customVolume.setVisibility(View.INVISIBLE);
+        customVolume.setVisibility(View.GONE);
         if (volumeSelected.equals("Other")) {
             customVolume.setVisibility(View.VISIBLE);
         }
@@ -299,15 +299,15 @@ public class AddData extends Navigation
         // Sets the text to show whats being added
         TextView popUp = (TextView) popupView.findViewById(R.id.popupText);
         if (alcoholToBeVerified.getVolume() >= 30) {
-            popUp.setText("Entry to be added - Nuber drunk seems to be high\n" + "Date: " + alcohol.getDate() +
+            popUp.setText("Entry to be added - Number drunk seems to be high\n" + "Date: " + alcohol.getDate() +
                     ", Type: " + alcohol.getAlcoholType().getName() + ", Volume: " +
                     alcohol.getVolume() + ", Quantity: " + alcohol.getQuantity() +
-                    "Units: " + alcohol.getUnits() + "\nComment: " + alcohol.getComment());
+                    ", Units: " + alcohol.getUnits() + "\nComment: " + alcohol.getComment());
         } else {
             popUp.setText("Entry to be added\n" + "Date: " + alcohol.getDate() +
                     ", Type: " + alcohol.getAlcoholType().getName() + ", Volume: " +
                     alcohol.getVolume() + ", Quantity: " + alcohol.getQuantity() +
-                    "Units: " + alcohol.getUnits() + "\nComment: " + alcohol.getComment());
+                    " Units: " + alcohol.getUnits() + "\nComment: " + alcohol.getComment());
         }
 
         // Decides what happens on the button clicks

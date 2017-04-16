@@ -292,7 +292,7 @@ public class EditData extends Navigation
      */
     private void setCustomVolume(String volumeSelected) {
         TableRow customVolume = (TableRow) findViewById(R.id.editCustomMl);
-        customVolume.setVisibility(View.INVISIBLE);
+        customVolume.setVisibility(View.GONE);
         if (volumeSelected.equals("Other")) {
             customVolume.setVisibility(View.VISIBLE);
         }
@@ -442,7 +442,7 @@ public class EditData extends Navigation
         popUp.setText("Entry to be deleted\n" + "Date: " + alcohol.getDate() +
                 ", Type: " + alcohol.getAlcoholType().getName() + ", Volume: " +
                 alcohol.getVolume() + ", Quantity: " + alcohol.getQuantity() +
-                "Units: " + alcohol.getUnits() + "\nComment: " + alcohol.getComment());
+                ", Units: " + alcohol.getUnits() + "\nComment: " + alcohol.getComment());
 
         // Decides what happens on the button clicks
         ((Button) popupView.findViewById(R.id.cancel))

@@ -29,6 +29,7 @@ public class Alcohol {
         this.abv = abv;
         this.comment = comment;
         split = this.date.split("-");
+        calculateUnits();
     }
 
     public double getUnits() {

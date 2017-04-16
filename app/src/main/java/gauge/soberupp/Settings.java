@@ -99,6 +99,14 @@ public class Settings extends Navigation
     }
 
     /**
+     * Goes to the trophies page
+     * @param view : the view of the button
+     */
+    public void goToTrophies(View view){
+        startActivity(new Intent(this, TrophyPage.class));
+    }
+
+    /**
      * Sets the textView and currentGoal Edit text for the current goals details
      */
     public void setCurrentGoal() {

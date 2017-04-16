@@ -60,6 +60,7 @@
         <item>Other</item>
     </string-array>
     <string name="title_activity_edit_data">EditData</string>
+    <string name="title_activity_trophy_page">TrophyPage</string>
 
 
 </resources>
