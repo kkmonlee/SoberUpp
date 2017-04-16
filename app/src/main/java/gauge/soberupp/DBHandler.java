@@ -19,7 +19,7 @@ public class DBHandler extends SQLiteOpenHelper {
     // Database name
     public static final String DATABASE_NAME = "AlcoholInfo";
     // Database version
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     // Table names
     private static final String TABLE_ALCOHOLS = "alcohols";
     private static final String TABLE_GOALS = "goals";
