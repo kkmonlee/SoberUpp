@@ -199,7 +199,7 @@ public class Graph extends Navigation
                 filterGraph(dateFromDay, dateToDay);
                 errorText.setText("Data Filtered");
             } else {
-                errorText.setText("<html>Date From is greater or equal than the Date to</html>");
+                errorText.setText("Date From is greater or equal than the Date to");
             }
         }
     }
