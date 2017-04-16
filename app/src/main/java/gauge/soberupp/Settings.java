@@ -13,15 +13,22 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 
 public class Settings extends Navigation
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+    private DBHandler db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +37,7 @@ public class Settings extends Navigation
         setContentView(R.layout.activity_settings);
         // Sets the title of the page
         setTitle("Settings");
+        db = new DBHandler(this);
         setNewGoalDate();
         setCurrentGoal();
         // START Code for the Navigation Bar
@@ -90,10 +98,10 @@ public class Settings extends Navigation
         startActivity(new Intent(this, EditData.class));
     }
 
-
+    /**
+     * Sets the textView and currentGoal Edit text for the current goals details
+     */
     public void setCurrentGoal() {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-
         //Get the Monday for start of week
         Calendar dateFrom = Calendar.getInstance();
         dateFrom.set(dateFrom.get(Calendar.YEAR), dateFrom.get(Calendar.MONTH), dateFrom.get(Calendar.DAY_OF_MONTH) - 1, 0, 0, 0);
@@ -113,23 +121,132 @@ public class Settings extends Navigation
         dateTo.set(dateTo.get(Calendar.YEAR), dateTo.get(Calendar.MONTH), dateTo.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
         String dateToString = sdf.format(dateTo.getTime());
 
+        // Sets the textView box
         TextView currentGoal = (TextView) findViewById(R.id.CurrentGoal);
-        currentGoal.setText("Your current goal is \n From " + dateFromString + " to " + dateToString + "\n with ?? units this week");
+        currentGoal.setText("Your current goal is \n From " + dateFromString + " to " + dateToString + "\n with " + getGoal(dateFromString) + " units this week");
+        // Sets the edit text to the current goal number
+        EditText currentGoalEdit = (EditText) findViewById(R.id.editGoalNumber);
+        currentGoalEdit.setText(String.valueOf(getGoal(dateFromString)));
     }
 
+    /**
+     * Sets the new goal date for the textView box
+     */
     public void setNewGoalDate() {
         // Gets the Monday of the beginning of next week
-        Calendar dateTo = Calendar.getInstance();
-        dateTo.set(dateTo.get(Calendar.YEAR), dateTo.get(Calendar.MONTH), dateTo.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
-        while (dateTo.get(Calendar.DAY_OF_WEEK) > dateTo.getFirstDayOfWeek()) {
-            dateTo.add(Calendar.DATE, +1); // Adds 1 day until first day of week.
+        Calendar dateFrom = Calendar.getInstance();
+        dateFrom.set(dateFrom.get(Calendar.YEAR), dateFrom.get(Calendar.MONTH), dateFrom.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
+        while (dateFrom.get(Calendar.DAY_OF_WEEK) > dateFrom.getFirstDayOfWeek()) {
+            dateFrom.add(Calendar.DATE, +1); // Adds 1 day until first day of week.
         }
-        dateTo.set(dateTo.get(Calendar.YEAR), dateTo.get(Calendar.MONTH), dateTo.get(Calendar.DAY_OF_MONTH) + 1, 0, 0, 0);
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        String date = sdf.format(dateTo.getTime());
+        dateFrom.set(dateFrom.get(Calendar.YEAR), dateFrom.get(Calendar.MONTH), dateFrom.get(Calendar.DAY_OF_MONTH) + 1, 0, 0, 0);
+        String date = sdf.format(dateFrom.getTime());
+
+        // Sets the textView for the goal start date
         TextView dateForNewGoal = (TextView) findViewById(R.id.goalSetDate);
-        dateForNewGoal.setText("The next goal is for the week beginning " + date);
+        dateForNewGoal.setText("The next goal is for the week beginning " + date + " is " + getGoal(date) + " units");
+
+        // Sets the edit text to the current value of the goal
+        EditText newGoal = (EditText) findViewById(R.id.nextGoalNumber);
+        newGoal.setText(String.valueOf(getGoal(date)));
     }
+
+    /**
+     * Gets the goal for the date provided
+     * @param date : the date string
+     * @return : the goal
+     */
+    public int getGoal(String date){
+        HashMap<String, Integer> goals = db.getAllGoals();
+        // Defaults to 14 if there are no goals set
+        if(goals.size() == 0) {
+            return 14;
+        } else {
+            // Checks if they have added a goal for this week
+            if(goals.containsKey(date)){
+                return goals.get(date);
+            } else {
+                while(true) {
+                    // Goes to previous weeks goals instead
+                    String[] dateSplit = date.split("-");
+                    Calendar goalDate = Calendar.getInstance();
+                    goalDate.set(Integer.parseInt(dateSplit[2]), Integer.parseInt(dateSplit[1])-1, Integer.parseInt(dateSplit[0]));
+                    // Gets Last weeks date
+                    goalDate.add(Calendar.DATE, -7);
+                    date = sdf.format(goalDate.getTime());
+                     if(goals.containsKey(date)){
+                        return(goals.get(date));
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Edits the current goal for this week
+     * @param view
+     */
+    public void editCurrentGoal(View view){
+        //Get the Monday for start of week
+        Calendar dateFrom = Calendar.getInstance();
+        dateFrom.set(dateFrom.get(Calendar.YEAR), dateFrom.get(Calendar.MONTH), dateFrom.get(Calendar.DAY_OF_MONTH) - 1, 0, 0, 0);
+        while (dateFrom.get(Calendar.DAY_OF_WEEK) > dateFrom.getFirstDayOfWeek()) {
+            dateFrom.add(Calendar.DATE, -1); // Subtract 1 day until first day of week.
+        }
+        dateFrom.set(dateFrom.get(Calendar.YEAR), dateFrom.get(Calendar.MONTH), dateFrom.get(Calendar.DAY_OF_MONTH) + 1, 0, 0, 0);
+        String dateFromString = sdf.format(dateFrom.getTime());
+
+        // Gets the goal number from the edit text
+        EditText goal = (EditText) findViewById(R.id.editGoalNumber);
+        int editGoal = Integer.parseInt(goal.getText().toString());
+
+        // Checks if there is a goal for this week set
+        if(db.getAllGoals().size() == 0){
+            db.addGoal(editGoal, dateFromString);
+        } else {
+            // Checks if there is a goal for this week
+            if(db.getGoalID(dateFromString) == -1){
+                // Adds a goal
+                db.addGoal(editGoal, dateFromString);
+            } else {
+                // Updates the goal
+                db.updateGoal(db.getGoalID(dateFromString), editGoal);
+            }
+        }
+        setCurrentGoal();
+    }
+
+    public void setNextGoal(View view){
+        // Gets the Monday of the beginning of next week
+        Calendar dateFrom = Calendar.getInstance();
+        dateFrom.set(dateFrom.get(Calendar.YEAR), dateFrom.get(Calendar.MONTH), dateFrom.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
+        while (dateFrom.get(Calendar.DAY_OF_WEEK) > dateFrom.getFirstDayOfWeek()) {
+            dateFrom.add(Calendar.DATE, +1); // Adds 1 day until first day of week.
+        }
+        dateFrom.set(dateFrom.get(Calendar.YEAR), dateFrom.get(Calendar.MONTH), dateFrom.get(Calendar.DAY_OF_MONTH) + 1, 0, 0, 0);
+        String date = sdf.format(dateFrom.getTime());
+
+        // Gets the goal number from the edit text
+        EditText goal = (EditText) findViewById(R.id.nextGoalNumber);
+        int editGoal = Integer.parseInt(goal.getText().toString());
+
+        // Checks if there is a goal for next week set
+        if(db.getAllGoals().size() == 0){
+            db.addGoal(editGoal, date);
+        } else {
+            // Checks if there is a goal next week
+            if(db.getGoalID(date) == -1){
+                // Adds a goal
+                db.addGoal(editGoal, date);
+            } else {
+                // Updates the goal
+                db.updateGoal(db.getGoalID(date), editGoal);
+            }
+        }
+        setNewGoalDate();
+    }
+
+
 
     /**
      * Sets the popup to confirm deletion of database

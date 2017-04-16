@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -62,8 +63,8 @@ public class DBHandler extends SQLiteOpenHelper {
         // Creates the Goals table
         String CREATE_GOAL_TABLE = "CREATE TABLE " + TABLE_GOALS + " (" +
                 KEY_ID + " INTEGER PRIMARY KEY, " + KEY_GOAL + " INTEGER, " +
-                KEY_DAY + " INTEGER, " + KEY_MONTH + " INTEGER, " + KEY_YEAR +
-                " INTEGER" + ")";
+                KEY_DAY + " TEXT, " + KEY_MONTH + " TEXT, " + KEY_YEAR +
+                " TEXT" + ")";
 
         db.execSQL(CREATE_ALCOHOL_TABLE);
         db.execSQL(CREATE_GOAL_TABLE);
@@ -183,23 +184,41 @@ public class DBHandler extends SQLiteOpenHelper {
         return alcohol;
     }
 
-    public List<Integer> getAllGoals() {
-        List<Integer> goalList = new ArrayList<>();
-        String selectQuery = "SELECT * FROM " + TABLE_GOALS + " ORDER BY " + KEY_DAY +
-                "," + KEY_MONTH + "," + KEY_YEAR + " DESC";
+    public HashMap<String, Integer> getAllGoals() {
+        HashMap<String, Integer> goalList = new HashMap<>();
+        String selectQuery = "SELECT * FROM " + TABLE_GOALS;
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         if (cursor.moveToFirst()) {
             do {
-                goalList.add(cursor.getInt(1));
+                String date = cursor.getString(2) + "-" + cursor.getString(3) + "-" + cursor.getString(4);
+                goalList.put(date, cursor.getInt(1));
             } while (cursor.moveToNext());
         }
-
         cursor.close();
 
         return goalList;
+    }
+
+    public int getGoalID(String dateNeeded) {
+        String selectQuery = "SELECT * FROM " + TABLE_GOALS;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                String date = cursor.getString(2) + "-" + cursor.getString(3) + "-" + cursor.getString(4);
+                if(date.equals(dateNeeded)){
+                    return cursor.getInt(0);
+                }
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+
+        return -1;
     }
 
     /**

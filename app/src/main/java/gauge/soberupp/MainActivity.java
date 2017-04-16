@@ -15,7 +15,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 import az.plainpie.PieView;
@@ -26,6 +28,7 @@ public class MainActivity extends Navigation
 
     private DBHandler db;
     private List<Alcohol> alcohols;
+    private SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,17 +56,16 @@ public class MainActivity extends Navigation
         // START code for Database
         db = new DBHandler(this);
         alcohols = db.getAllAlcohols();
-        getUnitsDrunkThisWeek();
 
         // Code to set pie chart
         //https://github.com/zurche/plain-pie?utm_source=android-arsenal.com&utm_medium=referral&utm_campaign=3689
         PieView pieView = (PieView) findViewById(R.id.pieView);
-        double percent = getUnitsDrunkThisWeek() * 100 / 14;
+        double percent = getUnitsDrunkThisWeek() * 100 / getCurrentGoal();
         if (percent == 0)
             pieView.setPercentage((float) 0.01);
         else
             pieView.setPercentage((float) percent);
-        pieView.setInnerText("You have had " + Math.floor(percent) + "% of your weekly alowance");
+        pieView.setInnerText("You have had " + Math.floor(percent) + "% of your weekly alowance of " + getCurrentGoal() + " units");
         pieView.setPercentageTextSize(30);
         //Sets the colour of the bar
         if (percent < 20) {
@@ -153,12 +155,15 @@ public class MainActivity extends Navigation
         }
         dateTo.set(dateTo.get(Calendar.YEAR), dateTo.get(Calendar.MONTH), dateTo.get(Calendar.DAY_OF_MONTH) + 1, 0, 0, 0);
 
+        System.out.println(sdf.format(dateFrom.getTime()));
+        System.out.println(sdf.format(dateTo.getTime()));
         // Iterates though the alcohol list and works out which ones are in the range
         double units = 0;
         for (Alcohol alcohol : alcohols) {
             Calendar date = Calendar.getInstance();
             date.set(Integer.parseInt(alcohol.getYYYY()), Integer.parseInt(alcohol.getMM()) - 1, Integer.parseInt(alcohol.getDD()), 0, 0, 0);
             // dateFrom <= date < dateTo
+            System.out.println(sdf.format(date.getTime()));
             if ((date.compareTo(dateFrom) >= 0) && ((dateTo.compareTo(date) >= 0) || (dateTo.equals(date)))) {
                 units += alcohol.getUnits();
             }
@@ -203,5 +208,49 @@ public class MainActivity extends Navigation
         startActivity(new Intent(this, Settings.class));
     }
 
+
+    private int getCurrentGoal(){
+        //Get the Monday for start of week
+        Calendar dateFrom = Calendar.getInstance();
+        dateFrom.set(dateFrom.get(Calendar.YEAR), dateFrom.get(Calendar.MONTH), dateFrom.get(Calendar.DAY_OF_MONTH) - 1, 0, 0, 0);
+        while (dateFrom.get(Calendar.DAY_OF_WEEK) > dateFrom.getFirstDayOfWeek()) {
+            dateFrom.add(Calendar.DATE, -1); // Subtract 1 day until first day of week.
+        }
+        dateFrom.set(dateFrom.get(Calendar.YEAR), dateFrom.get(Calendar.MONTH), dateFrom.get(Calendar.DAY_OF_MONTH) + 1, 0, 0, 0);
+        String dateFromString = sdf.format(dateFrom.getTime());
+
+        return getGoal(dateFromString);
+    }
+
+    /**
+     * Gets the goal for the date provided
+     * @param date : the date string
+     * @return : the goal
+     */
+    public int getGoal(String date){
+        HashMap<String, Integer> goals = db.getAllGoals();
+        // Defaults to 14 if there are no goals set
+        if(goals.size() == 0) {
+            return 14;
+        } else {
+            // Checks if they have added a goal for this week
+            if(goals.containsKey(date)){
+                return goals.get(date);
+            } else {
+                while(true) {
+                    // Goes to previous weeks goals instead
+                    String[] dateSplit = date.split("-");
+                    Calendar goalDate = Calendar.getInstance();
+                    goalDate.set(Integer.parseInt(dateSplit[2]), Integer.parseInt(dateSplit[1])-1, Integer.parseInt(dateSplit[0]));
+                    // Gets Last weeks date
+                    goalDate.add(Calendar.DATE, -7);
+                    date = sdf.format(goalDate.getTime());
+                    if(goals.containsKey(date)){
+                        return(goals.get(date));
+                    }
+                }
+            }
+        }
+    }
 
 }
