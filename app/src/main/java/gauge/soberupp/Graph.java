@@ -35,7 +35,7 @@ public class Graph extends Navigation
     private List<Alcohol> alcohols;
     private GraphView graph;
     private SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-
+    private DBHandler db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +50,7 @@ public class Graph extends Navigation
         graph = (GraphView) findViewById(R.id.graph);
 
         //Gets the list of alcohols entries from the db
-        DBHandler db = new DBHandler(this);
+        db = new DBHandler(this);
         alcohols = db.getAllAlcohols();
 
         // Adds each days entry to a treemap

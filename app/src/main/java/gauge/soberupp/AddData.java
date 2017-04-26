@@ -26,6 +26,7 @@ import android.widget.Spinner;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -37,6 +38,8 @@ public class AddData extends Navigation
     private ArrayList<Alcohol> alcohols = new ArrayList<>();
     // This id correlates to Alcohol.id
     private int id = 1;
+    private SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+
 
     /**
      * Runs when the page is created
@@ -382,6 +385,13 @@ public class AddData extends Navigation
         page.putString("page", "AddData");
         newFragment.setArguments(page);
         newFragment.show(getSupportFragmentManager(), "datePicker");
+    }
+
+    public void noAlcoholDrunk(View view){
+        Calendar today = Calendar.getInstance();
+        Alcohol a = new Alcohol(id, sdf.format(today.getTime()), AlcoholType.OTHER, 0, 0, 0, "null");
+        id++;
+        db.addAlcohol(a);
     }
 
 }

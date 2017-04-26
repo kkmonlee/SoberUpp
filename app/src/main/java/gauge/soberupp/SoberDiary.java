@@ -50,6 +50,8 @@ public class SoberDiary extends Navigation
         widget.addDecorator(new EventDecorator(Color.parseColor("#ff9900"), getDays(5, 10)));
         widget.addDecorator(new EventDecorator(Color.YELLOW, getDays(3, 5)));
         widget.addDecorator(new EventDecorator(Color.GREEN, getDays(0, 3)));
+        widget.addDecorator(new EventDecorator(Color.BLUE, getDays(0,0)));
+
         //Sets the title of the page
         setTitle("Sober Diary");
         Intent intent = getIntent();
@@ -112,21 +114,23 @@ public class SoberDiary extends Navigation
         String dateChosen = sdf.format(chosenDay.getTime());
 
         for (Alcohol alcohol : alcohols) {
-            Calendar currentDay = Calendar.getInstance();
-            currentDay.set(Integer.parseInt(alcohol.getYYYY()),
-                    Integer.parseInt(alcohol.getMM()) - 1, Integer.parseInt(alcohol.getDD()), 0, 0, 0);
-            String alcoholDate = sdf.format(currentDay.getTime());
+            if (!alcohol.getComment().equals("null")) {
+                Calendar currentDay = Calendar.getInstance();
+                currentDay.set(Integer.parseInt(alcohol.getYYYY()),
+                        Integer.parseInt(alcohol.getMM()) - 1, Integer.parseInt(alcohol.getDD()), 0, 0, 0);
+                String alcoholDate = sdf.format(currentDay.getTime());
 
-            if (alcoholDate.equals(dateChosen)) {
-                log += "Date: " + alcohol.getDate() +
-                        ", Type: " + alcohol.getAlcoholType().getName() + ", Volume: " +
-                        alcohol.getVolume() + ", Quantity: " + alcohol.getQuantity() +
-                        ", Units: " + alcohol.getUnits() + "\nComment: " + alcohol.getComment() +
-                        "\n";
+                if (alcoholDate.equals(dateChosen)) {
+                    log += "Date: " + alcohol.getDate() +
+                            ", Type: " + alcohol.getAlcoholType().getName() + ", Volume: " +
+                            alcohol.getVolume() + ", Quantity: " + alcohol.getQuantity() +
+                            ", Units: " + alcohol.getUnits() + "\nComment: " + alcohol.getComment() +
+                            "\n";
+                }
             }
-        }
-        if (log.isEmpty()) {
-            log = "No entries for date";
+            if (log.isEmpty()) {
+                log = "No entries for date";
+            }
         }
         return log;
     }
@@ -145,7 +149,6 @@ public class SoberDiary extends Navigation
             } else {
                 alcoholList.put(d, alcohol.getUnits());
             }
-
         }
     }
 

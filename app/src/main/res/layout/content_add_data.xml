@@ -162,17 +162,27 @@
 
             <Button
                 android:id="@+id/submit"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:onClick="getData"
-                android:text="Submit" />
+                android:text="Submit"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/noAlcoholToday"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="No Alcohol Drunk Today"
+                android:onClick="noAlcoholDrunk"
+                android:layout_weight="1" />
 
             <Button
                 android:id="@+id/readData"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:onClick="readFile"
-                android:text="Read Data" />
+                android:text="Read Data"
+                android:layout_weight="1" />
         </TableRow>
 
         <TableRow

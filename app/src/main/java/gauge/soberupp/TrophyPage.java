@@ -98,7 +98,6 @@ public class TrophyPage extends Navigation
                 alcoholList.put(dateFrom, alcohol.getUnits());
             }
         }
-
         // Checks if the goal has been met
         for (Calendar date : alcoholList.keySet()) {
             String dateString = sdf.format(date.getTime());
