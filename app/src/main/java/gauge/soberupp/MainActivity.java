@@ -2,7 +2,9 @@ package gauge.soberupp;
 
 import android.app.AlarmManager;
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -83,31 +85,31 @@ public class MainActivity extends Navigation
         animation.setDuration(2500); //This is the duration of the animation in millis
         pieView.startAnimation(animation);
 
-        scheduleNotification(getNotification());
+        scheduleNotification();
     }
 
     // Creates a notification
     //https://gist.github.com/BrandonSmith/6679223
-    private void scheduleNotification(Notification notification) {
+    private void scheduleNotification() {
 
-        Intent notificationIntent = new Intent(this, MainActivity.class);
-        //notificationIntent.putExtra(NotificationReciever.NOTIFICATION_ID, 1);
-        //notificationIntent.putExtra(NotificationReciever.NOTIFICATION, notification);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        Calendar alarmTime = Calendar.getInstance();
-        alarmTime.set(alarmTime.YEAR, alarmTime.MONTH, alarmTime.DAY_OF_MONTH, 18, 0, 0);
-        long futureInMillis = alarmTime.getTimeInMillis();
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
-    }
-
-    private Notification getNotification() {
         Notification.Builder builder = new Notification.Builder(this);
         builder.setContentTitle("SoberUpp");
         builder.setContentText("Have you remembered to add data today?");
         builder.setSmallIcon(R.mipmap.ic_launcher);
-        return builder.build();
+
+        Intent resultIntent = new Intent(this, AddData.class);
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addParentStack(AddData.class);
+
+        // Adds the Intent that starts the Activity to the top of the stack
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(resultPendingIntent);
+
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        // notificationID allows you to update the notification later on.
+        mNotificationManager.notify(1, builder.build());
     }
 
     /**
