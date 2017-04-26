@@ -50,7 +50,7 @@ public class SoberDiary extends Navigation
         widget.addDecorator(new EventDecorator(Color.parseColor("#ff9900"), getDays(5, 10)));
         widget.addDecorator(new EventDecorator(Color.YELLOW, getDays(3, 5)));
         widget.addDecorator(new EventDecorator(Color.GREEN, getDays(0, 3)));
-        widget.addDecorator(new EventDecorator(Color.BLUE, getDays(0,0)));
+        widget.addDecorator(new EventDecorator(Color.parseColor("#00ffe9"), getDays(-1,0)));
 
         //Sets the title of the page
         setTitle("Sober Diary");
@@ -107,6 +107,7 @@ public class SoberDiary extends Navigation
      */
     private String setRecordsForDay(CalendarDay selectedDate) {
         String log = "";
+        boolean nullAdded = false;
         Calendar chosenDay = Calendar.getInstance();
         chosenDay.set(selectedDate.getYear(), selectedDate.getMonth(), selectedDate.getDay(), 0, 0, 0);
 
@@ -127,9 +128,15 @@ public class SoberDiary extends Navigation
                             ", Units: " + alcohol.getUnits() + "\nComment: " + alcohol.getComment() +
                             "\n";
                 }
+            } else {
+                nullAdded = true;
             }
             if (log.isEmpty()) {
-                log = "No entries for date";
+                if(nullAdded){
+                    log = "No alcohol drunk today";
+                } else {
+                    log = "No entries for date";
+                }
             }
         }
         return log;

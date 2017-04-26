@@ -83,16 +83,16 @@ public class MainActivity extends Navigation
         animation.setDuration(2500); //This is the duration of the animation in millis
         pieView.startAnimation(animation);
 
-        scheduleNotification(getNotification(), 1000);
+        scheduleNotification(getNotification());
     }
 
     // Creates a notification
     //https://gist.github.com/BrandonSmith/6679223
-    private void scheduleNotification(Notification notification, int delay) {
+    private void scheduleNotification(Notification notification) {
 
-        Intent notificationIntent = new Intent(this, NotificationReciever.class);
-        notificationIntent.putExtra(NotificationReciever.NOTIFICATION_ID, 1);
-        notificationIntent.putExtra(NotificationReciever.NOTIFICATION, notification);
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        //notificationIntent.putExtra(NotificationReciever.NOTIFICATION_ID, 1);
+        //notificationIntent.putExtra(NotificationReciever.NOTIFICATION, notification);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Calendar alarmTime = Calendar.getInstance();

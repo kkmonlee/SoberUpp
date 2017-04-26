@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -39,6 +40,7 @@ public class AddData extends Navigation
     // This id correlates to Alcohol.id
     private int id = 1;
     private SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+    private boolean arduinoABV = false;
 
 
     /**
@@ -154,26 +156,32 @@ public class AddData extends Navigation
         ArrayAdapter<CharSequence> adapter;
         switch (drinkType) {
             case "Beer":
-                abv.setText("4.5");
+                if(!arduinoABV)
+                    abv.setText("4.5");
                 adapter = ArrayAdapter.createFromResource(this, R.array.VolumeBeer, android.R.layout.simple_spinner_item);
                 break;
             case "Cider":
-                abv.setText("4.5");
+                if(!arduinoABV)
+                    abv.setText("4.5");
                 adapter = ArrayAdapter.createFromResource(this, R.array.VolumeCider, android.R.layout.simple_spinner_item);
                 break;
             case "Wine":
-                abv.setText("12");
+                if(!arduinoABV)
+                    abv.setText("12");
                 adapter = ArrayAdapter.createFromResource(this, R.array.VolumeWine, android.R.layout.simple_spinner_item);
                 break;
             case "Spirits":
-                abv.setText("37.5");
+                if(!arduinoABV)
+                    abv.setText("37.5");
                 adapter = ArrayAdapter.createFromResource(this, R.array.VolumeSpirits, android.R.layout.simple_spinner_item);
                 break;
             case "Other":
-                abv.setText("5");
+                if(!arduinoABV)
+                    abv.setText("5");
                 adapter = ArrayAdapter.createFromResource(this, R.array.VolumeOthers, android.R.layout.simple_spinner_item);
             default:
-                abv.setText("4");
+                if(!arduinoABV)
+                    abv.setText("4");
                 adapter = ArrayAdapter.createFromResource(this, R.array.VolumeOthers, android.R.layout.simple_spinner_item);
                 break;
         }
@@ -387,11 +395,100 @@ public class AddData extends Navigation
         newFragment.show(getSupportFragmentManager(), "datePicker");
     }
 
+    /**
+     * Adds a alcohol object to the database with no alcohol drunk
+     * to ensure the user is using the app
+     * @param view : the view of the button
+     */
     public void noAlcoholDrunk(View view){
         Calendar today = Calendar.getInstance();
+        // Creates the alcohol object
         Alcohol a = new Alcohol(id, sdf.format(today.getTime()), AlcoholType.OTHER, 0, 0, 0, "null");
         id++;
         db.addAlcohol(a);
+    }
+
+    /**
+     * Creates a popup for the arduino abv sensor
+     * @param view
+     */
+    public void arduinoSensor(View view){
+        // Creates the pop up window
+        // Check if no view has focus / Hide Keyboard:
+        //http://stackoverflow.com/questions/1109022/close-hide-the-android-soft-keyboard
+        View view1 = this.getCurrentFocus();
+        if (view1 != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view1.getWindowToken(), 0);
+        }
+
+        final LayoutInflater layoutInflater = (LayoutInflater) getBaseContext()
+                .getSystemService(LAYOUT_INFLATER_SERVICE);
+
+        final View popupView = layoutInflater.inflate(R.layout.popup_arduino, null);
+
+        final PopupWindow popupWindow = new PopupWindow(popupView,
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT,
+                true);
+
+        popupWindow.setTouchable(true);
+        popupWindow.setFocusable(true);
+
+        popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+
+        // Sets the text to show whats being added
+        final TextView popUp = (TextView) popupView.findViewById(R.id.popupText);
+        final ProgressBar progressBar = (ProgressBar) popupView.findViewById(R.id.progressBar);
+        popUp.setText("Connecting");
+        // Thread to add percent onto the progress bar
+        Thread thread = new Thread(new Runnable(){
+            @Override
+            public void run(){
+                while (progressBar.getProgress() < 100){
+                    try{
+                        progressBar.setProgress(progressBar.getProgress() + 1);
+                        // UI thread to change the text
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if(progressBar.getProgress() == 20) {
+                                    popUp.setText("Connected");
+                                } else if(progressBar.getProgress() == 30){
+                                    popUp.setText("Calculating");
+                                } else if(progressBar.getProgress() == 90){
+                                    popUp.setText("Nearly Complete");
+                                }
+                            }
+                        });
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                // UI thread to set the final frame for the popup window
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        popUp.setText("The ABV is 4.5%");
+                        ((Button) popupView.findViewById(R.id.confirm)).setVisibility(View.VISIBLE);
+                    }
+                });
+            }
+        });
+        thread.start();
+
+        // OnClick Listener for the confirm button
+        ((Button) popupView.findViewById(R.id.confirm))
+                .setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View arg0) {
+                        EditText abv = (EditText) findViewById(R.id.ABVInput);
+                        abv.setText("4.5");
+                        arduinoABV = true;
+                        popupWindow.dismiss();
+                    }
+                });
+
     }
 
 }
