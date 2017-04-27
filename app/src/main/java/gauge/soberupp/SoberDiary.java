@@ -131,12 +131,12 @@ public class SoberDiary extends Navigation
             } else {
                 nullAdded = true;
             }
-            if (log.isEmpty()) {
-                if(nullAdded){
-                    log = "No alcohol drunk today";
-                } else {
-                    log = "No entries for date";
-                }
+        }
+        if (log.isEmpty()) {
+            if(nullAdded){
+                log = "No alcohol drunk today";
+            } else {
+                log = "No entries for date";
             }
         }
         return log;
