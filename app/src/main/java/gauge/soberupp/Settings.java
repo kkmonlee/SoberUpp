@@ -37,7 +37,10 @@ public class Settings extends Navigation
         setTitle("Settings");
         db = new DBHandler(this);
         setNewGoalDate();
+        System.out.println("QWERTYUIOP");
         setCurrentGoal();
+        System.out.println("MONIUBVYVYCTC");
+
         // START Code for the Navigation Bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -148,7 +151,6 @@ public class Settings extends Navigation
         }
         dateFrom.set(dateFrom.get(Calendar.YEAR), dateFrom.get(Calendar.MONTH), dateFrom.get(Calendar.DAY_OF_MONTH) + 1, 0, 0, 0);
         String date = sdf.format(dateFrom.getTime());
-
         // Sets the textView for the goal start date
         TextView dateForNewGoal = (TextView) findViewById(R.id.goalSetDate);
         dateForNewGoal.setText("The next goal is for the week beginning " + date + " is " + getGoal(date) + " units");
@@ -165,16 +167,18 @@ public class Settings extends Navigation
      * @return : the goal
      */
     public int getGoal(String date) {
+        System.out.println("HEHEHEHEHEHE");
         HashMap<String, Integer> goals = db.getAllGoals();
         // Defaults to 14 if there are no goals set
         if (goals.size() == 0) {
             return 14;
         } else {
             // Checks if they have added a goal for this week
+            System.out.println("popo");
             if (goals.containsKey(date)) {
                 return goals.get(date);
             } else {
-                while (true) {
+                for(int i = 0; i< 5 ; i++) {
                     // Goes to previous weeks goals instead
                     String[] dateSplit = date.split("-");
                     Calendar goalDate = Calendar.getInstance();
@@ -186,6 +190,7 @@ public class Settings extends Navigation
                         return (goals.get(date));
                     }
                 }
+                return 14;
             }
         }
     }

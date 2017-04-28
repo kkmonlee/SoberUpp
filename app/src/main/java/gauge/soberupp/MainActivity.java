@@ -242,7 +242,7 @@ public class MainActivity extends Navigation
             if (goals.containsKey(date)) {
                 return goals.get(date);
             } else {
-                while (true) {
+                for(int i = 0; i< 5 ; i++) {
                     // Goes to previous weeks goals instead
                     String[] dateSplit = date.split("-");
                     Calendar goalDate = Calendar.getInstance();
@@ -254,6 +254,7 @@ public class MainActivity extends Navigation
                         return (goals.get(date));
                     }
                 }
+                return 14;
             }
         }
     }
