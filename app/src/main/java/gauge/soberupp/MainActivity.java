@@ -1,6 +1,5 @@
 package gauge.soberupp;
 
-import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -103,7 +102,7 @@ public class MainActivity extends Navigation
 
         // Adds the Intent that starts the Activity to the top of the stack
         stackBuilder.addNextIntent(resultIntent);
-        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(resultPendingIntent);
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -242,7 +241,7 @@ public class MainActivity extends Navigation
             if (goals.containsKey(date)) {
                 return goals.get(date);
             } else {
-                for(int i = 0; i< 5 ; i++) {
+                for (int i = 0; i < 5; i++) {
                     // Goes to previous weeks goals instead
                     String[] dateSplit = date.split("-");
                     Calendar goalDate = Calendar.getInstance();

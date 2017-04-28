@@ -178,7 +178,7 @@ public class Settings extends Navigation
             if (goals.containsKey(date)) {
                 return goals.get(date);
             } else {
-                for(int i = 0; i< 5 ; i++) {
+                for (int i = 0; i < 5; i++) {
                     // Goes to previous weeks goals instead
                     String[] dateSplit = date.split("-");
                     Calendar goalDate = Calendar.getInstance();

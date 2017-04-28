@@ -50,7 +50,7 @@ public class SoberDiary extends Navigation
         widget.addDecorator(new EventDecorator(Color.parseColor("#ff9900"), getDays(5, 10)));
         widget.addDecorator(new EventDecorator(Color.YELLOW, getDays(3, 5)));
         widget.addDecorator(new EventDecorator(Color.GREEN, getDays(0, 3)));
-        widget.addDecorator(new EventDecorator(Color.parseColor("#00ffe9"), getDays(-1,0)));
+        widget.addDecorator(new EventDecorator(Color.parseColor("#00ffe9"), getDays(-1, 0)));
 
         //Sets the title of the page
         setTitle("Sober Diary");
@@ -133,7 +133,7 @@ public class SoberDiary extends Navigation
             }
         }
         if (log.isEmpty()) {
-            if(nullAdded){
+            if (nullAdded) {
                 log = "No alcohol drunk today";
             } else {
                 log = "No entries for date";

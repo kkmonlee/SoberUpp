@@ -156,31 +156,31 @@ public class AddData extends Navigation
         ArrayAdapter<CharSequence> adapter;
         switch (drinkType) {
             case "Beer":
-                if(!arduinoABV)
+                if (!arduinoABV)
                     abv.setText("4.5");
                 adapter = ArrayAdapter.createFromResource(this, R.array.VolumeBeer, android.R.layout.simple_spinner_item);
                 break;
             case "Cider":
-                if(!arduinoABV)
+                if (!arduinoABV)
                     abv.setText("4.5");
                 adapter = ArrayAdapter.createFromResource(this, R.array.VolumeCider, android.R.layout.simple_spinner_item);
                 break;
             case "Wine":
-                if(!arduinoABV)
+                if (!arduinoABV)
                     abv.setText("12");
                 adapter = ArrayAdapter.createFromResource(this, R.array.VolumeWine, android.R.layout.simple_spinner_item);
                 break;
             case "Spirits":
-                if(!arduinoABV)
+                if (!arduinoABV)
                     abv.setText("37.5");
                 adapter = ArrayAdapter.createFromResource(this, R.array.VolumeSpirits, android.R.layout.simple_spinner_item);
                 break;
             case "Other":
-                if(!arduinoABV)
+                if (!arduinoABV)
                     abv.setText("5");
                 adapter = ArrayAdapter.createFromResource(this, R.array.VolumeOthers, android.R.layout.simple_spinner_item);
             default:
-                if(!arduinoABV)
+                if (!arduinoABV)
                     abv.setText("4");
                 adapter = ArrayAdapter.createFromResource(this, R.array.VolumeOthers, android.R.layout.simple_spinner_item);
                 break;
@@ -398,9 +398,10 @@ public class AddData extends Navigation
     /**
      * Adds a alcohol object to the database with no alcohol drunk
      * to ensure the user is using the app
+     *
      * @param view : the view of the button
      */
-    public void noAlcoholDrunk(View view){
+    public void noAlcoholDrunk(View view) {
         Calendar today = Calendar.getInstance();
         // Creates the alcohol object
         Alcohol a = new Alcohol(id, sdf.format(today.getTime()), AlcoholType.OTHER, 0, 0, 0, "null");
@@ -410,9 +411,10 @@ public class AddData extends Navigation
 
     /**
      * Creates a popup for the arduino abv sensor
+     *
      * @param view
      */
-    public void arduinoSensor(View view){
+    public void arduinoSensor(View view) {
         // Creates the pop up window
         // Check if no view has focus / Hide Keyboard:
         //http://stackoverflow.com/questions/1109022/close-hide-the-android-soft-keyboard
@@ -441,21 +443,21 @@ public class AddData extends Navigation
         final ProgressBar progressBar = (ProgressBar) popupView.findViewById(R.id.progressBar);
         popUp.setText("Connecting");
         // Thread to add percent onto the progress bar
-        Thread thread = new Thread(new Runnable(){
+        Thread thread = new Thread(new Runnable() {
             @Override
-            public void run(){
-                while (progressBar.getProgress() < 100){
-                    try{
+            public void run() {
+                while (progressBar.getProgress() < 100) {
+                    try {
                         progressBar.setProgress(progressBar.getProgress() + 1);
                         // UI thread to change the text
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                if(progressBar.getProgress() == 20) {
+                                if (progressBar.getProgress() == 20) {
                                     popUp.setText("Connected");
-                                } else if(progressBar.getProgress() == 30){
+                                } else if (progressBar.getProgress() == 30) {
                                     popUp.setText("Calculating");
-                                } else if(progressBar.getProgress() == 90){
+                                } else if (progressBar.getProgress() == 90) {
                                     popUp.setText("Nearly Complete");
                                 }
                             }
